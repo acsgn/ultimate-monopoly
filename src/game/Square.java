@@ -1,4 +1,4 @@
-package board;
+package game;
 
 public abstract class Square {
 	private String name;
