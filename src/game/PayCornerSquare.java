@@ -32,7 +32,7 @@ public class PayCornerSquare extends Square {
 	@Override
 	public void executeAction() {
 		// TODO Auto-generated method stub
-		if (super.getName()=="Bonus") {
+		/*if (super.getName()=="Bonus") {
 			if(landedOn) {
 				salary=300;
 			} else {
@@ -46,7 +46,7 @@ public class PayCornerSquare extends Square {
 			} else {
 				salary=300;
 			}
-		}
+		}*/
 	}
 	
 	

@@ -1,4 +1,4 @@
-
+package game; 
 public class Hotel extends Building {
 
 	public Hotel(int price, int number, Player owner, PropertySquare ps) {

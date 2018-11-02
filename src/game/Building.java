@@ -1,4 +1,4 @@
-
+package game; 
 public abstract class Building {
 
 	//the price

@@ -33,9 +33,9 @@ public class RailroadSquare extends Square {
 	public void executeAction() {
 		// TODO Auto-generated method stub
 		if(owner==null) {
-			buySquare(super.getName());
+			// The player can buy the square. 
 		} else {
-			payRent(super.getName());
+			// The player has to pay rent to the owner. 
 		}
 	}
 }

@@ -9,7 +9,6 @@ public class GoToJailSquare extends Square {
 	@Override
 	public void executeAction() {
 		// TODO Auto-generated method stub
-		goToJail();
 	}
 	
 	

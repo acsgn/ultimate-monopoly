@@ -1,4 +1,4 @@
-
+package game; 
 public abstract class Dice {
 
 	int val1;
@@ -37,7 +37,7 @@ public abstract class Dice {
 
 	public void lastRollWasDouble(Player p) {
 		if(rollDouble) {
-			p.takeTurn();
+			p.play();
 		}
 	}
 }

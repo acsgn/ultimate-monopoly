@@ -1,4 +1,4 @@
-
+package game; 
 public class House extends Building {
 
 	public House(int price, int number, Player owner, PropertySquare ps) {

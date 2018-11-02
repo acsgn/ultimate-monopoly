@@ -1,4 +1,4 @@
-
+package game; 
 public class Skyscraper extends Building {
 
 	public Skyscraper(int price, int number, Player owner, PropertySquare ps) {

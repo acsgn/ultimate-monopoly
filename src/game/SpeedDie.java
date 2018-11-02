@@ -1,3 +1,4 @@
+package game; 
 import java.util.Random;
 
 public class SpeedDie extends Dice {
