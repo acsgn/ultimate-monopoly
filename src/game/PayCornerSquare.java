@@ -41,7 +41,7 @@ public class PayCornerSquare extends Square {
 		} else if (super.getName()=="Go") {
 			salary=200;
 		} else if (super.getName()=="Pay Day") {
-			if(dice.isEven()) {
+			if() {
 				salary=400;
 			} else {
 				salary=300;
