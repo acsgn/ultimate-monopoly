@@ -32,7 +32,7 @@ public class PayCornerSquare extends Square {
 	@Override
 	public void executeAction() {
 		// TODO Auto-generated method stub
-		/*if (super.getName()=="Bonus") {
+		if (super.getName()=="Bonus") {
 			if(landedOn) {
 				salary=300;
 			} else {
@@ -41,12 +41,12 @@ public class PayCornerSquare extends Square {
 		} else if (super.getName()=="Go") {
 			salary=200;
 		} else if (super.getName()=="Pay Day") {
-			if() {
+			/*if(dice.isEven()) {
 				salary=400;
 			} else {
 				salary=300;
-			}
-		}*/
+			}*/
+		}
 	}
 	
 	
