@@ -7,12 +7,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class MessageSocket {
-	
+
 	private Socket socket;
 	private BufferedReader is;
 	private PrintWriter os;
-	
-	public MessageSocket(Socket s){
+	protected int diceValue = 0;
+
+	public MessageSocket(Socket s) {
 		this.socket = s;
 		try {
 			is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -21,18 +22,18 @@ public class MessageSocket {
 			System.err.println("Socket I/O Error");
 		}
 	}
-	
+
 	protected void sendMessage(String message) {
 		os.println(message);
 		os.flush();
 	}
-	
+
 	protected String receiveMessage() throws IOException {
 		String message;
 		message = is.readLine();
 		return message;
 	}
-	
+
 	protected void close() {
 		try {
 			if (is != null)
@@ -47,5 +48,5 @@ public class MessageSocket {
 			System.err.println("Socket Close Error");
 		}
 	}
-	
+
 }
