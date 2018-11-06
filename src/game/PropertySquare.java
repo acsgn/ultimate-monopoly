@@ -32,8 +32,10 @@ public class PropertySquare extends Square {
 	@Override
 	public void executeAction() {
 		// TODO Auto-generated method stub
-		if(owner==null) {
+		/*if(owner==null) {
+			buySquare(super.getName());
 		} else {
-		}
+			payRent(super.getName());
+		}*/
 	}
 }

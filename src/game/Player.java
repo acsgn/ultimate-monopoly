@@ -1,8 +1,13 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+import ObserverPattern.Subject;
+import ObserverPattern.Observer;
+
+
+public class Player implements Subject{
 	private String name;
 	private int money;
 	Piece piece; 
@@ -11,16 +16,21 @@ public class Player {
 	boolean inJail; 
 	boolean isBankrupt; 
 	List<PropertySquare> properties;
+	ArrayList<Observer> observers;
+	private String message;
 	
 	public Player(String name, int money, Dice[] dice, Board board){
 		this.name = name; 
 		this.money = money;
 		this.dice = dice;
 		this.board = board; 
+		observers = new ArrayList<>();
 	}
 	
 	public void play(){
 		
+		
+		//location.executeAction(this);
 	}
 	public int rollDice(){
 		return 0;
@@ -41,6 +51,8 @@ public class Player {
 		return this.properties;
 	}
 	public boolean payRent(Square s){
+		message = "You paid Rent";
+		notifyObservers();
 		return false;
 
 	}
@@ -85,5 +97,33 @@ public class Player {
 	}
 	public String getName(){
 		return name; 
+	}
+	
+	/// Receive from the Dispatching
+	public void receiveMessage(String message){
+		if(message.equals("Pay Rent")){
+			this.payRent( new PropertySquare("this", 3,3,3,this));
+			System.out.println("Message recieved : "+ message);
+		}
+	}
+
+	@Override
+	public void registerObserver(Observer o) {
+		// TODO Auto-generated method stub
+		observers.add(o);
+	}
+
+	@Override
+	public void removeObserver(Observer o) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void notifyObservers() {
+		// TODO Auto-generated method stub
+		for(Observer o: observers){
+			o.update(message);
+		}
 	}
 }
