@@ -142,8 +142,13 @@ public class UICreator extends JFrame implements Subject {
 				} else {
 					message = "CLIENT/" + IPTextField.getText();
 				}
-				System.out.println(message);
-				// notifyObservers();
+				notifyObservers();
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				dispose();
 			}
 		});
 
@@ -166,4 +171,5 @@ public class UICreator extends JFrame implements Subject {
 			o.update(message);
 		}
 	}
+	
 }

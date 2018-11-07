@@ -16,15 +16,8 @@ public class Main {
 		FrontController domainController = new FrontController(game);
 		UICreator gameCreator = new UICreator(domainController);
 		gameCreator.setVisible(true);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Autapo-generated catch block
-			e.printStackTrace();
-		}
-		gameCreator.dispose();
 		UIScreen screen = new UIScreen(domainController);
-		screen.setVisible(true);
+			screen.setVisible(true);
 		UIController uiController = new UIController(screen);
 		game.setObserver(uiController);
 	}
