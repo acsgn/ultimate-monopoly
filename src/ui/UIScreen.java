@@ -23,6 +23,9 @@ import ObserverPattern.Subject;
 public class UIScreen extends JFrame implements Subject {
 	private static final long serialVersionUID = 1L;
 	private static final String boardImage = "resources/board.png";
+	
+	/// obeservers
+	private ArrayList<Observer> observers;
 
 	private String message;
 	private JTextArea infoText;
@@ -48,8 +51,6 @@ public class UIScreen extends JFrame implements Subject {
 	private int screenX = (screenWidth - screenHeight - controlPaneWidth) / 2;
 	private int screenY = 0;
 
-	/// obeservers
-	private ArrayList<Observer> observers;
 
 	/**
 	 * Create the panel.
@@ -193,6 +194,7 @@ public class UIScreen extends JFrame implements Subject {
 
 	@Override
 	public void removeObserver(Observer o) {
+		observers.remove(o);
 	}
 
 	@Override

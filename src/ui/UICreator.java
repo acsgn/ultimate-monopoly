@@ -10,12 +10,22 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
-public class UICreator extends JFrame {
+import ObserverPattern.Observer;
+import ObserverPattern.Subject;
+
+public class UICreator extends JFrame implements Subject {
 	private static final long serialVersionUID = 1L;
 	private static final String ultimateMonopoly = "resources/ultimate_monopoly.jpg";
+	
+	private ArrayList<Observer> observers;
+	private String message;
 	
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 	private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -27,7 +37,7 @@ public class UICreator extends JFrame {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setType(Type.UTILITY);
 		setResizable(false);
-		setBounds((screenWidth-636)/2, (screenHeight-450)/2, 636, 497);
+		setBounds((screenWidth-636)/2, (screenHeight-450)/2, 636, 487);
 		getContentPane().setLayout(null);
 
 		JLabel image = new JLabel();
@@ -39,14 +49,14 @@ public class UICreator extends JFrame {
 		JRadioButton serverButton = new JRadioButton("Server");
 		serverButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		buttonGroup.add(serverButton);
-		serverButton.setBounds(30, 272, 100, 75);
+		serverButton.setBounds(30, 272, 100, 70);
 		getContentPane().add(serverButton);
 
 		JRadioButton clientButton = new JRadioButton("Client");
 		clientButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		buttonGroup.add(clientButton);
 		clientButton.setSelected(true);
-		clientButton.setBounds(30, 367, 100, 75);
+		clientButton.setBounds(30, 362, 100, 70);
 		getContentPane().add(clientButton);
 
 		JSlider slider = new JSlider();
@@ -57,7 +67,7 @@ public class UICreator extends JFrame {
 		slider.setValue(4);
 		slider.setMaximum(10);
 		slider.setMinimum(2);
-		slider.setBounds(165, 317, 200, 80);
+		slider.setBounds(165, 272, 200, 70);
 
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
 		labelTable.put(2, new JLabel("2"));
@@ -72,10 +82,29 @@ public class UICreator extends JFrame {
 		slider.setLabelTable(labelTable);
 		slider.setEnabled(false);
 		
+		JPanel IPPanel = new JPanel();
+		IPPanel.setBounds(165, 362, 200, 70);
+		IPPanel.setLayout(null);
+		
+		JLabel IPLabel = new JLabel("Server IP:");
+		IPLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		IPLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		IPLabel.setBounds(35, 0, 130, 35);
+		IPPanel.add(IPLabel);
+		
+		JTextField IPTextField = new JTextField();
+		IPTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		IPTextField.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		IPTextField.setBounds(0, 35, 200, 30);
+		IPPanel.add(IPTextField);
+
+		getContentPane().add(IPPanel);
+		
 		serverButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				slider.setEnabled(true);
+				IPTextField.setEnabled(false);
 			}
 		});
 		
@@ -83,6 +112,7 @@ public class UICreator extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				slider.setEnabled(false);
+				IPTextField.setEnabled(true);
 			}
 		});
 		
@@ -90,8 +120,38 @@ public class UICreator extends JFrame {
 		
 		JButton startGameButton = new JButton("Start Game");
 		startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		startGameButton.setBounds(400, 317, 200, 80);
+		startGameButton.setBounds(400, 312, 200, 80);
 		getContentPane().add(startGameButton);
+		
+		startGameButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (buttonGroup.isSelected(serverButton.getModel())) {
+					message = "SERVER/"+slider.getValue();
+				}else {
+					message = "CLIENT/"+IPTextField.getText();
+				}
+				notifyObservers();
+			}
+		});
+		
 	}
 
+	@Override
+	public void registerObserver(Observer o) {
+		observers.add(o);
+	}
+
+	@Override
+	public void removeObserver(Observer o) {
+		observers.remove(o);
+	}
+
+	@Override
+	public void notifyObservers() {
+		for (Observer o : observers) {
+			System.out.println(message);
+			o.update(message);
+		}
+	}
 }

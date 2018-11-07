@@ -15,9 +15,9 @@ public class Main {
 		MonopolyGame game = new MonopolyGame();
 		FrontController domainController = new FrontController(game);
 		UICreator gameCreator = new UICreator();
-		gameCreator.setVisible(true);
+		//gameCreator.setVisible(true);
 		UIScreen screen = new UIScreen(domainController);
-		//screen.setVisible(true);
+		screen.setVisible(true);
 		UIController uiController = new UIController(screen);
 		game.setObserver(uiController);
 	}
