@@ -17,7 +17,7 @@ public class Main {
 		UICreator gameCreator = new UICreator(domainController);
 		gameCreator.setVisible(true);
 		UIScreen screen = new UIScreen(domainController);
-			screen.setVisible(true);
+		// screen.setVisible(true);
 		UIController uiController = new UIController(screen);
 		game.setObserver(uiController);
 	}
