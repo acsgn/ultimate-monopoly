@@ -1,4 +1,4 @@
-package game;
+package game.square;
 
 public abstract class Square {
 	private String name;

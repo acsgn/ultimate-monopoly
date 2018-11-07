@@ -23,22 +23,27 @@ import ObserverPattern.Subject;
 public class UICreator extends JFrame implements Subject {
 	private static final long serialVersionUID = 1L;
 	private static final String ultimateMonopoly = "resources/ultimate_monopoly.jpg";
-	
+
 	private ArrayList<Observer> observers;
 	private String message;
-	
+
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 	private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 
 	/**
 	 * Create the frame.
 	 */
-	public UICreator() {
+	public UICreator(Observer o) {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
-		setType(Type.UTILITY);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setBounds((screenWidth-636)/2, (screenHeight-450)/2, 636, 487);
+		setBounds((screenWidth - 636) / 2, (screenHeight - 450) / 2, 636, 487);
 		getContentPane().setLayout(null);
+
+		/// Adding the observer
+		observers = new ArrayList<>();
+		this.registerObserver(o);
+		///
 
 		JLabel image = new JLabel();
 		image.setIcon(new ImageIcon(ultimateMonopoly));
@@ -49,15 +54,21 @@ public class UICreator extends JFrame implements Subject {
 		JRadioButton serverButton = new JRadioButton("Server");
 		serverButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		buttonGroup.add(serverButton);
-		serverButton.setBounds(30, 272, 100, 70);
+		serverButton.setBounds(30, 272, 100, 75);
 		getContentPane().add(serverButton);
 
 		JRadioButton clientButton = new JRadioButton("Client");
 		clientButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		buttonGroup.add(clientButton);
 		clientButton.setSelected(true);
-		clientButton.setBounds(30, 362, 100, 70);
+		clientButton.setBounds(30, 357, 100, 75);
 		getContentPane().add(clientButton);
+
+		JLabel playerCountLabel = new JLabel("Number of Players:");
+		playerCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		playerCountLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerCountLabel.setBounds(165, 272, 200, 20);
+		getContentPane().add(playerCountLabel);
 
 		JSlider slider = new JSlider();
 		slider.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -67,7 +78,7 @@ public class UICreator extends JFrame implements Subject {
 		slider.setValue(4);
 		slider.setMaximum(10);
 		slider.setMinimum(2);
-		slider.setBounds(165, 272, 200, 70);
+		slider.setBounds(165, 292, 200, 55);
 
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
 		labelTable.put(2, new JLabel("2"));
@@ -81,17 +92,17 @@ public class UICreator extends JFrame implements Subject {
 		labelTable.put(10, new JLabel("10"));
 		slider.setLabelTable(labelTable);
 		slider.setEnabled(false);
-		
+
 		JPanel IPPanel = new JPanel();
-		IPPanel.setBounds(165, 362, 200, 70);
+		IPPanel.setBounds(165, 357, 200, 75);
 		IPPanel.setLayout(null);
-		
+
 		JLabel IPLabel = new JLabel("Server IP:");
 		IPLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		IPLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		IPLabel.setBounds(35, 0, 130, 35);
+		IPLabel.setBounds(35, 10, 130, 20);
 		IPPanel.add(IPLabel);
-		
+
 		JTextField IPTextField = new JTextField();
 		IPTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		IPTextField.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -99,7 +110,7 @@ public class UICreator extends JFrame implements Subject {
 		IPPanel.add(IPTextField);
 
 		getContentPane().add(IPPanel);
-		
+
 		serverButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -107,7 +118,7 @@ public class UICreator extends JFrame implements Subject {
 				IPTextField.setEnabled(false);
 			}
 		});
-		
+
 		clientButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -115,26 +126,27 @@ public class UICreator extends JFrame implements Subject {
 				IPTextField.setEnabled(true);
 			}
 		});
-		
+
 		getContentPane().add(slider);
-		
+
 		JButton startGameButton = new JButton("Start Game");
 		startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		startGameButton.setBounds(400, 312, 200, 80);
 		getContentPane().add(startGameButton);
-		
+
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (buttonGroup.isSelected(serverButton.getModel())) {
-					message = "SERVER/"+slider.getValue();
-				}else {
-					message = "CLIENT/"+IPTextField.getText();
+					message = "SERVER/" + slider.getValue();
+				} else {
+					message = "CLIENT/" + IPTextField.getText();
 				}
-				notifyObservers();
+				System.out.println(message);
+				// notifyObservers();
 			}
 		});
-		
+
 	}
 
 	@Override

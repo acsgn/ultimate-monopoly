@@ -1,6 +1,5 @@
-package game;
+package game.square;
 
-import java.util.*;
 
 public class ChanceSquare extends Square {
 	

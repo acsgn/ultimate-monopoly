@@ -1,11 +1,13 @@
-package game;
+package game.square;
 
-public class UtilitySquare extends Square {
+import game.Player;
+
+public class PropertySquare extends Square {
 	private int rent;
 	private int price;
 	private Player owner;
 	
-	public UtilitySquare(String name, int number, int rent, int price, Player owner) {
+	public PropertySquare(String name, int number, int rent, int price, Player owner) {
 		super(name, number);
 		this.rent = rent;
 		this.price = price;
@@ -32,10 +34,10 @@ public class UtilitySquare extends Square {
 	@Override
 	public void executeAction() {
 		// TODO Auto-generated method stub
-		if(owner==null) {
-			// The player can buy  the Square; 
+		/*if(owner==null) {
+			buySquare(super.getName());
 		} else {
-			// The player has to pay Rent; 
-		}
+			payRent(super.getName());
+		}*/
 	}
 }

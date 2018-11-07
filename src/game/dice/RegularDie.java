@@ -1,4 +1,4 @@
-package game;
+package game.dice;
 import java.util.Random;
 
 public class RegularDie extends Dice {

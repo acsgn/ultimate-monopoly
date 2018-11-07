@@ -2,6 +2,8 @@ package game;
 
 import java.util.List;
 
+import game.square.Square;
+
 public class Board {
 	private List<Square> squares; 
 	

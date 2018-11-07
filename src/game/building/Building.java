@@ -1,4 +1,8 @@
-package game; 
+package game.building;
+
+import game.Player;
+import game.square.PropertySquare;
+
 public abstract class Building {
 
 	//the price

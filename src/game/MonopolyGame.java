@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ObserverPattern.Observer;
+import game.dice.Dice;
 
 public class MonopolyGame {
 	private List<Player> players; 

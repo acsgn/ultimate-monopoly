@@ -1,4 +1,6 @@
-package game;
+package game.card;
+
+import game.Player;
 
 public abstract class Card {
 	private String name; 

@@ -1,4 +1,4 @@
-package game;
+package game.square;
 
 public class GoToJailSquare extends Square {
 	

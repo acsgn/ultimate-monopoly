@@ -1,4 +1,7 @@
-package game; 
+package game.dice;
+
+import game.Player;
+
 public abstract class Dice {
 
 	int val1;

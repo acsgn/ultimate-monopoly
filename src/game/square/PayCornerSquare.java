@@ -1,4 +1,4 @@
-package game;
+package game.square;
 
 public class PayCornerSquare extends Square {
 	private int salary;

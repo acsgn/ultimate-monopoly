@@ -33,6 +33,8 @@ public class Server implements Runnable {
 				continue;
 			}
 			sendMessageToOtherPlayers(message, currentPlayer);
+			currentPlayer++;
+			currentPlayer = currentPlayer == players.size() ? 0 : currentPlayer;
 		}
 	}
 

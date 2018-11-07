@@ -1,4 +1,8 @@
-package game; 
+package game.building;
+
+import game.Player;
+import game.square.PropertySquare;
+
 public class Skyscraper extends Building {
 
 	public Skyscraper(int price, int number, Player owner, PropertySquare ps) {

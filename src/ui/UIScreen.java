@@ -23,7 +23,7 @@ import ObserverPattern.Subject;
 public class UIScreen extends JFrame implements Subject {
 	private static final long serialVersionUID = 1L;
 	private static final String boardImage = "resources/board.png";
-	
+
 	/// obeservers
 	private ArrayList<Observer> observers;
 
@@ -38,7 +38,7 @@ public class UIScreen extends JFrame implements Subject {
 
 	private int controlPaneWidth = screenHeight / 4;
 	private int controlPaneHeight = screenHeight;
-	
+
 	private int controlPaneAreaWidth = 8 * controlPaneWidth / 9;
 	private int controlPaneAreaHeight = controlPaneHeight / 4;
 
@@ -50,7 +50,6 @@ public class UIScreen extends JFrame implements Subject {
 
 	private int screenX = (screenWidth - screenHeight - controlPaneWidth) / 2;
 	private int screenY = 0;
-
 
 	/**
 	 * Create the panel.
@@ -66,7 +65,7 @@ public class UIScreen extends JFrame implements Subject {
 		observers = new ArrayList<>();
 		this.registerObserver(o);
 		///
-		
+
 		JComponent board = new JComponent() {
 			private static final long serialVersionUID = 1L;
 			Image board = new ImageIcon(boardImage).getImage().getScaledInstance(screenHeight, -1, Image.SCALE_SMOOTH);
@@ -80,7 +79,7 @@ public class UIScreen extends JFrame implements Subject {
 
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(null);
-		
+
 		JPanel playerArea = new JPanel();
 		playerArea.setBackground(playerColor);
 		playerArea.setLayout(null);
@@ -88,22 +87,25 @@ public class UIScreen extends JFrame implements Subject {
 		playerText.setEditable(false);
 		updateTextArea(playerText);
 		JScrollPane playerScroll = new JScrollPane(playerText);
-		playerScroll.setBounds(controlPaneXSpace, 2*controlPaneYSpace, controlPaneAreaWidth-2*controlPaneXSpace, controlPaneAreaHeight-2*controlPaneYSpace);
+		playerScroll.setBounds(controlPaneXSpace, 2 * controlPaneYSpace, controlPaneAreaWidth - 2 * controlPaneXSpace,
+				controlPaneAreaHeight - 2 * controlPaneYSpace);
 		playerArea.add(playerScroll);
 		playerArea.setBounds(controlPaneXSpace, controlPaneYSpace, controlPaneAreaWidth, controlPaneAreaHeight);
 		controlPanel.add(playerArea);
-		
+
 		JButton endGameButton = new JButton("End Game");
-		endGameButton.setBounds(controlPaneXSpace, controlPaneAreaHeight+2*controlPaneYSpace, controlPaneButtonWidth, controlPaneButtonHeight);
+		endGameButton.setBounds(controlPaneXSpace, controlPaneAreaHeight + 2 * controlPaneYSpace,
+				controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(endGameButton);
-		
+
 		infoText = new JTextArea();
 		infoText.setEditable(false);
 		updateTextArea(infoText);
 		JScrollPane infoArea = new JScrollPane(infoText);
-		infoArea.setBounds(controlPaneXSpace, controlPaneAreaHeight+controlPaneButtonHeight+3*controlPaneYSpace, controlPaneAreaWidth, controlPaneAreaHeight);
+		infoArea.setBounds(controlPaneXSpace, controlPaneAreaHeight + controlPaneButtonHeight + 3 * controlPaneYSpace,
+				controlPaneAreaWidth, controlPaneAreaHeight);
 		controlPanel.add(infoArea);
-		
+
 		JButton buildingButton = new JButton("Build/Sell Building");
 		buildingButton.setBounds(controlPaneXSpace, getButtonY(4), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(buildingButton);
@@ -111,7 +113,7 @@ public class UIScreen extends JFrame implements Subject {
 		JButton buyPropertyButton = new JButton("Buy Property");
 		buyPropertyButton.setBounds(controlPaneXSpace, getButtonY(3), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(buyPropertyButton);
-		
+
 		JButton rollDiceButton = new JButton("Roll Dice");
 		rollDiceButton.setBounds(controlPaneXSpace, getButtonY(2), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(rollDiceButton);
@@ -126,7 +128,7 @@ public class UIScreen extends JFrame implements Subject {
 		getContentPane().setBackground(Color.BLACK);
 
 		// Action Listeners
-		
+
 		rollDiceButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -135,7 +137,7 @@ public class UIScreen extends JFrame implements Subject {
 				notifyObservers();
 			}
 		});
-		
+
 		buyPropertyButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -144,7 +146,7 @@ public class UIScreen extends JFrame implements Subject {
 				notifyObservers();
 			}
 		});
-		
+
 		buildingButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -153,7 +155,7 @@ public class UIScreen extends JFrame implements Subject {
 				notifyObservers();
 			}
 		});
-		
+
 		endTurnButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -162,29 +164,31 @@ public class UIScreen extends JFrame implements Subject {
 				notifyObservers();
 			}
 		});
-		
+
 		endGameButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "ENDGAME";
 				notifyObservers();
+				dispose();
 			}
 		});
 	}
 
 	/**
 	 * Just for demonstration purpose, don't forget to delete this
+	 * 
 	 * @param playerText
 	 */
 	private void updateTextArea(JTextArea tA) {
-		for(int i = 0; i < 20; i++) {
-			tA.insert("Deneme "+i+"\n", 0);
+		for (int i = 0; i < 20; i++) {
+			tA.insert("Deneme " + i + "\n", 0);
 		}
 	}
 
 	private int getButtonY(int i) {
-		return controlPaneHeight-(i*controlPaneButtonHeight+i*controlPaneYSpace);
+		return controlPaneHeight - (i * controlPaneButtonHeight + i * controlPaneYSpace);
 	}
 
 	@Override

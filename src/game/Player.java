@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ObserverPattern.Subject;
+import game.building.Building;
+import game.card.Card;
+import game.dice.Dice;
+import game.square.PropertySquare;
+import game.square.Square;
 import ObserverPattern.Observer;
 
 

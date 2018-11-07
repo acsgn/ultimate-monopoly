@@ -1,4 +1,8 @@
-package game; 
+package game.building;
+
+import game.Player;
+import game.square.PropertySquare;
+
 public class Hotel extends Building {
 
 	public Hotel(int price, int number, Player owner, PropertySquare ps) {
