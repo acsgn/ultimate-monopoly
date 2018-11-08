@@ -137,6 +137,4 @@ public class Player{
 		this.utilitySquares = utilitySquares;
 	}
 	
-	
-	
 }

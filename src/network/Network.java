@@ -7,12 +7,14 @@ public class Network {
 	private Network self;
 	private MessageSocket mS;
 	private Thread server;
+	private boolean isConnected = false;
 
 	public Network(int numOfPlayers) {
 		server = new Thread(new Server(numOfPlayers));
 		server.start();
 		try {
 			mS = new Client("localhost").getMessageSocket();
+			isConnected = true;
 		} catch (Exception e) {
 		}
 		self = this;
@@ -21,9 +23,10 @@ public class Network {
 	public Network(String IPAddress) {
 		try {
 			mS = new Client(IPAddress).getMessageSocket();
+			self = this;
+			isConnected = true;
 		} catch (Exception e) {
 		}
-		self = this;
 	}
 
 	public void sendMessageToOthers(String message) {
@@ -47,6 +50,10 @@ public class Network {
 
 	public Network getInstance() {
 		return self;
+	}
+
+	public boolean isConnected() {
+		return isConnected;
 	}
 
 }

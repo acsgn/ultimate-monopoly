@@ -41,6 +41,9 @@ public class MonopolyGame {
 			Network server = new Network(Integer.parseInt(parsed[1]));
 		case "CLIENT":
 			Network client = new Network(parsed[1]);
+			if (!client.isConnected()) {
+				// somehow inform the game creator
+			}
 		}
 	}
 
