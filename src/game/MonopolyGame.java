@@ -37,13 +37,16 @@ public class MonopolyGame {
 	public void executeMessage(String message) {
 		String[] parsed = message.split("/");
 		switch(parsed[0]) {
-		case "SERVER": 
+		
+		
+		/*case "SERVER": 
 			Network server = new Network(Integer.parseInt(parsed[1]));
+			break;
 		case "CLIENT":
 			Network client = new Network(parsed[1]);
 			if (!client.isConnected()) {
 				// somehow inform the game creator
-			}
+			}*/
 		}
 	}
 

@@ -10,7 +10,7 @@ public class Network {
 	private boolean isConnected = false;
 
 	public Network(int numOfPlayers) {
-		server = new Thread(new Server(numOfPlayers));
+		server = new Thread(new Server(numOfPlayers),"Server");
 		server.start();
 		try {
 			mS = new Client("localhost").getMessageSocket();

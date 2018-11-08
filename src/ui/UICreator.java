@@ -137,6 +137,7 @@ public class UICreator extends JFrame {
 					message = "SERVER/" + slider.getValue();
 					controller.dispatchMessage(message);
 					dispose();
+					screen.setVisible(true);
 				} else {
 					String IP = IPTextField.getText();
 					boolean flag = isLegitIP(IP);

@@ -16,8 +16,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import game.Controller;
+import game.GameListener;
 
-public class UIScreen extends JFrame{
+public class UIScreen extends JFrame implements GameListener{
 	private static final long serialVersionUID = 1L;
 	private static final String boardImage = "resources/board.png";
 
@@ -176,6 +177,11 @@ public class UIScreen extends JFrame{
 
 	private int getButtonY(int i) {
 		return controlPaneHeight - (i * controlPaneButtonHeight + i * controlPaneYSpace);
+	}
+
+	@Override
+	public void onGameEvent(String message) {
+		
 	}
 
 }

@@ -57,10 +57,14 @@ public class Server implements Runnable {
 		ServerSocket server;
 		try {
 			server = new ServerSocket(DEFAULT_PORT);
-			for (int i = 0; i < players.size(); i++) {
+			int i = 0;
+			while (true) {
 				Socket s = server.accept();
 				MessageSocket mS = new MessageSocket(s);
 				players.add(mS);
+				i++;
+				if (i == players.size())
+					break;
 			}
 			server.close();
 		} catch (IOException e) {
