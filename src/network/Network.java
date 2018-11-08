@@ -1,6 +1,7 @@
 package network;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 public class Network {
 
@@ -9,10 +10,14 @@ public class Network {
 	public Network(int numOfPlayers) {
 		Thread server = new Thread(new Server(numOfPlayers));
 		server.start();
-		mS = new Client("localhost").getMessageSocket();
+		try {
+			mS = new Client("localhost").getMessageSocket();
+		} catch (UnknownHostException e) {
+			System.err.println("Socket Connection Error");
+		}
 	}
 
-	public Network(String IPAddress) {
+	public Network(String IPAddress) throws UnknownHostException {
 		mS = new Client(IPAddress).getMessageSocket();
 	}
 

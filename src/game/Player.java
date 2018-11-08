@@ -3,33 +3,32 @@ package game;
 import java.util.ArrayList;
 import java.util.List;
 
-import ObserverPattern.Subject;
 import game.building.Building;
 import game.card.Card;
-import game.dice.Dice;
 import game.square.PropertySquare;
+import game.square.RailroadSquare;
 import game.square.Square;
-import ObserverPattern.Observer;
+import game.square.UtilitySquare;
 
 
-public class Player implements Subject{
+public class Player{
 	private String name;
 	private int money;
-	Piece piece; 
-	Dice[] dice; 
+	private Square location;
 	Board board; 
 	boolean inJail; 
 	boolean isBankrupt; 
-	List<PropertySquare> properties;
-	ArrayList<Observer> observers;
+	private List<PropertySquare> propertySquares;
+	private List<RailroadSquare> railRoadSquares;
+	private List<UtilitySquare> utilitySquares;
+	private ArrayList<GameListener> listeners;
 	private String message;
 	
-	public Player(String name, int money, Dice[] dice, Board board){
+	public Player(String name, int money, Board board){
 		this.name = name; 
 		this.money = money;
-		this.dice = dice;
 		this.board = board; 
-		observers = new ArrayList<>();
+		listeners = new ArrayList<>();
 	}
 	
 	public void play(){
@@ -44,7 +43,7 @@ public class Player implements Subject{
 		
 	}
 	public Square getLocation(){
-		return piece.getLocation();
+		return location;
 	}
 	public boolean isInJail(){
 		return inJail;
@@ -53,11 +52,11 @@ public class Player implements Subject{
 		return isBankrupt;
 	}
 	public List<PropertySquare> getProperties(){
-		return this.properties;
+		return this.propertySquares;
 	}
 	public boolean payRent(Square s){
 		message = "You paid Rent";
-		notifyObservers();
+		publishGameEvent(message);
 		return false;
 
 	}
@@ -104,31 +103,40 @@ public class Player implements Subject{
 		return name; 
 	}
 	
-	/// Receive from the Dispatching
-	public void receiveMessage(String message){
-		if(message.equals("Pay Rent")){
-			this.payRent( new PropertySquare("this", 3,3,3,this));
-			System.out.println("Message recieved : "+ message);
+	public void addGamelistener(GameListener lis){
+		listeners.add(lis);
+	}
+	
+	public void publishGameEvent(String message){
+		for(GameListener l : listeners){
+			l.onGameEvent(message);
 		}
 	}
 
-	@Override
-	public void registerObserver(Observer o) {
-		// TODO Auto-generated method stub
-		observers.add(o);
+	public List<PropertySquare> getPropertySquares() {
+		return propertySquares;
 	}
 
-	@Override
-	public void removeObserver(Observer o) {
-		// TODO Auto-generated method stub
-		
+	public void setPropertySquares(List<PropertySquare> propertySquares) {
+		this.propertySquares = propertySquares;
 	}
 
-	@Override
-	public void notifyObservers() {
-		// TODO Auto-generated method stub
-		for(Observer o: observers){
-			o.update(message);
-		}
+	public List<RailroadSquare> getRailRoadSquares() {
+		return railRoadSquares;
 	}
+
+	public void setRailRoadSquares(List<RailroadSquare> railRoadSquares) {
+		this.railRoadSquares = railRoadSquares;
+	}
+
+	public List<UtilitySquare> getUtilitySquares() {
+		return utilitySquares;
+	}
+
+	public void setUtilitySquares(List<UtilitySquare> utilitySquares) {
+		this.utilitySquares = utilitySquares;
+	}
+	
+	
+	
 }

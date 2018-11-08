@@ -1,11 +1,15 @@
 package game.square;
 
+import java.util.List;
+
 import game.Player;
+import game.building.Building;
 
 public class PropertySquare extends Square {
 	private int rent;
 	private int price;
 	private Player owner;
+	private List<Building> buildings;
 	
 	public PropertySquare(String name, int number, int rent, int price, Player owner) {
 		super(name, number);
@@ -31,6 +35,18 @@ public class PropertySquare extends Square {
 		return owner;
 	}
 	
+	public List<Building> getBuildings() {
+		return buildings;
+	}
+
+	public void setBuildings(List<Building> buildings) {
+		this.buildings = buildings;
+	}
+
+	public void setOwner(Player owner) {
+		this.owner = owner;
+	}
+
 	@Override
 	public void executeAction() {
 		// TODO Auto-generated method stub

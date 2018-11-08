@@ -3,9 +3,7 @@ import java.util.Random;
 
 public class SpeedDie extends Dice {
 
-	public static final int SPEED_MAX = 5;
-	int MrMonopoly = 4;
-	int BusIcon = 5;
+	public static final int SPEED_MAX = 6;
 
 	public SpeedDie() {
 
@@ -20,17 +18,8 @@ public class SpeedDie extends Dice {
 	@Override
 	public int getFaceValue() {
 		// TODO Auto-generated method stub
-
-		if(faceValue == 4) {
-			//to be implemented
-			//move to the next unowned property
-			//if all of the properties are owned
-			//move ahead to the first property on which you need to pay rent
-			return 0;
-		} else if (faceValue == 5) {
-			//to be implemented
-			//move to the nearest chance or community chest
-			return 0;
+		if(faceValue==6){
+			return 5;
 		}
 		return faceValue;
 	}

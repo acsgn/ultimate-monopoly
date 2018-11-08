@@ -4,19 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ObserverPattern.Observer;
-import game.dice.Dice;
 
 public class MonopolyGame {
 	private List<Player> players; 
-	private Dice[] dices;
 	private Board board; 
-	
+	private Player currentPlayer; 
 	public MonopolyGame(){
 		players = new ArrayList<>();
-		dices = new Dice[3];
 		board = new Board();
-		Player player = new Player("Waterfall", 3200, dices, board);
-		players.add(player);
+		currentPlayer = new Player("Waterfall", 3200, board);
+		players.add(currentPlayer);
 	}
 	public void runGame(){
 		for(Player p : players){
@@ -29,10 +26,22 @@ public class MonopolyGame {
 	public void setPlayers(List<Player> players) {
 		this.players = players;
 	}
+	/*public Board getboard(){
+		return board;
+	}*/
 	
-	public void setObserver(Observer ob){
-		players.get(0).registerObserver(ob);
-
+	public void executeMessage(String message){
+		if(message.equals("Roll Dice")){
+			
+		}else if(message.equals("End Turn")){
+			
+		}else if(message.equals("Buy Property")){
+			
+		}else if(message.equals("Build/Sell Building")){
+			
+		}else if(message.equals("End Game")){
+			
+		}
 	}
 	
 }

@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.ImageIcon;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -13,19 +14,12 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
+import game.Controller;
 
-import ObserverPattern.Observer;
-import ObserverPattern.Subject;
-
-public class UIScreen extends JFrame implements Subject {
+public class UIScreen extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private static final String boardImage = "resources/board.png";
-
-	/// obeservers
-	private ArrayList<Observer> observers;
 
 	private String message;
 	private JTextArea infoText;
@@ -54,17 +48,12 @@ public class UIScreen extends JFrame implements Subject {
 	/**
 	 * Create the panel.
 	 */
-	public UIScreen(Observer o) {
+	public UIScreen(Controller controller) {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
 		setUndecorated(true);
 		setLayout(null);
-
-		/// Adding the observer
-		observers = new ArrayList<>();
-		this.registerObserver(o);
-		///
 
 		JComponent board = new JComponent() {
 			private static final long serialVersionUID = 1L;
@@ -134,7 +123,7 @@ public class UIScreen extends JFrame implements Subject {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "ROLLDICE";
-				notifyObservers();
+				controller.dispatchMessage(message);
 			}
 		});
 
@@ -143,7 +132,7 @@ public class UIScreen extends JFrame implements Subject {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "BUYPROP";
-				notifyObservers();
+				controller.dispatchMessage(message);
 			}
 		});
 
@@ -152,7 +141,7 @@ public class UIScreen extends JFrame implements Subject {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "BUILDING";
-				notifyObservers();
+				controller.dispatchMessage(message);
 			}
 		});
 
@@ -161,7 +150,7 @@ public class UIScreen extends JFrame implements Subject {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "ENDTURN";
-				notifyObservers();
+				controller.dispatchMessage(message);
 			}
 		});
 
@@ -170,7 +159,7 @@ public class UIScreen extends JFrame implements Subject {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "ENDGAME";
-				notifyObservers();
+				controller.dispatchMessage(message);
 				dispose();
 			}
 		});
@@ -189,29 +178,6 @@ public class UIScreen extends JFrame implements Subject {
 
 	private int getButtonY(int i) {
 		return controlPaneHeight - (i * controlPaneButtonHeight + i * controlPaneYSpace);
-	}
-
-	@Override
-	public void registerObserver(Observer o) {
-		observers.add(o);
-	}
-
-	@Override
-	public void removeObserver(Observer o) {
-		observers.remove(o);
-	}
-
-	@Override
-	public void notifyObservers() {
-		for (Observer o : observers) {
-			o.update(message);
-		}
-	}
-
-	public void receiveMessage(String message) {
-		// Should parse message
-		infoText.insert(message + "\n", 0);
-		playerText.insert(message, 0);
 	}
 
 }

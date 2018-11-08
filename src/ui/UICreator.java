@@ -11,16 +11,13 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import ObserverPattern.Observer;
-import ObserverPattern.Subject;
+import game.Controller;
 
 public class UICreator extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -33,8 +30,9 @@ public class UICreator extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @param screen 
 	 */
-	public UICreator(Controller controller) {
+	public UICreator(Controller controller, UIScreen screen) {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
@@ -142,8 +140,9 @@ public class UICreator extends JFrame {
 					boolean flag = isLegitIP(IP);
 					if (flag) {
 						message = "CLIENT/" + IP;
-						dispose();
 						controller.dispatchMessage(message);
+						dispose();
+						screen.setVisible(true);
 					} else
 						showErrorMessage();
 				}
