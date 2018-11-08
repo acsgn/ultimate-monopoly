@@ -30,7 +30,8 @@ public class UICreator extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @param screen 
+	 * 
+	 * @param screen
 	 */
 	public UICreator(Controller controller, UIScreen screen) {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
@@ -107,7 +108,7 @@ public class UICreator extends JFrame {
 
 		serverButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				slider.setEnabled(true);
 				IPTextField.setEnabled(false);
 			}
@@ -115,7 +116,7 @@ public class UICreator extends JFrame {
 
 		clientButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				slider.setEnabled(false);
 				IPTextField.setEnabled(true);
 			}
@@ -131,6 +132,7 @@ public class UICreator extends JFrame {
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println(e.getActionCommand());
 				if (buttonGroup.isSelected(serverButton.getModel())) {
 					message = "SERVER/" + slider.getValue();
 					controller.dispatchMessage(message);
@@ -141,10 +143,12 @@ public class UICreator extends JFrame {
 					if (flag) {
 						message = "CLIENT/" + IP;
 						controller.dispatchMessage(message);
-						dispose();
-						screen.setVisible(true);
 					} else
 						showErrorMessage();
+					if (flag) {
+						dispose();
+						screen.setVisible(true);
+					}
 				}
 
 			}
@@ -172,7 +176,8 @@ public class UICreator extends JFrame {
 			}
 
 			private void showErrorMessage() {
-				JOptionPane pane = new JOptionPane("Please enter a valid IP Address (e.g. 192.168.1.2) !", JOptionPane.ERROR_MESSAGE);
+				JOptionPane pane = new JOptionPane("Please enter a valid IP Address (e.g. 192.168.1.2) !",
+						JOptionPane.ERROR_MESSAGE);
 				pane.createDialog("Error").setVisible(true);
 			}
 		});

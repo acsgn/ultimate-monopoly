@@ -1,24 +1,29 @@
 package network;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 public class Network {
 
+	private Network self;
 	private MessageSocket mS;
+	private Thread server;
 
 	public Network(int numOfPlayers) {
-		Thread server = new Thread(new Server(numOfPlayers));
+		server = new Thread(new Server(numOfPlayers));
 		server.start();
 		try {
 			mS = new Client("localhost").getMessageSocket();
-		} catch (UnknownHostException e) {
-			System.err.println("Socket Connection Error");
+		} catch (Exception e) {
 		}
+		self = this;
 	}
 
-	public Network(String IPAddress) throws UnknownHostException {
-		mS = new Client(IPAddress).getMessageSocket();
+	public Network(String IPAddress) {
+		try {
+			mS = new Client(IPAddress).getMessageSocket();
+		} catch (Exception e) {
+		}
+		self = this;
 	}
 
 	public void sendMessageToOthers(String message) {
@@ -32,6 +37,16 @@ public class Network {
 	public void disconnect() {
 		mS.sendMessage("CLOSE");
 		mS.close();
+		if (server != null)
+			try {
+				server.join();
+			} catch (InterruptedException e) {
+				System.err.println("Server Close Error");
+			}
+	}
+
+	public Network getInstance() {
+		return self;
 	}
 
 }

@@ -149,8 +149,6 @@ public class UIScreen extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				message = "ENDTURN";
-				controller.dispatchMessage(message);
 			}
 		});
 

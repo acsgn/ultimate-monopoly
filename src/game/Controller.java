@@ -7,7 +7,7 @@ public class Controller {
 		this.monopolyGame = monopolyGame;
 	}
 	
-	public void dispatchMessage(String message){
+	public void dispatchMessage(String message) {
 		monopolyGame.executeMessage(message);
 	}
 	
