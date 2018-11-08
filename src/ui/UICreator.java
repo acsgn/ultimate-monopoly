@@ -4,6 +4,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import java.awt.Font;
@@ -13,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -20,11 +22,10 @@ import javax.swing.SwingConstants;
 import ObserverPattern.Observer;
 import ObserverPattern.Subject;
 
-public class UICreator extends JFrame implements Subject {
+public class UICreator extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final String ultimateMonopoly = "resources/ultimate_monopoly.jpg";
 
-	private ArrayList<Observer> observers;
 	private String message;
 
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -33,17 +34,12 @@ public class UICreator extends JFrame implements Subject {
 	/**
 	 * Create the frame.
 	 */
-	public UICreator(Observer o) {
+	public UICreator(Controller controller) {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		setBounds((screenWidth - 636) / 2, (screenHeight - 450) / 2, 636, 487);
 		getContentPane().setLayout(null);
-
-		/// Adding the observer
-		observers = new ArrayList<>();
-		this.registerObserver(o);
-		///
 
 		JLabel image = new JLabel();
 		image.setIcon(new ImageIcon(ultimateMonopoly));
@@ -139,37 +135,49 @@ public class UICreator extends JFrame implements Subject {
 			public void actionPerformed(ActionEvent e) {
 				if (buttonGroup.isSelected(serverButton.getModel())) {
 					message = "SERVER/" + slider.getValue();
+					controller.dispatchMessage(message);
+					dispose();
 				} else {
-					message = "CLIENT/" + IPTextField.getText();
+					String IP = IPTextField.getText();
+					boolean flag = isLegitIP(IP);
+					if (flag) {
+						message = "CLIENT/" + IP;
+						dispose();
+						controller.dispatchMessage(message);
+					} else
+						showErrorMessage();
 				}
-				notifyObservers();
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
+
+			}
+
+			private boolean isLegitIP(String IP) {
+				if (IP == null) {
+					return false;
+				} else {
+					String[] areas = IP.split("\\.");
+					if (areas.length != 4)
+						return false;
+					for (String ip : areas) {
+						int number = 0;
+						try {
+							number = Integer.parseInt(ip);
+						} catch (NumberFormatException numberException) {
+							return false;
+						}
+						if (number < 1 || number > 255) {
+							return false;
+						}
+					}
 				}
-				dispose();
+				return true;
+			}
+
+			private void showErrorMessage() {
+				JOptionPane pane = new JOptionPane("Please enter a valid IP Address (e.g. 192.168.1.2) !", JOptionPane.ERROR_MESSAGE);
+				pane.createDialog("Error").setVisible(true);
 			}
 		});
 
 	}
 
-	@Override
-	public void registerObserver(Observer o) {
-		observers.add(o);
-	}
-
-	@Override
-	public void removeObserver(Observer o) {
-		observers.remove(o);
-	}
-
-	@Override
-	public void notifyObservers() {
-		for (Observer o : observers) {
-			System.out.println(message);
-			o.update(message);
-		}
-	}
-	
 }
