@@ -5,6 +5,7 @@ import java.util.List;
 
 import game.building.Building;
 import game.card.Card;
+import game.dice.SingletonDice;
 import game.square.PropertySquare;
 import game.square.RailroadSquare;
 import game.square.Square;
@@ -15,7 +16,7 @@ public class Player{
 	private String name;
 	private int money;
 	private Square location;
-	Board board; 
+	private Board board; 
 	boolean inJail; 
 	boolean isBankrupt; 
 	private List<PropertySquare> propertySquares;
@@ -32,14 +33,19 @@ public class Player{
 	}
 	
 	public void play(){
-		
+		List<Integer> diceRolls = rollDice();
+		move(diceRolls);
 		
 		//location.executeAction(this);
 	}
-	public int rollDice(){
-		return 0;
+	public List<Integer> rollDice(){
+		SingletonDice.getInstance().rollDice();
+		return SingletonDice.getInstance().getFaceValues();
 	}
-	public void move(){
+	public void move(List<Integer> diceRolls){
+		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
+		// Now we just sum the first two regular dice/ 
+		int sum = diceRolls.get(0)+ diceRolls.get(1);
 		
 	}
 	public Square getLocation(){
@@ -55,11 +61,19 @@ public class Player{
 		return this.propertySquares;
 	}
 	public boolean payRent(Square s){
-		message = "You paid Rent";
-		publishGameEvent(message);
-		return false;
+		//publishGameEvent(message);
+		int rent =0;
+		if(s instanceof PropertySquare){
+			rent = ((PropertySquare)s).getRent();
+		}else if(s instanceof RailroadSquare){
+			rent = ((RailroadSquare)s).getRent();
+		}else if(s instanceof UtilitySquare){
+			rent = ((UtilitySquare)s).getRent();
+		}
+		return reduceMoney(rent);
 
 	}
+
 	public void collectRent(int rent){
 		money+= rent;
 	}
