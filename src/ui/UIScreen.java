@@ -22,6 +22,7 @@ public class UIScreen extends JFrame implements GameListener{
 	private static final long serialVersionUID = 1L;
 	private static final String boardImage = "resources/board.png";
 
+
 	private String message;
 	private JTextArea infoText;
 	private JTextArea playerText;
@@ -45,6 +46,8 @@ public class UIScreen extends JFrame implements GameListener{
 
 	private int screenX = (screenWidth - screenHeight - controlPaneWidth) / 2;
 	private int screenY = 0;
+	
+	private Image board = new ImageIcon(boardImage).getImage().getScaledInstance(screenHeight, -1, Image.SCALE_SMOOTH);
 
 	/**
 	 * Create the panel.
@@ -56,16 +59,14 @@ public class UIScreen extends JFrame implements GameListener{
 		setUndecorated(true);
 		setLayout(null);
 
-		JComponent board = new JComponent() {
+		JComponent boardComponent = new JComponent() {
 			private static final long serialVersionUID = 1L;
-			Image board = new ImageIcon(boardImage).getImage().getScaledInstance(screenHeight, -1, Image.SCALE_SMOOTH);
-
 			public void paint(Graphics g) {
 				g.drawImage(board, 0, 0, this);
 			}
 		};
-		board.setBounds(screenX, screenY, screenHeight, screenHeight);
-		add(board);
+		boardComponent.setBounds(screenX, screenY, screenHeight, screenHeight);
+		add(boardComponent);
 
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(null);
