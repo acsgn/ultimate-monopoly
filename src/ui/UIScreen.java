@@ -79,7 +79,6 @@ public class UIScreen extends JFrame implements GameListener{
 		playerArea.setLayout(null);
 		playerText = new JTextArea();
 		playerText.setEditable(false);
-		updateTextArea(playerText);
 		JScrollPane playerScroll = new JScrollPane(playerText);
 		playerScroll.setBounds(controlPaneXSpace, 2 * controlPaneYSpace, controlPaneAreaWidth - 2 * controlPaneXSpace,
 				controlPaneAreaHeight - 2 * controlPaneYSpace);
@@ -94,7 +93,6 @@ public class UIScreen extends JFrame implements GameListener{
 
 		infoText = new JTextArea();
 		infoText.setEditable(false);
-		updateTextArea(infoText);
 		JScrollPane infoArea = new JScrollPane(infoText);
 		infoArea.setBounds(controlPaneXSpace, controlPaneAreaHeight + controlPaneButtonHeight + 3 * controlPaneYSpace,
 				controlPaneAreaWidth, controlPaneAreaHeight);
@@ -177,11 +175,6 @@ public class UIScreen extends JFrame implements GameListener{
 	 * 
 	 * @param playerText
 	 */
-	private void updateTextArea(JTextArea tA) {
-		for (int i = 0; i < 20; i++) {
-			tA.insert("Deneme " + i + "\n", 0);
-		}
-	}
 
 	private int getButtonY(int i) {
 		return controlPaneHeight - (i * controlPaneButtonHeight + i * controlPaneYSpace);
