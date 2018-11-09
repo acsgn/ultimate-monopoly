@@ -4,6 +4,7 @@ import java.util.List;
 
 import game.Player;
 import game.building.Building;
+import game.strategy.RentStrategyFactory;
 
 public class PropertySquare extends Square {
 	private int rent;
@@ -20,6 +21,7 @@ public class PropertySquare extends Square {
 
 	//The rent system is prone to change
 	public int getRent() {
+		rent = RentStrategyFactory.getInstance().getStrategy(this).getRent(this);
 		return rent;
 	}
 
