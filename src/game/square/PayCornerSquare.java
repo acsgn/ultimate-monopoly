@@ -1,5 +1,7 @@
 package game.square;
 
+import game.Player;
+
 public class PayCornerSquare extends Square {
 	private int salary;
 	private boolean landedOn;
@@ -30,24 +32,12 @@ public class PayCornerSquare extends Square {
 
 
 	@Override
-	public void executeAction() {
+	public void executeAction(Player player) {
 		// TODO Auto-generated method stub
-		if (super.getName()=="Bonus") {
-			if(landedOn) {
-				salary=300;
-			} else {
-				salary=250;
-			}
-		} else if (super.getName()=="Go") {
-			salary=200;
-		} else if (super.getName()=="Pay Day") {
-			/*if(dice.isEven()) {
-				salary=400;
-			} else {
-				salary=300;
-			}*/
-		}
+		
 	}
+
+
 	
 	
 }

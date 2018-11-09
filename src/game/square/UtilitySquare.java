@@ -32,14 +32,18 @@ public class UtilitySquare extends Square {
 	public Player getOwner() {
 		return owner;
 	}
-	
+
 	@Override
-	public void executeAction() {
+	public void executeAction(Player player) {
 		// TODO Auto-generated method stub
-		if(owner==null) {
-			// The player can buy  the Square; 
-		} else {
-			// The player has to pay Rent; 
+		if(owner==null){
+			// We will send a message to UI to activate the Buy Property Button
+			// So we will handle the process here. Then if the button is clicked the player.buySquare(location)
+			// will be called. So here we only send message to UI
+		}else{
+			player.payRent(this);
 		}
 	}
+	
+	
 }

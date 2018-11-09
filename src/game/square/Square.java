@@ -1,5 +1,7 @@
 package game.square;
 
+import game.Player;
+
 public abstract class Square {
 	private String name;
 	private int number;
@@ -18,7 +20,5 @@ public abstract class Square {
 		return number;
 	}
 	
-	public void executeAction() {
-		
-	}
+	public abstract void executeAction(Player player);
 }

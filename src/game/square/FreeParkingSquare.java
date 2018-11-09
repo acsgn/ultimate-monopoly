@@ -1,5 +1,7 @@
 package game.square;
 
+import game.Player;
+
 public class FreeParkingSquare extends Square {
 	
 	public FreeParkingSquare(String name, int number) {
@@ -7,10 +9,11 @@ public class FreeParkingSquare extends Square {
 	}
 
 	@Override
-	public void executeAction() {
+	public void executeAction(Player player) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	
 	
 }

@@ -32,14 +32,12 @@ public class RailroadSquare extends Square {
 	public Player getOwner() {
 		return owner;
 	}
-	
+
 	@Override
-	public void executeAction() {
+	public void executeAction(Player player) {
 		// TODO Auto-generated method stub
-		if(owner==null) {
-			// The player can buy the square. 
-		} else {
-			// The player has to pay rent to the owner. 
-		}
+		
 	}
+	
+	
 }

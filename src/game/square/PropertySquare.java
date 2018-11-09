@@ -12,9 +12,8 @@ public class PropertySquare extends Square {
 	private Player owner;
 	private List<Building> buildings;
 	
-	public PropertySquare(String name, int number, int rent, int price, Player owner) {
+	public PropertySquare(String name, int number, int price, Player owner) {
 		super(name, number);
-		this.rent = rent;
 		this.price = price;
 		this.owner = owner;
 	}
@@ -50,12 +49,16 @@ public class PropertySquare extends Square {
 	}
 
 	@Override
-	public void executeAction() {
+	public void executeAction(Player player) {
 		// TODO Auto-generated method stub
-		/*if(owner==null) {
-			buySquare(super.getName());
-		} else {
-			payRent(super.getName());
-		}*/
+		if(owner==null){
+			// We will send a message to UI to activate the Buy Property Button
+			// So we will handle the process here. Then if the button is clicked the player.buySquare(location)
+			// will be called. So here we only send message to UI
+		}else{
+			player.payRent(this);
+		}
 	}
+
+	
 }
