@@ -3,6 +3,7 @@ package ui;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -14,9 +15,11 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import game.Controller;
 import game.GameListener;
+import game.Player;
 
 public class UIScreen extends JFrame implements GameListener{
 	private static final long serialVersionUID = 1L;
@@ -96,7 +99,11 @@ public class UIScreen extends JFrame implements GameListener{
 		infoArea.setBounds(controlPaneXSpace, controlPaneAreaHeight + controlPaneButtonHeight + 3 * controlPaneYSpace,
 				controlPaneAreaWidth, controlPaneAreaHeight);
 		controlPanel.add(infoArea);
-
+		////// JCombo Box
+		JComboBox propertiesList = new JComboBox();
+		propertiesList.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
+		controlPanel.add(propertiesList);
+		/////
 		JButton buildingButton = new JButton("Build/Sell Building");
 		buildingButton.setBounds(controlPaneXSpace, getButtonY(4), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(buildingButton);
@@ -124,16 +131,15 @@ public class UIScreen extends JFrame implements GameListener{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				message = "ROLLDICE";
+				message = "UISCREEN/ROLLDICE";
 				controller.dispatchMessage(message);
 			}
 		});
 
 		buyPropertyButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				message = "BUYPROP";
+				message = "UISCREEN/BUYPROPERTY";
 				controller.dispatchMessage(message);
 			}
 		});
@@ -142,7 +148,8 @@ public class UIScreen extends JFrame implements GameListener{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				message = "BUILDING";
+				String squareName = (String) propertiesList.getSelectedItem();
+				message = "UISCREEN/BUYBUILDING,"+squareName;
 				controller.dispatchMessage(message);
 			}
 		});
@@ -182,7 +189,14 @@ public class UIScreen extends JFrame implements GameListener{
 
 	@Override
 	public void onGameEvent(String message) {
-		
+		String[] parsed = message.split("/");
+		switch(parsed[0]){
+		case "DOMAIN": 
+			switch(parsed[1]){
+			case "ACTION":
+				infoText.append(parsed[2]);
+			}
+		}
 	}
 
 }
