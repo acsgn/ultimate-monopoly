@@ -7,21 +7,21 @@ import network.Network;
 
 public class MonopolyGame {
 	private List<Player> players;
-	private Board board;
+	//private Board board;
 	private Player currentPlayer;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
-		board = new Board();
-		currentPlayer = new Player("Waterfall", 3200, board);
+		//board = new Board();
+		currentPlayer = new Player("Waterfall", 3200);
 		players.add(currentPlayer);
 	}
 
-	public void runGame() {
+	/*public void runGame() {
 		for (Player p : players) {
 			p.play();
 		}
-	}
+	}*/
 
 	public List<Player> getPlayers() {
 		return players;
@@ -37,8 +37,6 @@ public class MonopolyGame {
 	public void executeMessage(String message) {
 		String[] parsed = message.split("/");
 		switch(parsed[0]) {
-		
-		
 		/*case "SERVER": 
 			Network server = new Network(Integer.parseInt(parsed[1]));
 			break;
@@ -47,6 +45,11 @@ public class MonopolyGame {
 			if (!client.isConnected()) {
 				// somehow inform the game creator
 			}*/
+		case "UISCREEN":
+			switch(parsed[1]){
+				case "ROLLDICE":
+					currentPlayer.play();
+			}
 		}
 	}
 

@@ -16,7 +16,7 @@ public class Player{
 	private String name;
 	private int money;
 	private Square location;
-	private Board board; 
+	//private Board board; 
 	boolean inJail; 
 	boolean isBankrupt; 
 	private List<PropertySquare> propertySquares;
@@ -25,17 +25,31 @@ public class Player{
 	private ArrayList<GameListener> listeners;
 	private String message;
 	
-	public Player(String name, int money, Board board){
+	public Player(String name, int money){
 		this.name = name; 
 		this.money = money;
-		this.board = board; 
+		//this.board = board; 
 		listeners = new ArrayList<>();
+		location = Board.getInstance().getSquare(0);
 	}
 	
 	public void play(){
 		List<Integer> diceRolls = rollDice();
+		//move(diceRolls);
+		//location.executeAction();
+		message = "DOMAIN/ACTION/";
+		message += "Regular Die 1: "+diceRolls.get(0)+"\n";
+		message += "Regular Die 2: "+diceRolls.get(1)+"\n";
+		if(diceRolls.get(2)==4){
+			message += "Speed Die : BusIcon\n";
+		}else if(diceRolls.get(2)==5){
+			message += "Speed Die : Mr.MonopolyBonusMove\n";
+		}else{
+			message += "Speed Die : "+diceRolls.get(2) +"\n";
+		}
+		publishGameEvent(message);
 		move(diceRolls);
-		
+
 		//location.executeAction(this);
 	}
 	public List<Integer> rollDice(){
@@ -46,7 +60,13 @@ public class Player{
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/ 
 		int sum = diceRolls.get(0)+ diceRolls.get(1);
-		
+		int newLocationIndex = (location.getNumber()+sum) % Board.getInstance().getNoOfSquares();
+		location = Board.getInstance().getSquare(newLocationIndex);
+		message = "";
+		message+= "DOMAIN/";
+		message+= "MOVE/";
+		message+= newLocationIndex;
+		publishGameEvent(message);
 	}
 	public Square getLocation(){
 		return location;
@@ -149,6 +169,10 @@ public class Player{
 
 	public void setUtilitySquares(List<UtilitySquare> utilitySquares) {
 		this.utilitySquares = utilitySquares;
+	}
+	
+	public void setInJail(boolean inJail){
+		this.inJail = inJail;
 	}
 	
 }

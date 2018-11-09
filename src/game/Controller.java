@@ -10,6 +10,10 @@ public class Controller {
 	public void dispatchMessage(String message) {
 		monopolyGame.executeMessage(message);
 	}
+
+	public MonopolyGame getMonopolyGame() {
+		return monopolyGame;
+	}
 	
 	//Who should control the game (the controller or MonopolyGame).
 	// I mean who sould call the player funcitons to ececute based on the message received from UI. 
