@@ -132,7 +132,6 @@ public class UICreator extends JFrame {
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(e.getActionCommand());
 				if (buttonGroup.isSelected(serverButton.getModel())) {
 					message = "SERVER/" + slider.getValue();
 					controller.dispatchMessage(message);
@@ -177,9 +176,7 @@ public class UICreator extends JFrame {
 			}
 
 			private void showErrorMessage() {
-				JOptionPane pane = new JOptionPane("Please enter a valid IP Address (e.g. 192.168.1.2) !",
-						JOptionPane.ERROR_MESSAGE);
-				pane.createDialog("Error").setVisible(true);
+				JOptionPane.showMessageDialog(UICreator.this,  "Please enter a valid IP Address (e.g. 192.168.1.2) !", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		});
 

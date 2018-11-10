@@ -32,9 +32,6 @@ public class PathFinder {
 	private static final int innerToMiddleFirstTransitLocation = 9;
 	private static final int innerToMiddleSecondTransitLocation = 21;
 
-	private static final int transitMiddleOuterStep = 362;
-	private static final int transitMiddleInnerStep = 357;
-
 	private double scaleFactor;
 
 	private Track outerTrack;
@@ -64,21 +61,21 @@ public class PathFinder {
 				getScaled(innerTrackStepDifference), innerTrackCornerDifference);
 
 		middleToOuterFirst = new TransitStation(middleTrack, middleToOuterFirstTransitLocation, outerTrack,
-				outerToMiddleFirstTransitLocation, getScaled(transitMiddleOuterStep));
+				outerToMiddleFirstTransitLocation);
 		middleToOuterSecond = new TransitStation(middleTrack, middleToOuterSecondTransitLocation, outerTrack,
-				outerToMiddleSecondTransitLocation, getScaled(transitMiddleOuterStep));
+				outerToMiddleSecondTransitLocation);
 		middleToInnerFirst = new TransitStation(middleTrack, middleToInnerFirstTransitLocation, innerTrack,
-				innerToMiddleFirstTransitLocation, getScaled(transitMiddleInnerStep));
+				innerToMiddleFirstTransitLocation);
 		middleToInnerSecond = new TransitStation(middleTrack, middleToInnerSecondTransitLocation, innerTrack,
-				innerToMiddleSecondTransitLocation, getScaled(transitMiddleInnerStep));
+				innerToMiddleSecondTransitLocation);
 		outerToMiddleFirst = new TransitStation(outerTrack, outerToMiddleFirstTransitLocation, middleTrack,
-				middleToOuterFirstTransitLocation, getScaled(transitMiddleOuterStep));
+				middleToOuterFirstTransitLocation);
 		outerToMiddleSecond = new TransitStation(outerTrack, outerToMiddleSecondTransitLocation, middleTrack,
-				middleToOuterSecondTransitLocation, getScaled(transitMiddleOuterStep));
+				middleToOuterSecondTransitLocation);
 		innerToMiddleFirst = new TransitStation(innerTrack, innerToMiddleFirstTransitLocation, middleTrack,
-				middleToInnerFirstTransitLocation, getScaled(transitMiddleInnerStep));
+				middleToInnerFirstTransitLocation);
 		innerToMiddleSecond = new TransitStation(innerTrack, innerToMiddleSecondTransitLocation, middleTrack,
-				middleToInnerSecondTransitLocation, getScaled(transitMiddleInnerStep));
+				middleToInnerSecondTransitLocation);
 
 	}
 
@@ -90,6 +87,7 @@ public class PathFinder {
 			Path path = findPathOnSameTrack(location, transitStation.fromLocation, track);
 			path.mergePaths(transitStation.getPath());
 			path.mergePaths(findPathOnSameTrack(transitStation.toLocation, newLocation, newTrack));
+			return path;
 		} else {
 			TransitStation transitStation = findTransitStation(track, location, middleTrack);
 			TransitStation secondTransitStation = findTransitStation(middleTrack, transitStation.toLocation, newTrack);
@@ -98,33 +96,19 @@ public class PathFinder {
 			path.mergePaths(findPathOnSameTrack(transitStation.toLocation, secondTransitStation.fromLocation, middleTrack));
 			path.mergePaths(secondTransitStation.getPath());
 			path.mergePaths(findPathOnSameTrack(secondTransitStation.toLocation, newLocation, newTrack));
+			return path;
 		}
-		return null;
 	}
 
 	private Path findPathOnSameTrack(int location, int newLocation, Track track) {
 		Path path = new Path(scaleFactor);
-		while (location != newLocation) {
-			if (location < track.cornerDifference)
-				path.addLine(track.downRightCorner - location * track.stepDistance, track.downRightCorner,
-						track.downRightCorner - (location + 1) * track.stepDistance, track.downRightCorner);
-			else if (location < 2 * track.cornerDifference)
-				path.addLine(track.upLeftCorner,
-						track.upLeftCorner - (2 * track.cornerDifference - location) * track.stepDistance,
-						track.upLeftCorner,
-						track.upLeftCorner - (2 * track.cornerDifference - 1 - location) * track.stepDistance);
-			else if (location < 3 * track.cornerDifference)
-				path.addLine(track.upLeftCorner + (location - 2 * track.cornerDifference) * track.stepDistance,
-						track.upLeftCorner,
-						track.upLeftCorner + (location + 1 - 2 * track.cornerDifference) * track.stepDistance,
-						track.upLeftCorner);
-			else if (location < 4 * track.cornerDifference)
-				path.addLine(track.downRightCorner,
-						track.downRightCorner + (4 * track.cornerDifference - location) * track.stepDistance,
-						track.downRightCorner,
-						track.downRightCorner + (4 * track.cornerDifference - 1 - location) * track.stepDistance);
+		int[] point = track.getLocation(location);
+		do {
 			location = location == 4 * track.cornerDifference - 1 ? 0 : location + 1;
-		}
+			int[] nextPoint = track.getLocation(location);
+			path.addLine(point[0], point[1], nextPoint[0], nextPoint[0]);
+			point = nextPoint;
+		} while (location != newLocation);
 		return path;
 	}
 
@@ -145,14 +129,13 @@ public class PathFinder {
 					return middleToInnerSecond;
 				else
 					return middleToInnerFirst;
-			} else if (newTrack == outerTrack) {
+			} else {
 				if (location > middleToOuterFirst.fromLocation && location < middleToOuterSecond.fromLocation)
 					return middleToOuterSecond;
 				else
 					return middleToOuterFirst;
 			}
 		}
-		return null;
 	}
 
 	private int getScaled(int i) {
@@ -175,6 +158,24 @@ public class PathFinder {
 			this.cornerDifference = cornerDifference;
 		}
 
+		public int[] getLocation(int location) {
+			int[] point = new int[2];
+			if (location < cornerDifference) {
+				point[0] = downRightCorner - location * stepDistance;
+				point[1] = downRightCorner;
+			} else if (location < 2 * cornerDifference) {
+				point[0] = upLeftCorner;
+				point[1] = upLeftCorner - (2 * cornerDifference - location) * stepDistance;
+			} else if (location < 3 * cornerDifference) {
+				point[0] = upLeftCorner + (location - 2 * cornerDifference) * stepDistance;
+				point[1] = upLeftCorner;
+			} else if (location < 4 * cornerDifference) {
+				point[0] = downRightCorner;
+				point[1] = downRightCorner + (4 * cornerDifference - location) * stepDistance;
+			}
+			return point;
+		}
+
 	}
 
 	private class TransitStation {
@@ -183,20 +184,20 @@ public class PathFinder {
 		private int fromLocation;
 		private Track to;
 		private int toLocation;
-		private int step;
 
-		public TransitStation(Track from, int fromLocation, Track to, int toLocation, int step) {
+		public TransitStation(Track from, int fromLocation, Track to, int toLocation) {
 			this.from = from;
 			this.fromLocation = fromLocation;
 			this.to = to;
 			this.toLocation = toLocation;
-			this.step = step;
 		}
 
 		public Path getPath() {
 			Path path = new Path(scaleFactor);
-
-			return null;
+			int[] transitPoint = from.getLocation(fromLocation);
+			int[] nextTransitPoint = to.getLocation(toLocation);
+			path.addLine(transitPoint[0], transitPoint[1], nextTransitPoint[0], nextTransitPoint[1]);
+			return path;
 		}
 
 	}

@@ -97,11 +97,11 @@ public class UIScreen extends JFrame implements GameListener{
 		infoArea.setBounds(controlPaneXSpace, controlPaneAreaHeight + controlPaneButtonHeight + 3 * controlPaneYSpace,
 				controlPaneAreaWidth, controlPaneAreaHeight);
 		controlPanel.add(infoArea);
-		////// JCombo Box
+		
 		JComboBox propertiesList = new JComboBox();
 		propertiesList.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(propertiesList);
-		/////
+		
 		JButton buildingButton = new JButton("Build/Sell Building");
 		buildingButton.setBounds(controlPaneXSpace, getButtonY(4), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(buildingButton);
@@ -126,7 +126,6 @@ public class UIScreen extends JFrame implements GameListener{
 		// Action Listeners
 
 		rollDiceButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "UISCREEN/ROLLDICE";
@@ -143,7 +142,6 @@ public class UIScreen extends JFrame implements GameListener{
 		});
 
 		buildingButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String squareName = (String) propertiesList.getSelectedItem();
@@ -153,14 +151,12 @@ public class UIScreen extends JFrame implements GameListener{
 		});
 
 		endTurnButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
 
 		endGameButton.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "ENDGAME";
@@ -169,12 +165,6 @@ public class UIScreen extends JFrame implements GameListener{
 			}
 		});
 	}
-
-	/**
-	 * Just for demonstration purpose, don't forget to delete this
-	 * 
-	 * @param playerText
-	 */
 
 	private int getButtonY(int i) {
 		return controlPaneHeight - (i * controlPaneButtonHeight + i * controlPaneYSpace);
