@@ -58,7 +58,9 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private Image boardImage = new ImageIcon(boardImagePath).getImage().getScaledInstance(screenHeight, -1,
 			Image.SCALE_SMOOTH);
+
 	private int pieceSize = (int) (screenHeight * 80 / 3000.0);
+	private int initialPieceLocation = (int) (screenHeight * 2432 / 3000.0);
 
 	/**
 	 * Create the panel.
@@ -181,21 +183,19 @@ public class UIScreen extends JFrame implements GameListener {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
 		case "START":
+			createPlayerPiece();
 			setVisible(true);
 			break;
 		case "ACTION":
 			infoText.append(parsed[1]);
-			break;
-		case "PIECE":
-			createPlayerPiece();
 			break;
 		case "COLOR":
 			playerColor = colorTable.get(parsed[1]);
 			playerArea.setBackground(playerColor);
 			break;
 		case "MOVE":
-			Path path = pathFinder.findPath(toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]), toInt(parsed[6]));
-			pieces.get(toInt(parsed[2])).setPath(path);
+			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
+			pieces.get(toInt(parsed[1])).setPath(path);
 			animator.run();
 		}
 	}
@@ -214,6 +214,7 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private void createPlayerPiece() {
 		Piece piece = new Piece();
+		repaint();
 		pieces.add(piece);
 	}
 
@@ -222,18 +223,19 @@ public class UIScreen extends JFrame implements GameListener {
 		private Point lastPoint;
 
 		public Piece() {
+			lastPoint = new Point(initialPieceLocation, initialPieceLocation);
 		}
 
 		public void paint(Graphics g) {
 			g.setColor(playerColor);
 			g.fillRect(screenX + lastPoint.x, lastPoint.y, pieceSize, pieceSize);
-			if (path.hasMoreSteps())
+			if (path != null && path.hasMoreSteps()) {
 				lastPoint = path.nextPosition();
+			}
 		}
 
 		public void setPath(Path path) {
 			this.path = path;
-			lastPoint = path.nextPosition();
 		}
 
 	}

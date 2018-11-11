@@ -18,7 +18,7 @@ public class Player {
 	private String name;
 	private String color;
 	private int money;
-	private int track;
+	private int trackID;
 	private int indexOnTrack;
 	private Square location;
 	// private Board board;
@@ -35,8 +35,8 @@ public class Player {
 		// this.board = board;
 		listeners = new ArrayList<GameListener>();
 		indexOnTrack = 0;
-		track = 2;
-		location = Board.getInstance().getSquare(indexOnTrack, track);
+		trackID = 2;
+		location = Board.getInstance().getSquare(indexOnTrack, trackID);
 	}
 
 	public void setName(String name) {
@@ -90,21 +90,28 @@ public class Player {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
 		int sum = diceRolls.get(0) + diceRolls.get(1);
-		// WE NEED WHOLE NEW MOVE STRATEGY
-		if (sum % 2 != 0) {
-			int noOfSquares = Board.getInstance().getNoOfSquaresOnTrack(track);
-			indexOnTrack += sum;
-			indexOnTrack = indexOnTrack < noOfSquares ? indexOnTrack : indexOnTrack - noOfSquares;
-		}else {
-			
-		}
-			
 
-		// int newLocationIndex = (location.getNumber()+sum) %
-		// Board.getInstance().getNoOfSquares();
-		// location = Board.getInstance().getSquare(newLocationIndex);
-		message = "MOVE/";
-		message += "a";
+		int newIndexOnTrack;
+		if (true) { // sum % 2 != 0
+			int noOfSquares = Board.getInstance().getNoOfSquaresOnTrack(trackID);
+			newIndexOnTrack = indexOnTrack + sum;
+			newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack : newIndexOnTrack - noOfSquares;
+		}
+		// only moves on same track for now
+		/*
+		 * else { int[] transitLocationsOfTrack =
+		 * Board.getInstance().getTransitStationLocationsOnTrack(track); int
+		 * newLocationInTrack = indexOnTrack + sum; for (int i = 0; i <
+		 * transitLocationsOfTrack.length; i++) { if (indexOnTrack <
+		 * transitLocationsOfTrack[i] && newLocationInTrack > transitLocationsOfTrack[i]
+		 * ) {
+		 * 
+		 * } } }
+		 */
+
+		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
+		message = "MOVE/" + 0 + "/";
+		message += trackID + "/" + indexOnTrack + "/" + trackID + "/" + newIndexOnTrack;
 		publishGameEvent(message);
 	}
 
