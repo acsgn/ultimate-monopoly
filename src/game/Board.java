@@ -137,6 +137,7 @@ public class Board {
 		TitleDeed boardwalkTD = new TitleDeed(50, 200, 600, 1400, 1700, 2000, 3000, 200, 200, 200, 200);
 		PropertySquare boardwalk = new PropertySquare("Boardwalk", 40, 400, null);
 		track2.addSquare(boardwalk);
+		//tryy
 		
 	}
 
