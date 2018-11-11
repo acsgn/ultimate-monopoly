@@ -1,15 +1,12 @@
 package ui;
 
-import java.awt.Point;
-
-import javax.swing.JPanel;
+import javax.swing.JFrame;
 
 public class Animator implements Runnable {
 
-	private static long sleepTime = 500;
+	private static long sleepTime = 25;
 
-	private Path path;
-	private JPanel piece;
+	private JFrame panel;
 
 	@Override
 	public void run() {
@@ -18,24 +15,12 @@ public class Animator implements Runnable {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 			}
-			if (path != null && piece != null)
-				if (path.hasMoreSteps()) {
-					Point nextPoint = path.nextPosition();
-					piece.setLocation(nextPoint);
-					piece.repaint();
-				}
+			panel.repaint();				
 		}
 	}
 
-	public Animator() {
-	}
-
-	public void setPath(Path path) {
-		this.path = path;
-	}
-
-	public void setPiece(JPanel piece) {
-		this.piece = piece;
+	public Animator(JFrame panel) {
+		this.panel = panel;
 	}
 
 }

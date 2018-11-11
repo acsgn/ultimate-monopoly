@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -26,7 +27,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
 	private static final String boardImagePath = "resources/board.png";
 
-	private ArrayList<JPanel> pieces = new ArrayList<JPanel>();
+	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
 	private Animator animator;
 	private String message;
@@ -35,6 +36,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private Color playerColor;
 	private Hashtable<String, Color> colorTable;
 	private PathFinder pathFinder;
+	private JLabel board;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -57,7 +59,7 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private Image boardImage = new ImageIcon(boardImagePath).getImage().getScaledInstance(screenHeight, -1,
 			Image.SCALE_SMOOTH);
-	private int pieceSize = (int) (screenHeight*80/3000.0);
+	private int pieceSize = (int) (screenHeight * 80 / 3000.0);
 
 	/**
 	 * Create the panel.
@@ -69,15 +71,15 @@ public class UIScreen extends JFrame implements GameListener {
 		setUndecorated(true);
 		setLayout(null);
 
-		animator = new Animator();
+		animator = new Animator(this);
 		Thread animatorThread = new Thread(animator, "Animator");
 		animatorThread.start();
-		
-		pathFinder = new PathFinder(screenHeight/3000.0);
+
+		pathFinder = new PathFinder(screenHeight / 3000.0);
 
 		createColorTable();
-		
-		JLabel board = new JLabel();
+
+		board = new JLabel();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
 		add(board);
@@ -210,27 +212,41 @@ public class UIScreen extends JFrame implements GameListener {
 	}
 
 	private void createPlayerPiece(String color) {
-		Piece piece = new Piece();
-		piece.setBackground(colorTable.get(color));
-		piece.setSize(pieceSize, pieceSize);
-		add(piece);
-		//piece.repaint();
-		animator.setPiece(piece);
-		animator.setPath(pathFinder.findPath(1, 28, 1, 35));
+		Piece piece = new Piece(colorTable.get(color));
+		piece.setPath(pathFinder.findPath(1, 25, 3, 10));
 		pieces.add(piece);
 	}
-	
-	private class Piece extends JPanel{
-		
-		public Piece() {
-			super();
+
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		for (Piece piece : pieces) {
+			piece.paint(g);
 		}
-		
-		public void setLocation(Point p) {
-			super.setLocation(p);
-			repaint();
+	}
+
+	public class Piece {
+
+		private Path path;
+		private Color color;
+		Point lastPoint;
+
+		public Piece(Color color) {
+			this.color = color;
 		}
-		
+
+		public void paint(Graphics g) {
+			g.setColor(color);
+			g.fillRect(screenX+lastPoint.x, lastPoint.y, pieceSize, pieceSize);
+			if (path.hasMoreSteps())
+				lastPoint = path.nextPosition();
+		}
+
+		public void setPath(Path path) {
+			this.path = path;
+			lastPoint = path.nextPosition();
+		}
+
 	}
 
 }
