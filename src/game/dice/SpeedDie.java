@@ -10,14 +10,12 @@ public class SpeedDie extends Dice {
 	}
 
 	public void roll() {
-		// TODO Auto-generated method stub
 		Random rand = new Random();
 		faceValue = rand.nextInt(SPEED_MAX)+1;
 	}
 
 	@Override
 	public int getFaceValue() {
-		// TODO Auto-generated method stub
 		if(faceValue==6){
 			return 5;
 		}

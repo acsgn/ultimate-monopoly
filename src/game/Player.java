@@ -11,40 +11,43 @@ import game.square.RailroadSquare;
 import game.square.Square;
 import game.square.UtilitySquare;
 
+public class Player {
 
-public class Player{
-	
 	private static final int BEGIN_MONEY = 3200;
-	
+
 	private String name;
 	private String color;
 	private int money;
+	private int track;
+	private int indexOnTrack;
 	private Square location;
-	//private Board board; 
-	boolean inJail; 
-	boolean isBankrupt; 
+	// private Board board;
+	boolean inJail;
+	boolean isBankrupt;
 	private List<PropertySquare> propertySquares;
 	private List<RailroadSquare> railRoadSquares;
 	private List<UtilitySquare> utilitySquares;
 	private ArrayList<GameListener> listeners;
 	private String message;
-	
-	public Player(){
+
+	public Player() {
 		this.money = BEGIN_MONEY;
-		//this.board = board; 
-		listeners = new ArrayList<>();
-		location = Board.getInstance().getSquare(0);
+		// this.board = board;
+		listeners = new ArrayList<GameListener>();
+		indexOnTrack = 0;
+		track = 2;
+		location = Board.getInstance().getSquare(indexOnTrack, track);
 	}
-	
+
 	public void setName(String name) {
-		this.name = name; 
-		message = "NAME/"+name;
+		this.name = name;
+		message = "NAME/" + name;
 		publishGameEvent(message);
 	}
-	
+
 	public void setColor(String color) {
 		this.color = color;
-		message = "COLOR/"+color;
+		message = "COLOR/" + color;
 		publishGameEvent(message);
 	}
 
@@ -58,110 +61,135 @@ public class Player{
 		publishGameEvent(message);
 	}
 
-	public void play(){
+	public void play() {
 		List<Integer> diceRolls = rollDice();
-		//move(diceRolls);
-		//location.executeAction();
+		// move(diceRolls);
+		// location.executeAction();
 		message = "ACTION/";
-		message += "Regular Die 1: "+diceRolls.get(0)+"\n";
-		message += "Regular Die 2: "+diceRolls.get(1)+"\n";
-		if(diceRolls.get(2)==4){
-			message += "Speed Die : BusIcon\n";
-		}else if(diceRolls.get(2)==5){
-			message += "Speed Die : Mr.MonopolyBonusMove\n";
-		}else{
-			message += "Speed Die : "+diceRolls.get(2) +"\n";
+		message += "Regular Die 1: " + diceRolls.get(0) + "\n";
+		message += "Regular Die 2: " + diceRolls.get(1) + "\n";
+		if (diceRolls.get(2) == 4) {
+			message += "Speed Die : Bus Icon\n";
+		} else if (diceRolls.get(2) == 5) {
+			message += "Speed Die : Mr.Monopoly Bonus Move\n";
+		} else {
+			message += "Speed Die: " + diceRolls.get(2) + "\n";
 		}
 		publishGameEvent(message);
 		move(diceRolls);
 
-		//location.executeAction(this);
+		// location.executeAction(this);
 	}
-	public List<Integer> rollDice(){
+
+	public List<Integer> rollDice() {
 		SingletonDice.getInstance().rollDice();
 		return SingletonDice.getInstance().getFaceValues();
 	}
-	public void move(List<Integer> diceRolls){
+
+	public void move(List<Integer> diceRolls) {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
-		// Now we just sum the first two regular dice/ 
-		int sum = diceRolls.get(0)+ diceRolls.get(1);
-		int newLocationIndex = (location.getNumber()+sum) % Board.getInstance().getNoOfSquares();
-		location = Board.getInstance().getSquare(newLocationIndex);
-		message = "";
-		message+= "DOMAIN/";
-		message+= "MOVE/";
-		message+= newLocationIndex;
+		// Now we just sum the first two regular dice/
+		int sum = diceRolls.get(0) + diceRolls.get(1);
+		// WE NEED WHOLE NEW MOVE STRATEGY
+		if (sum % 2 != 0) {
+			int noOfSquares = Board.getInstance().getNoOfSquaresOnTrack(track);
+			indexOnTrack += sum;
+			indexOnTrack = indexOnTrack < noOfSquares ? indexOnTrack : indexOnTrack - noOfSquares;
+		}else {
+			
+		}
+			
+
+		// int newLocationIndex = (location.getNumber()+sum) %
+		// Board.getInstance().getNoOfSquares();
+		// location = Board.getInstance().getSquare(newLocationIndex);
+		message = "MOVE/";
+		message += "a";
 		publishGameEvent(message);
 	}
-	public Square getLocation(){
+
+	public Square getLocation() {
 		return location;
 	}
-	public boolean isInJail(){
+
+	public boolean isInJail() {
 		return inJail;
 	}
-	public boolean isBankrupt(){
+
+	public boolean isBankrupt() {
 		return isBankrupt;
 	}
-	public List<PropertySquare> getProperties(){
+
+	public List<PropertySquare> getProperties() {
 		return this.propertySquares;
 	}
-	public boolean payRent(Square s){
-		//publishGameEvent(message);
-		int rent =0;
-		if(s instanceof PropertySquare){
-			rent = ((PropertySquare)s).getRent();
-		}else if(s instanceof RailroadSquare){
-			rent = ((RailroadSquare)s).getRent();
-		}else if(s instanceof UtilitySquare){
-			rent = ((UtilitySquare)s).getRent();
+
+	public boolean payRent(Square s) {
+		// publishGameEvent(message);
+		int rent = 0;
+		if (s instanceof PropertySquare) {
+			rent = ((PropertySquare) s).getRent();
+		} else if (s instanceof RailroadSquare) {
+			rent = ((RailroadSquare) s).getRent();
+		} else if (s instanceof UtilitySquare) {
+			rent = ((UtilitySquare) s).getRent();
 		}
 		return reduceMoney(rent);
 
 	}
 
-	public void collectRent(int rent){
-		money+= rent;
+	public void collectRent(int rent) {
+		money += rent;
 	}
-	public boolean buySquare(){
+
+	public boolean buySquare() {
 		return false;
 
 	}
-	public boolean passGo(int prevIndex, int newIndex){
+
+	public boolean passGo(int prevIndex, int newIndex) {
 		return false;
 	}
-	public boolean passPayDay(int prevIndex, int newIndex){
+
+	public boolean passPayDay(int prevIndex, int newIndex) {
 		return false;
 
 	}
-	public boolean passBonus(int prevIndex, int newIndex){
+
+	public boolean passBonus(int prevIndex, int newIndex) {
 		return false;
 
 	}
-	
-	public boolean buyBuilding(Building building, PropertySquare propertySquare){
+
+	public boolean buyBuilding(Building building, PropertySquare propertySquare) {
 		return false;
 
 	}
-	public void sellBuilding(Building building, PropertySquare propertySquare){
-		
+
+	public void sellBuilding(Building building, PropertySquare propertySquare) {
+
 	}
-	public void pickCard(Card card){
+
+	public void pickCard(Card card) {
 		card.executeAction();
 	}
-	public boolean reduceMoney(int m){
-		if(money>m){
-			this.money-=m;
+
+	public boolean reduceMoney(int m) {
+		if (money > m) {
+			this.money -= m;
 			return true;
 		}
 		return false;
 	}
-	public void increaseMoney(int m){
-		this.money+=m;
+
+	public void increaseMoney(int m) {
+		this.money += m;
 	}
-	public String getName(){
-		return name; 
+
+	public String getName() {
+		return name;
 	}
-	
+
 	public List<PropertySquare> getPropertySquares() {
 		return propertySquares;
 	}
@@ -185,19 +213,19 @@ public class Player{
 	public void setUtilitySquares(List<UtilitySquare> utilitySquares) {
 		this.utilitySquares = utilitySquares;
 	}
-	
-	public void setInJail(boolean inJail){
+
+	public void setInJail(boolean inJail) {
 		this.inJail = inJail;
 	}
-	
-	public void addGamelistener(GameListener lis){
+
+	public void addGamelistener(GameListener lis) {
 		listeners.add(lis);
 	}
 
-	public void publishGameEvent(String message){
-		for(GameListener l : listeners){
+	public void publishGameEvent(String message) {
+		for (GameListener l : listeners) {
 			l.onGameEvent(message);
 		}
 	}
-	
+
 }

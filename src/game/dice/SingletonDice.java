@@ -1,7 +1,6 @@
 package game.dice;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SingletonDice {
 	private RegularDie regularDie1; 
@@ -28,8 +27,9 @@ public class SingletonDice {
 		regularDie2.roll();
 		speedDie.roll();
 	}
-	public List<Integer> getFaceValues(){
-		List<Integer> diceRolls = new ArrayList<>();
+	
+	public ArrayList<Integer> getFaceValues(){
+		ArrayList<Integer> diceRolls = new ArrayList<Integer>();
 		int r1 = regularDie1.getFaceValue();
 		int r2 = regularDie2.getFaceValue();
 		int r3 = speedDie.getFaceValue();
