@@ -7,21 +7,20 @@ import network.Network;
 
 public class MonopolyGame {
 	private List<Player> players;
-	//private Board board;
+	// private Board board;
 	private Player currentPlayer;
+	private Network network;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
-		//board = new Board();
-		currentPlayer = new Player("Waterfall");
+		// board = new Board();
+		currentPlayer = new Player();
 		players.add(currentPlayer);
 	}
 
-	/*public void runGame() {
-		for (Player p : players) {
-			p.play();
-		}
-	}*/
+	/*
+	 * public void runGame() { for (Player p : players) { p.play(); } }
+	 */
 
 	public List<Player> getPlayers() {
 		return players;
@@ -36,26 +35,34 @@ public class MonopolyGame {
 
 	public void executeMessage(String message) {
 		String[] parsed = message.split("/");
-		switch(parsed[0]) {
-		/*case "SERVER": 
-			Network server = new Network(Integer.parseInt(parsed[1]));
-			break;
-		case "CLIENT":
-			Network client = new Network(parsed[1]);
-			if (!client.isConnected()) {
-				// somehow inform the game creator
-			}*/
+		switch (parsed[0]) {
 		case "UISCREEN":
-			switch(parsed[1]){
-				case "ROLLDICE":
-					currentPlayer.play();
+			switch (parsed[1]) {
+			case "ROLLDICE":
+				currentPlayer.play();
 			}
 		case "UICREATOR":
-			switch(parsed[1] ){
+			switch (parsed[1]) {
+			case "PLAYERNAME":
+				currentPlayer.setName(parsed[2]);
+				break;
 			case "PLAYERCOLOR":
-				currentPlayer.publishGameEvent("DOMAIN/PIECE/"+parsed[2]);
+				currentPlayer.setColor(parsed[2]);
+				break;
+			case "SERVER":
+				network = new Network(Integer.parseInt(parsed[2]));
+				currentPlayer.startGame();
+				break;
+			case "CLIENT":
+				network = new Network(parsed[2]);
+				if (!network.isConnected()) {
+					currentPlayer.networkError();
+					break;
+				}
+				currentPlayer.startGame();
+				break;
 			}
 		}
 	}
-
+	
 }

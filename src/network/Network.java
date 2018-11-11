@@ -5,20 +5,25 @@ public class Network {
 	private Network self;
 	private MessageSocket mS;
 	private Thread server;
-	private boolean isConnected = false;
+	private boolean isConnected = true;
 
 	public Network(int numOfPlayers) {
 		server = new Thread(new Server(numOfPlayers), "Server");
 		server.start();
-		mS = new Client("localhost").getMessageSocket();
-		isConnected = true;
+		try {
+			mS = new Client("localhost").getMessageSocket();
+		} catch (Exception e) {
+		}
 		self = this;
 	}
 
 	public Network(String IPAddress) {
-		mS = new Client(IPAddress).getMessageSocket();
+		try {
+			mS = new Client(IPAddress).getMessageSocket();
+		} catch (Exception e) {
+			isConnected = false;
+		}
 		self = this;
-		isConnected = true;
 	}
 
 	public void sendMessageToOthers(String message) {

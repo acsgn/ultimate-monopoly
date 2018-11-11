@@ -167,9 +167,9 @@ public class UICreator extends JFrame implements GameListener {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				controller.dispatchMessage(message+networkMessage);
-				controller.dispatchMessage(message+"PLAYERNAME/" + name);
-				controller.dispatchMessage(message+"PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
+				controller.dispatchMessage(message + networkMessage);
+				controller.dispatchMessage(message + "PLAYERNAME/" + name);
+				controller.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
 			}
 
 			private boolean isLegitIP(String IP) {
@@ -197,9 +197,12 @@ public class UICreator extends JFrame implements GameListener {
 	public void onGameEvent(String message) {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
-		case "NETWORKDONE":
+		case "START":
 			dispose();
 			break;
+		case "NETWORKERROR":
+			JOptionPane.showMessageDialog(UICreator.this, "No server found on given IP Address!", "Error",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

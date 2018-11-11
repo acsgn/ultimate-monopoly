@@ -17,6 +17,7 @@ public class Player{
 	private static final int BEGIN_MONEY = 3200;
 	
 	private String name;
+	private String color;
 	private int money;
 	private Square location;
 	//private Board board; 
@@ -28,19 +29,40 @@ public class Player{
 	private ArrayList<GameListener> listeners;
 	private String message;
 	
-	public Player(String name){
-		this.name = name; 
+	public Player(){
 		this.money = BEGIN_MONEY;
 		//this.board = board; 
 		listeners = new ArrayList<>();
 		location = Board.getInstance().getSquare(0);
 	}
 	
+	public void setName(String name) {
+		this.name = name; 
+		message = "NAME/"+name;
+		publishGameEvent(message);
+	}
+	
+	public void setColor(String color) {
+		this.color = color;
+		message = "COLOR/"+color;
+		publishGameEvent(message);
+	}
+
+	public void startGame() {
+		message = "START";
+		publishGameEvent(message);
+	}
+
+	public void networkError() {
+		message = "NETWORKERROR";
+		publishGameEvent(message);
+	}
+
 	public void play(){
 		List<Integer> diceRolls = rollDice();
 		//move(diceRolls);
 		//location.executeAction();
-		message = "DOMAIN/ACTION/";
+		message = "ACTION/";
 		message += "Regular Die 1: "+diceRolls.get(0)+"\n";
 		message += "Regular Die 2: "+diceRolls.get(1)+"\n";
 		if(diceRolls.get(2)==4){
@@ -140,16 +162,6 @@ public class Player{
 		return name; 
 	}
 	
-	public void addGamelistener(GameListener lis){
-		listeners.add(lis);
-	}
-	
-	public void publishGameEvent(String message){
-		for(GameListener l : listeners){
-			l.onGameEvent(message);
-		}
-	}
-
 	public List<PropertySquare> getPropertySquares() {
 		return propertySquares;
 	}
@@ -176,6 +188,16 @@ public class Player{
 	
 	public void setInJail(boolean inJail){
 		this.inJail = inJail;
+	}
+	
+	public void addGamelistener(GameListener lis){
+		listeners.add(lis);
+	}
+
+	public void publishGameEvent(String message){
+		for(GameListener l : listeners){
+			l.onGameEvent(message);
+		}
 	}
 	
 }

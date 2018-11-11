@@ -48,13 +48,13 @@ public class PathFinder {
 
 		this.scaleFactor = scaleFactor;
 
-		outerTrack = new Track(OUTER_TRACK, getScaled(outerTrackUpLeftCorner), getScaled(outerTrackDownRightCorner),
+		outerTrack = new Track(getScaled(outerTrackUpLeftCorner), getScaled(outerTrackDownRightCorner),
 				outerTrackCornerDifference);
 
-		middleTrack = new Track(MIDDLE_TRACK, getScaled(middleTrackUpLeftCorner), getScaled(middleTrackDownRightCorner),
+		middleTrack = new Track(getScaled(middleTrackUpLeftCorner), getScaled(middleTrackDownRightCorner),
 				middleTrackCornerDifference);
 
-		innerTrack = new Track(INNER_TRACK, getScaled(innerTrackUpLeftCorner), getScaled(innerTrackDownRightCorner),
+		innerTrack = new Track(getScaled(innerTrackUpLeftCorner), getScaled(innerTrackDownRightCorner),
 				innerTrackCornerDifference);
 
 		middleToOuterFirst = new TransitStation(middleTrack, middleToOuterFirstTransitLocation, outerTrack,
@@ -150,20 +150,14 @@ public class PathFinder {
 		}
 	}
 
-	private int getScaled(int i) {
-		return (int) (i * scaleFactor);
-	}
-
 	private class Track {
 
-		private int ID;
 		private int upLeftCorner;
 		private int downRightCorner;
 		private int stepDistance;
 		private int cornerDifference;
 
-		public Track(int ID, int upLeftCorner, int downRightCorner, int cornerDifference) {
-			this.ID = ID;
+		public Track(int upLeftCorner, int downRightCorner, int cornerDifference) {
 			this.upLeftCorner = upLeftCorner;
 			this.downRightCorner = downRightCorner;
 			this.stepDistance = (int) ((downRightCorner - upLeftCorner) / (double) cornerDifference);
@@ -212,6 +206,10 @@ public class PathFinder {
 			return path;
 		}
 
+	}
+	
+	private int getScaled(int i) {
+		return (int) (i * scaleFactor);
 	}
 
 }

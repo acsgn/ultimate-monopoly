@@ -14,8 +14,8 @@ public class Main {
 		UIScreen screen = new UIScreen(gameController);
 		game.getPlayers().get(0).addGamelistener(screen);
 		UICreator gameCreator = new UICreator(gameController);
+		game.getPlayers().get(0).addGamelistener(gameCreator);
 		gameCreator.setVisible(true);
-		screen.setVisible(true);
 	}
 
 }

@@ -6,7 +6,7 @@ public class Animator implements Runnable {
 
 	private static long sleepTime = 25;
 
-	private JFrame panel;
+	private JFrame frame;
 
 	@Override
 	public void run() {
@@ -15,12 +15,12 @@ public class Animator implements Runnable {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 			}
-			panel.repaint();				
+			frame.repaint();
 		}
 	}
 
-	public Animator(JFrame panel) {
-		this.panel = panel;
+	public Animator(JFrame frame) {
+		this.frame = frame;
 	}
 
 }

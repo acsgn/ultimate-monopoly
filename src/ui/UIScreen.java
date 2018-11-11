@@ -34,9 +34,8 @@ public class UIScreen extends JFrame implements GameListener {
 	private JTextArea infoText;
 	private JTextArea playerText;
 	private Color playerColor;
-	private Hashtable<String, Color> colorTable;
 	private PathFinder pathFinder;
-	private JLabel board;
+	private JPanel playerArea;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -72,14 +71,10 @@ public class UIScreen extends JFrame implements GameListener {
 		setLayout(null);
 
 		animator = new Animator(this);
-		Thread animatorThread = new Thread(animator, "Animator");
-		animatorThread.start();
 
 		pathFinder = new PathFinder(screenHeight / 3000.0);
 
-		createColorTable();
-
-		board = new JLabel();
+		JLabel board = new JLabel();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
 		add(board);
@@ -87,8 +82,7 @@ public class UIScreen extends JFrame implements GameListener {
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(null);
 
-		JPanel playerArea = new JPanel();
-		playerArea.setBackground(playerColor);
+		playerArea = new JPanel();
 		playerArea.setLayout(null);
 		playerText = new JTextArea();
 		playerText.setEditable(false);
@@ -186,35 +180,28 @@ public class UIScreen extends JFrame implements GameListener {
 	public void onGameEvent(String message) {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
-		case "DOMAIN":
-			switch (parsed[1]) {
-			case "ACTION":
-				infoText.append(parsed[2]);
-				break;
-			case "PIECE":
-				createPlayerPiece(parsed[2]);
-			}
+		case "START":
+			setVisible(true);
+			break;
+		case "ACTION":
+			infoText.append(parsed[1]);
+			break;
+		case "PIECE":
+			createPlayerPiece();
+			break;
+		case "COLOR":
+			playerColor = colorTable.get(parsed[1]);
+			playerArea.setBackground(playerColor);
+			break;
+		case "MOVE":
+			Path path = pathFinder.findPath(toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]), toInt(parsed[6]));
+			pieces.get(toInt(parsed[2])).setPath(path);
+			animator.run();
 		}
 	}
 
-	private void createColorTable() {
-		colorTable = new Hashtable<String, Color>(12);
-		colorTable.put("Red", Color.RED);
-		colorTable.put("Green", Color.GREEN);
-		colorTable.put("Blue", Color.BLUE);
-		colorTable.put("Yellow", Color.YELLOW);
-		colorTable.put("Cyan", Color.CYAN);
-		colorTable.put("Pink", Color.PINK);
-		colorTable.put("Orange", Color.ORANGE);
-		colorTable.put("Magenta", Color.MAGENTA);
-		colorTable.put("Gray", Color.GRAY);
-		colorTable.put("Black", Color.BLACK);
-	}
-
-	private void createPlayerPiece(String color) {
-		Piece piece = new Piece(colorTable.get(color));
-		piece.setPath(pathFinder.findPath(1, 25, 3, 10));
-		pieces.add(piece);
+	private int toInt(String string) {
+		return Integer.parseInt(string);
 	}
 
 	@Override
@@ -225,19 +212,21 @@ public class UIScreen extends JFrame implements GameListener {
 		}
 	}
 
+	private void createPlayerPiece() {
+		Piece piece = new Piece();
+		pieces.add(piece);
+	}
+
 	public class Piece {
-
 		private Path path;
-		private Color color;
-		Point lastPoint;
+		private Point lastPoint;
 
-		public Piece(Color color) {
-			this.color = color;
+		public Piece() {
 		}
 
 		public void paint(Graphics g) {
-			g.setColor(color);
-			g.fillRect(screenX+lastPoint.x, lastPoint.y, pieceSize, pieceSize);
+			g.setColor(playerColor);
+			g.fillRect(screenX + lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (path.hasMoreSteps())
 				lastPoint = path.nextPosition();
 		}
@@ -248,5 +237,21 @@ public class UIScreen extends JFrame implements GameListener {
 		}
 
 	}
+
+	private static Hashtable<String, Color> colorTable = new Hashtable<String, Color>() {
+		private static final long serialVersionUID = 1L;
+		{
+			put("Red", Color.RED);
+			put("Green", Color.GREEN);
+			put("Blue", Color.BLUE);
+			put("Yellow", Color.YELLOW);
+			put("Cyan", Color.CYAN);
+			put("Pink", Color.PINK);
+			put("Orange", Color.ORANGE);
+			put("Magenta", Color.MAGENTA);
+			put("Gray", Color.GRAY);
+			put("Black", Color.BLACK);
+		}
+	};
 
 }
