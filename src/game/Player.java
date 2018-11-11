@@ -143,7 +143,11 @@ public class Player {
 			rent = ((UtilitySquare) s).getRent();
 		}
 		return reduceMoney(rent);
-
+	}
+	
+	public boolean payBail(int amount) {
+		Pool.getInstance().payToPool(amount);
+		return reduceMoney(amount);		
 	}
 
 	public void collectRent(int rent) {

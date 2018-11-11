@@ -9,7 +9,6 @@ public class MonopolyGame {
 	private List<Player> players;
 	// private Board board;
 	private Player currentPlayer;
-	private Network network;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
@@ -50,12 +49,12 @@ public class MonopolyGame {
 				currentPlayer.setColor(parsed[2]);
 				break;
 			case "SERVER":
-				network = new Network(Integer.parseInt(parsed[2]));
+				new Network(Integer.parseInt(parsed[2]));
 				currentPlayer.startGame();
 				break;
 			case "CLIENT":
-				network = new Network(parsed[2]);
-				if (!network.isConnected()) {
+				new Network(parsed[2]);
+				if (!Network.getInstance().isConnected()) {
 					currentPlayer.networkError();
 					break;
 				}

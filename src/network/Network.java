@@ -2,7 +2,7 @@ package network;
 
 public class Network {
 
-	private Network self;
+	private static Network self;
 	private MessageSocket mS;
 	private Thread server;
 	private boolean isConnected = true;
@@ -30,7 +30,7 @@ public class Network {
 		mS.sendMessage(message);
 	}
 
-	public String receiveMessageFromOtherPlayer() {
+	public String receiveMessage() {
 		return mS.receiveMessage();
 	}
 
@@ -45,7 +45,7 @@ public class Network {
 			}
 	}
 
-	public Network getInstance() {
+	public static synchronized Network getInstance() {
 		return self;
 	}
 
