@@ -93,7 +93,7 @@ public class Player {
 
 		int newIndexOnTrack;
 		if (true) { // sum % 2 != 0
-			int noOfSquares = Board.getInstance().getNoOfSquaresOnTrack(trackID);
+			int noOfSquares = 40;//Board.getInstance().getNoOfSquaresOnTrack(trackID);
 			newIndexOnTrack = indexOnTrack + sum;
 			newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack : newIndexOnTrack - noOfSquares;
 		}
@@ -113,6 +113,7 @@ public class Player {
 		message = "MOVE/" + 0 + "/";
 		message += trackID + "/" + indexOnTrack + "/" + trackID + "/" + newIndexOnTrack;
 		publishGameEvent(message);
+		indexOnTrack= newIndexOnTrack;
 	}
 
 	public Square getLocation() {

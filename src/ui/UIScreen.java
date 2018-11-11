@@ -73,6 +73,7 @@ public class UIScreen extends JFrame implements GameListener {
 		setLayout(null);
 
 		animator = new Animator(this);
+		new Thread(animator,"Animator").start();
 
 		pathFinder = new PathFinder(screenHeight / 3000.0);
 
@@ -196,7 +197,7 @@ public class UIScreen extends JFrame implements GameListener {
 		case "MOVE":
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
 			pieces.get(toInt(parsed[1])).setPath(path);
-			animator.run();
+			animator.startAnimator();
 		}
 	}
 
@@ -231,7 +232,7 @@ public class UIScreen extends JFrame implements GameListener {
 			g.fillRect(screenX + lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (path != null && path.hasMoreSteps()) {
 				lastPoint = path.nextPosition();
-			}
+			}else animator.stopAnimator();
 		}
 
 		public void setPath(Path path) {
