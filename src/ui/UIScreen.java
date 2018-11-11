@@ -109,8 +109,12 @@ public class UIScreen extends JFrame implements GameListener {
 		controlPanel.add(infoArea);
 
 		JComboBox<String> propertiesList = new JComboBox<String>();
-		propertiesList.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
+		propertiesList.setBounds(controlPaneXSpace, getButtonY(6)+30, controlPaneButtonWidth, controlPaneButtonHeight-30);
 		controlPanel.add(propertiesList);
+		
+		JButton bailButton = new JButton("Pay Bail");
+		bailButton.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
+		controlPanel.add(bailButton);
 
 		JButton buildingButton = new JButton("Build/Sell Building");
 		buildingButton.setBounds(controlPaneXSpace, getButtonY(4), controlPaneButtonWidth, controlPaneButtonHeight);
