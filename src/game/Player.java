@@ -13,6 +13,9 @@ import game.square.UtilitySquare;
 
 
 public class Player{
+	
+	private static final int BEGIN_MONEY = 3200;
+	
 	private String name;
 	private int money;
 	private Square location;
@@ -25,9 +28,9 @@ public class Player{
 	private ArrayList<GameListener> listeners;
 	private String message;
 	
-	public Player(String name, int money){
+	public Player(String name){
 		this.name = name; 
-		this.money = money;
+		this.money = BEGIN_MONEY;
 		//this.board = board; 
 		listeners = new ArrayList<>();
 		location = Board.getInstance().getSquare(0);

@@ -4,32 +4,37 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 import game.Controller;
 import game.GameListener;
-import game.Player;
 
-public class UIScreen extends JFrame implements GameListener{
+public class UIScreen extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
-	private static final String boardImage = "resources/board.png";
+	private static final String boardImagePath = "resources/board.png";
 
+	private ArrayList<JPanel> pieces = new ArrayList<JPanel>();
 
+	private Animator animator;
 	private String message;
 	private JTextArea infoText;
 	private JTextArea playerText;
-	private Color playerColor = new Color(50, 205, 50);
+	private Color playerColor;
+	private Hashtable<String, Color> colorTable;
+	private PathFinder pathFinder;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -49,8 +54,10 @@ public class UIScreen extends JFrame implements GameListener{
 
 	private int screenX = (screenWidth - screenHeight - controlPaneWidth) / 2;
 	private int screenY = 0;
-	
-	private Image board = new ImageIcon(boardImage).getImage().getScaledInstance(screenHeight, -1, Image.SCALE_SMOOTH);
+
+	private Image boardImage = new ImageIcon(boardImagePath).getImage().getScaledInstance(screenHeight, -1,
+			Image.SCALE_SMOOTH);
+	private int pieceSize = (int) (screenHeight*80/3000.0);
 
 	/**
 	 * Create the panel.
@@ -62,14 +69,18 @@ public class UIScreen extends JFrame implements GameListener{
 		setUndecorated(true);
 		setLayout(null);
 
-		JComponent boardComponent = new JComponent() {
-			private static final long serialVersionUID = 1L;
-			public void paint(Graphics g) {
-				g.drawImage(board, 0, 0, this);
-			}
-		};
-		boardComponent.setBounds(screenX, screenY, screenHeight, screenHeight);
-		add(boardComponent);
+		animator = new Animator();
+		Thread animatorThread = new Thread(animator, "Animator");
+		animatorThread.start();
+		
+		pathFinder = new PathFinder(screenHeight/3000.0);
+
+		createColorTable();
+		
+		JLabel board = new JLabel();
+		board.setIcon(new ImageIcon(boardImage));
+		board.setBounds(screenX, screenY, screenHeight, screenHeight);
+		add(board);
 
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(null);
@@ -97,11 +108,11 @@ public class UIScreen extends JFrame implements GameListener{
 		infoArea.setBounds(controlPaneXSpace, controlPaneAreaHeight + controlPaneButtonHeight + 3 * controlPaneYSpace,
 				controlPaneAreaWidth, controlPaneAreaHeight);
 		controlPanel.add(infoArea);
-		
-		JComboBox propertiesList = new JComboBox();
+
+		JComboBox<String> propertiesList = new JComboBox<String>();
 		propertiesList.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(propertiesList);
-		
+
 		JButton buildingButton = new JButton("Build/Sell Building");
 		buildingButton.setBounds(controlPaneXSpace, getButtonY(4), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(buildingButton);
@@ -124,7 +135,6 @@ public class UIScreen extends JFrame implements GameListener{
 		getContentPane().setBackground(Color.BLACK);
 
 		// Action Listeners
-
 		rollDiceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -145,7 +155,7 @@ public class UIScreen extends JFrame implements GameListener{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String squareName = (String) propertiesList.getSelectedItem();
-				message = "UISCREEN/BUYBUILDING,"+squareName;
+				message = "UISCREEN/BUYBUILDING," + squareName;
 				controller.dispatchMessage(message);
 			}
 		});
@@ -173,13 +183,54 @@ public class UIScreen extends JFrame implements GameListener{
 	@Override
 	public void onGameEvent(String message) {
 		String[] parsed = message.split("/");
-		switch(parsed[0]){
-		case "DOMAIN": 
-			switch(parsed[1]){
+		switch (parsed[0]) {
+		case "DOMAIN":
+			switch (parsed[1]) {
 			case "ACTION":
 				infoText.append(parsed[2]);
+				break;
+			case "PIECE":
+				createPlayerPiece(parsed[2]);
 			}
 		}
+	}
+
+	private void createColorTable() {
+		colorTable = new Hashtable<String, Color>(12);
+		colorTable.put("Red", Color.RED);
+		colorTable.put("Green", Color.GREEN);
+		colorTable.put("Blue", Color.BLUE);
+		colorTable.put("Yellow", Color.YELLOW);
+		colorTable.put("Cyan", Color.CYAN);
+		colorTable.put("Pink", Color.PINK);
+		colorTable.put("Orange", Color.ORANGE);
+		colorTable.put("Magenta", Color.MAGENTA);
+		colorTable.put("Gray", Color.GRAY);
+		colorTable.put("Black", Color.BLACK);
+	}
+
+	private void createPlayerPiece(String color) {
+		Piece piece = new Piece();
+		piece.setBackground(colorTable.get(color));
+		piece.setSize(pieceSize, pieceSize);
+		add(piece);
+		//piece.repaint();
+		animator.setPiece(piece);
+		animator.setPath(pathFinder.findPath(1, 28, 1, 35));
+		pieces.add(piece);
+	}
+	
+	private class Piece extends JPanel{
+		
+		public Piece() {
+			super();
+		}
+		
+		public void setLocation(Point p) {
+			super.setLocation(p);
+			repaint();
+		}
+		
 	}
 
 }

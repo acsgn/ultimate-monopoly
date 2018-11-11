@@ -1,15 +1,7 @@
 package game;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
 import ui.UICreator;
 import ui.UIScreen;
-import ObserverPattern.Observer;
-
-import javax.swing.ImageIcon;
 
 public class Main {
 
@@ -21,8 +13,9 @@ public class Main {
 		Controller gameController = new Controller(game);
 		UIScreen screen = new UIScreen(gameController);
 		game.getPlayers().get(0).addGamelistener(screen);
-		UICreator gameCreator = new UICreator(gameController, screen);
+		UICreator gameCreator = new UICreator(gameController);
 		gameCreator.setVisible(true);
+		screen.setVisible(true);
 	}
 
 }

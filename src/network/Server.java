@@ -26,13 +26,14 @@ public class Server implements Runnable {
 	private void play() {
 		int currentPlayer = 0;
 		while (true) {
+			sendMessageToPlayer("PLAY", currentPlayer);
 			String message = receiveMessageFromPlayer(currentPlayer);
+			sendMessageToOtherPlayers(message, currentPlayer);
 			if (message.compareTo("CLOSE") == 0) {
-				sendMessageToOtherPlayers(message, currentPlayer);
 				players.remove(currentPlayer);
+				currentPlayer = currentPlayer == players.size()+1 ? 0 : currentPlayer;
 				continue;
 			}
-			sendMessageToOtherPlayers(message, currentPlayer);
 			currentPlayer++;
 			currentPlayer = currentPlayer == players.size() ? 0 : currentPlayer;
 		}
@@ -68,7 +69,7 @@ public class Server implements Runnable {
 			}
 			server.close();
 		} catch (IOException e) {
-			System.err.println("Server setup error");
+			System.err.println("Server Setup Error");
 		}
 	}
 
@@ -86,11 +87,7 @@ public class Server implements Runnable {
 
 	private String receiveMessageFromPlayer(int index) {
 		String message = "";
-		try {
-			message = players.get(index).receiveMessage();
-		} catch (IOException e) {
-			System.err.println("Message Receive Error");
-		}
+		message = players.get(index).receiveMessage();
 		return message;
 	}
 

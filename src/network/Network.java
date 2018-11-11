@@ -1,7 +1,5 @@
 package network;
 
-import java.io.IOException;
-
 public class Network {
 
 	private Network self;
@@ -10,30 +8,24 @@ public class Network {
 	private boolean isConnected = false;
 
 	public Network(int numOfPlayers) {
-		server = new Thread(new Server(numOfPlayers),"Server");
+		server = new Thread(new Server(numOfPlayers), "Server");
 		server.start();
-		try {
-			mS = new Client("localhost").getMessageSocket();
-			isConnected = true;
-		} catch (Exception e) {
-		}
+		mS = new Client("localhost").getMessageSocket();
+		isConnected = true;
 		self = this;
 	}
 
 	public Network(String IPAddress) {
-		try {
-			mS = new Client(IPAddress).getMessageSocket();
-			self = this;
-			isConnected = true;
-		} catch (Exception e) {
-		}
+		mS = new Client(IPAddress).getMessageSocket();
+		self = this;
+		isConnected = true;
 	}
 
 	public void sendMessageToOthers(String message) {
 		mS.sendMessage(message);
 	}
 
-	public String receiveMessageFromOtherPlayer() throws IOException {
+	public String receiveMessageFromOtherPlayer() {
 		return mS.receiveMessage();
 	}
 

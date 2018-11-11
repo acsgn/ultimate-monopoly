@@ -28,9 +28,13 @@ public class MessageSocket {
 		os.flush();
 	}
 
-	protected String receiveMessage() throws IOException {
-		String message;
-		message = is.readLine();
+	protected String receiveMessage() {
+		String message = "MESSAGEERROR";
+		try {
+			message = is.readLine();
+		} catch (IOException e) {
+			System.err.println("Message Receiving Error");
+		}
 		return message;
 	}
 

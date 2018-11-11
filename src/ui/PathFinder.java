@@ -79,16 +79,21 @@ public class PathFinder {
 
 	}
 
-	public Path findPath(Track track, int location, Track newTrack, int newLocation) {
-		if (track == newTrack) {
+	public Path findPath(int trackID, int location, int newTrackID, int newLocation) {
+		if (trackID == newTrackID) {
+			Track track = getTrackByID(trackID);
 			return findPathOnSameTrack(location, newLocation, track);
-		} else if (Math.abs(track.serial - newTrack.serial) == 1) {
+		} else if (Math.abs(trackID - newTrackID) == 1) {
+			Track track = getTrackByID(trackID);
+			Track newTrack = getTrackByID(newTrackID);			
 			TransitStation transitStation = findTransitStation(track, location, newTrack);
 			Path path = findPathOnSameTrack(location, transitStation.fromLocation, track);
 			path.mergePaths(transitStation.getPath());
 			path.mergePaths(findPathOnSameTrack(transitStation.toLocation, newLocation, newTrack));
 			return path;
 		} else {
+			Track track = getTrackByID(trackID);
+			Track newTrack = getTrackByID(newTrackID);	
 			TransitStation transitStation = findTransitStation(track, location, middleTrack);
 			TransitStation secondTransitStation = findTransitStation(middleTrack, transitStation.toLocation, newTrack);
 			Path path = findPathOnSameTrack(location, transitStation.fromLocation, track);
@@ -100,13 +105,19 @@ public class PathFinder {
 		}
 	}
 
+	private Track getTrackByID(int ID) {
+		if (ID == OUTER_TRACK) return outerTrack;
+		else if(ID == MIDDLE_TRACK) return middleTrack;
+		else return innerTrack;
+	}
+
 	private Path findPathOnSameTrack(int location, int newLocation, Track track) {
 		Path path = new Path(scaleFactor);
 		int[] point = track.getLocation(location);
 		do {
 			location = location == 4 * track.cornerDifference - 1 ? 0 : location + 1;
 			int[] nextPoint = track.getLocation(location);
-			path.addLine(point[0], point[1], nextPoint[0], nextPoint[0]);
+			path.addLine(point[0], point[1], nextPoint[0], nextPoint[1]);
 			point = nextPoint;
 		} while (location != newLocation);
 		return path;
@@ -139,19 +150,19 @@ public class PathFinder {
 	}
 
 	private int getScaled(int i) {
-		return (int) (i / scaleFactor);
+		return (int) (i * scaleFactor);
 	}
 
 	private class Track {
 
-		private int serial;
+		private int ID;
 		private int upLeftCorner;
 		private int downRightCorner;
 		private int stepDistance;
 		private int cornerDifference;
 
-		public Track(int serial, int upLeftCorner, int downRightCorner, int stepDistance, int cornerDifference) {
-			this.serial = serial;
+		public Track(int ID, int upLeftCorner, int downRightCorner, int stepDistance, int cornerDifference) {
+			this.ID = ID;
 			this.upLeftCorner = upLeftCorner;
 			this.downRightCorner = downRightCorner;
 			this.stepDistance = stepDistance;

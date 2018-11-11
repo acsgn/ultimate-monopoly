@@ -19,10 +19,10 @@ public class Path {
 	 */
 	public void addLine(int X1, int Y1, int X2, int Y2) {
 		if (X1 == X2) {
-			Y1 += Y1 + delta;
+			Y1 += delta;
 			while (Y1 < Y2) {
 				path.add(new Point(X1, Y1));
-				Y1 += Y1 + delta;
+				Y1 += delta;
 			}
 			path.add(new Point(X1, Y2));
 		} else if (Y1 == Y2) {
@@ -36,7 +36,7 @@ public class Path {
 	}
 
 	public boolean hasMoreSteps() {
-		return path.isEmpty();
+		return !path.isEmpty();
 	}
 
 	public Point nextPosition() {

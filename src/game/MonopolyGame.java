@@ -13,7 +13,7 @@ public class MonopolyGame {
 	public MonopolyGame() {
 		players = new ArrayList<>();
 		//board = new Board();
-		currentPlayer = new Player("Waterfall", 3200);
+		currentPlayer = new Player("Waterfall");
 		players.add(currentPlayer);
 	}
 
@@ -49,6 +49,11 @@ public class MonopolyGame {
 			switch(parsed[1]){
 				case "ROLLDICE":
 					currentPlayer.play();
+			}
+		case "UICREATOR":
+			switch(parsed[1] ){
+			case "PLAYERCOLOR":
+				currentPlayer.publishGameEvent("DOMAIN/PIECE/"+parsed[2]);
 			}
 		}
 	}
