@@ -60,7 +60,7 @@ public class UIScreen extends JFrame implements GameListener {
 			Image.SCALE_SMOOTH);
 
 	private int pieceSize = (int) (screenHeight * 80 / 3000.0);
-	private int initialPieceLocation = (int) (screenHeight * 2432 / 3000.0);
+	private int initialPieceLocation = (int) (screenHeight * 2310 / 3000.0);
 
 	/**
 	 * Create the panel.
