@@ -1,8 +1,8 @@
 package game.card.deed;
 
-import game.card.Card;
+import game.Card;
 
-public class TitleDeed extends Card{
+public class TitleDeed extends Deed{
 	private int rent;
 	private int oneHouseRent;
 	private int twoHouseRent;
@@ -120,10 +120,6 @@ public class TitleDeed extends Card{
 
 	public void setSkyscrapperCost(int skyscrapperCost) {
 		this.skyscrapperCost = skyscrapperCost;
-	}
-
-	@Override
-	public void executeAction() {
 	}
 
 }

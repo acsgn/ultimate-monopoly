@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.building.Building;
-import game.card.Card;
 import game.dice.SingletonDice;
 import game.square.Square;
 import game.square.tradable.PropertySquare;
@@ -183,7 +182,7 @@ public class Player {
 	}
 
 	public void pickCard(Card card) {
-		card.executeAction();
+		//card.executeAction();
 	}
 
 	public boolean reduceMoney(int m) {
