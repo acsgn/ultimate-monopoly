@@ -5,7 +5,7 @@ import java.util.List;
 import game.Player;
 import game.dice.SingletonDice;
 import game.square.Square;
-import game.square.UtilitySquare;
+import game.square.tradable.UtilitySquare;
 
 public class UtilityRentStrategy implements RentStrategy{
 

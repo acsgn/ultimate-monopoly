@@ -1,18 +1,19 @@
-package game.square;
+package game.square.paycorner;
 
 import game.Player;
+import game.square.Square;
 
 public class GoSquare extends Square{
+	
+	private static final int amount = 200;
 
 	public GoSquare(String name, int number) {
 		super(name, number);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void executeAction(Player player) {
-		// TODO Auto-generated method stub
-		
+		player.increaseMoney(amount);
 	}
 
 

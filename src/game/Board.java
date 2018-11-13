@@ -1,6 +1,12 @@
 package game;
 
+import game.card.deed.TitleDeed;
 import game.square.*;
+import game.square.action.ChanceSquare;
+import game.square.action.CommunityChestSquare;
+import game.square.action.GoToJailSquare;
+import game.square.paycorner.GoSquare;
+import game.square.tradable.PropertySquare;
 
 public class Board {
 

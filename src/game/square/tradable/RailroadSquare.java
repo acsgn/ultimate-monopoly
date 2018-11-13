@@ -1,6 +1,7 @@
-package game.square;
+package game.square.tradable;
 
 import game.Player;
+import game.square.Square;
 import game.strategy.RentStrategyFactory;
 
 public class RailroadSquare extends Square {

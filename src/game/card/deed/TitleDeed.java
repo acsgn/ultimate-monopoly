@@ -1,6 +1,8 @@
-package game.square;
+package game.card.deed;
 
-public class TitleDeed {
+import game.card.Card;
+
+public class TitleDeed extends Card{
 	private int rent;
 	private int oneHouseRent;
 	private int twoHouseRent;
@@ -18,7 +20,7 @@ public class TitleDeed {
 
 	public TitleDeed(int rent, int oneHouseRent, int twoHouseRent, int threeHouseRent, int fourHouseRent, int hotelRent,
 			int skyscraperRent, int mortgageValue, int houseCost, int hotelCost, int skyscrapperCost) {
-		super();
+		super(null, null);
 		this.rent = rent;
 		this.oneHouseRent = oneHouseRent;
 		this.twoHouseRent = twoHouseRent;
@@ -118,6 +120,10 @@ public class TitleDeed {
 
 	public void setSkyscrapperCost(int skyscrapperCost) {
 		this.skyscrapperCost = skyscrapperCost;
+	}
+
+	@Override
+	public void executeAction() {
 	}
 
 }

@@ -1,9 +1,9 @@
 package game.strategy;
 
-import game.square.PropertySquare;
-import game.square.RailroadSquare;
 import game.square.Square;
-import game.square.UtilitySquare;
+import game.square.tradable.PropertySquare;
+import game.square.tradable.RailroadSquare;
+import game.square.tradable.UtilitySquare;
 
 public class RentStrategyFactory {
 	private static RentStrategyFactory rentStrategy;
