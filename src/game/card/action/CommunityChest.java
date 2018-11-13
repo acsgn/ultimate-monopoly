@@ -1,5 +1,7 @@
 package game.card.action;
 
-public class CommunityChest {
+import game.Card;
+
+public class CommunityChest implements Card, Action {
 
 }

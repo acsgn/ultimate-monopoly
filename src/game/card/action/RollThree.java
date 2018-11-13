@@ -1,5 +1,7 @@
 package game.card.action;
 
-public class RollThree {
+import game.Card;
+
+public class RollThree implements Card, Action {
 
 }

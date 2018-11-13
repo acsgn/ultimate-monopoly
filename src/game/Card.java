@@ -1,19 +1,8 @@
 package game;
 
-public abstract class Card {
-
-	private String name;
-
-	public Card(String name) {
-		this.name = name;
-	}
+public interface Card {
 	
-	public String getName() {
-		return name;
-	}
-	
-	//public boolean hasAOwner() {
-	//	return false;
-	//}
+	public CardType getType();
+	//public boolean hasAOwner();
 	
 }

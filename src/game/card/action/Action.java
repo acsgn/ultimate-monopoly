@@ -1,11 +1,11 @@
 package game.card.action;
 
-import game.Card;
+import game.Player;
 
-public class Action extends Card {
+public interface Action {
+	
+	public String getText();
 
-	public Action(String name) {
-		super(name);
-	}
-
+	public void executeAction(Player player);
+	
 }

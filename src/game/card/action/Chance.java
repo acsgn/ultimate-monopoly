@@ -1,5 +1,7 @@
 package game.card.action;
 
-public class Chance {
+import game.Card;
+
+public class Chance implements Card, Action {
 
 }
