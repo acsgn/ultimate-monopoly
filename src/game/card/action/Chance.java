@@ -1,7 +1,12 @@
 package game.card.action;
 
-import game.Card;
+import game.Player;
 
-public class Chance implements Card, Action {
+public class Chance extends Action {
+
+	@Override
+	public void executeAction(Player player) {
+		
+	}
 
 }

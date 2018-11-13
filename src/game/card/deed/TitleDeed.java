@@ -1,6 +1,5 @@
 package game.card.deed;
 
-import game.Card;
 
 public class TitleDeed extends Deed{
 	private int rent;
@@ -20,7 +19,6 @@ public class TitleDeed extends Deed{
 
 	public TitleDeed(int rent, int oneHouseRent, int twoHouseRent, int threeHouseRent, int fourHouseRent, int hotelRent,
 			int skyscraperRent, int mortgageValue, int houseCost, int hotelCost, int skyscrapperCost) {
-		super(null, null);
 		this.rent = rent;
 		this.oneHouseRent = oneHouseRent;
 		this.twoHouseRent = twoHouseRent;

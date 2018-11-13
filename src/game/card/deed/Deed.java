@@ -1,6 +1,14 @@
 package game.card.deed;
 
-public interface Deed {	
+import game.Card;
+import game.CardType;
+
+public abstract class Deed implements Card {
 	
-	
+	private static final CardType type = CardType.DEED;
+
+	public CardType getType() {
+		return type;
+	}
+
 }
