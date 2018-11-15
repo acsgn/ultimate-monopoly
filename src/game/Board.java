@@ -280,6 +280,64 @@ public class Board {
 		PropertySquare boardwalk = new PropertySquare("Boardwalk", 40, 400, null);
 		middleTrack.addSquare(boardwalk);
 		
+		BonusSquare bonus = new BonusSquare("Bonus", 1);
+		innerTrack.addSquare(bonus);
+		TitleDeed boylstonStTD = new TitleDeed(30, 160, 470, 1050, 1250, 1500, 2500, 165, 200, 200, 200);
+		PropertySquare boylstonSt = new PropertySquare("Boylston Street", 2, 330, null);
+		innerTrack.addSquare(boylstonSt);
+		TitleDeed newburyStTD = new TitleDeed(40, 185, 550, 1200, 1500, 1700, 2700, 190, 200, 200, 200);
+		PropertySquare newburySt = new PropertySquare("Newbury Street", 3, 380, null);
+		innerTrack.addSquare(newburySt);
+		// Pennsylvania Railroad/TransitStation
+		TitleDeed fifthAveTD = new TitleDeed(60, 220, 650, 1500, 1800, 2100, 3600, 215, 300, 300, 300);
+		PropertySquare fifthAve = new PropertySquare("Fifth Avenue", 5, 430, null);
+		innerTrack.addSquare(fifthAve);
+		TitleDeed madisonAveTD = new TitleDeed(60, 220, 650, 1500, 1800, 2100, 3600, 215, 300, 300, 300);
+		PropertySquare madisonAve = new PropertySquare("Madison Avenue", 6, 430, null);
+		innerTrack.addSquare(madisonAve);
+		RollThreeDiceSquare rollThree = new RollThreeDiceSquare("Roll Three", 7);
+		innerTrack.addSquare(rollThree);
+		TitleDeed wallStTD = new TitleDeed(80, 300, 800, 1800, 2200, 2700, 4200, 250, 300, 300, 300);
+		PropertySquare wallSt = new PropertySquare("Wall Street", 8, 500, null);
+		innerTrack.addSquare(wallSt);
+		TaxrefundSquare taxRefund = new TaxrefundSquare("Tax Refund", 9);
+		innerTrack.addSquare(taxRefund);
+		//				UtilitySquare gasCompany = new UtilitySquare ("Gas Company", 10, 150, null);
+		//				innerTrack.addSquare(gasCompany);
+		ChanceSquare chanceTrackInnerTrack = new ChanceSquare("Chance", 11);
+		innerTrack.addSquare(chanceTrackInnerTrack);
+		TitleDeed floridaAveTD = new TitleDeed(9, 45, 120, 350, 500, 700, 1200, 65, 50, 50, 50);
+		PropertySquare floridaAve = new PropertySquare("Florida Avenue", 12, 130, null);
+		innerTrack.addSquare(floridaAve);
+		HollandTunnelSquare hollandTunnel2 = new HollandTunnelSquare("Holland Tunnel", 13);
+		innerTrack.addSquare(hollandTunnel2);
+		TitleDeed miamiAveTD = new TitleDeed(9, 45, 120, 350, 500, 700, 1200, 65, 50, 50, 50);
+		PropertySquare miamiAve = new PropertySquare("Miami Avenue", 14, 130, null);
+		innerTrack.addSquare(miamiAve);
+		TitleDeed biscayneAveTD = new TitleDeed(11, 55, 160, 475, 650, 800, 1300, 75, 50, 50, 50);
+		PropertySquare biscayneAve = new PropertySquare("Biscayne Avenue", 15, 150, null);
+		innerTrack.addSquare(biscayneAve);
+		// Short Line Railroad/TransitStation
+		// Reverse Direction Square
+		TitleDeed lombardStTD = new TitleDeed(17, 85, 240, 475, 670, 1025, 1525, 105, 100, 100, 100);
+		PropertySquare lombardSt = new PropertySquare("Lombard Street", 18, 210, null);
+		innerTrack.addSquare(lombardSt);
+		FreeParkingSquare freeParkingInnerTrack = new FreeParkingSquare("Free Parking", 19);
+		innerTrack.addSquare(freeParkingInnerTrack);
+		TitleDeed theEmbarcaderoTD = new TitleDeed(17, 85, 240, 475, 670, 1025, 1525, 105, 100, 100, 100);
+		PropertySquare theEmbarcadero = new PropertySquare("The Embarcadero", 20, 210, null);
+		innerTrack.addSquare(theEmbarcadero);
+		TitleDeed fishermansWharfTD = new TitleDeed(21, 105, 320, 780, 950, 1125, 1625, 125, 100, 100, 100);
+		PropertySquare fishermansWharf = new PropertySquare("Fisherman's Wharf", 21, 250, null);
+		innerTrack.addSquare(fishermansWharf);
+//		UtilitySquare telephoneCompany = new UtilitySquare ("Telephone Company", 22, 150, null);
+//		innerTrack.addSquare(telephoneCompany);
+		CommunityChestSquare communityChestInnerTrack = new CommunityChestSquare("Community Chest", 23);
+		innerTrack.addSquare(communityChestInnerTrack);
+		TitleDeed beaconStTD = new TitleDeed(30, 160, 470, 1050, 1250, 1500, 2500, 165, 200, 200, 200);
+		PropertySquare beaconSt = new PropertySquare("Beacon Street", 24, 330, null);
+		innerTrack.addSquare(beaconSt);
+		
 	}
 
 	public Square getSquare(int index, TrackType type) {
