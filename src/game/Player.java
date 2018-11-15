@@ -9,10 +9,13 @@ import game.square.Square;
 import game.square.tradable.PropertySquare;
 import game.square.tradable.RailroadSquare;
 import game.square.tradable.UtilitySquare;
+import game.square.tradable.TransitstationSquare;
 
 public class Player {
 
 	private static final int BEGIN_MONEY = 3200;
+	private static final TrackType BEGIN_TRACK = TrackType.MIDDLE_TRACK;
+	private static final int BEGIN_INDEX = 0;
 
 	private String name;
 	private String color;
@@ -30,11 +33,11 @@ public class Player {
 	private String message;
 
 	public Player() {
-		this.money = BEGIN_MONEY;
-		// this.board = board;
 		listeners = new ArrayList<GameListener>();
-		indexOnTrack = 0;
+		// this.board = board;
+		money = BEGIN_MONEY;
 		currentTrack = TrackType.MIDDLE_TRACK;
+		indexOnTrack = BEGIN_INDEX;
 		location = Board.getInstance().getSquare(indexOnTrack, currentTrack);
 	}
 
@@ -90,29 +93,42 @@ public class Player {
 		// Now we just sum the first two regular dice/
 		int sum = diceRolls.get(0) + diceRolls.get(1);
 
-		int newIndexOnTrack;
-		if (true) { // sum % 2 != 0
-			int noOfSquares = 40;//Board.getInstance().getNoOfSquaresOnTrack(trackID);
-			newIndexOnTrack = indexOnTrack + sum;
+		int newIndexOnTrack = 0;
+		TrackType newTrack = null;
+		if (sum % 2 != 0) {
+			int noOfSquares = Board.getInstance().getNoOfSquaresOnTrack(currentTrack);
+			newIndexOnTrack = +sum;
 			newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack : newIndexOnTrack - noOfSquares;
+			newTrack = currentTrack;
+		} else {
+			boolean transitNotUsed = true;
+			int[] transitLocationsOfTrack = Board.getInstance().getTransitStationLocationsOnTrack(currentTrack);
+			for (int transitLocation : transitLocationsOfTrack) {
+				int difference = transitLocation - indexOnTrack;
+				if (difference < 0)
+					difference += Board.getInstance().getNoOfSquaresOnTrack(currentTrack);
+				if (difference < sum) {
+					TransitstationSquare transit = (TransitstationSquare) Board.getInstance().getSquare(transitLocation,
+							currentTrack);
+					newTrack = transit.getOtherTrack(currentTrack);
+					newIndexOnTrack = transit.getOtherIndex(currentTrack) + sum - difference;
+					transitNotUsed = true;
+					break;
+				}
+			}
+			if (transitNotUsed) {
+				int noOfSquares = Board.getInstance().getNoOfSquaresOnTrack(currentTrack);
+				newIndexOnTrack = +sum;
+				newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack : newIndexOnTrack - noOfSquares;
+				newTrack = currentTrack;
+			}
 		}
-		// only moves on same track for now
-		/*
-		 * else { int[] transitLocationsOfTrack =
-		 * Board.getInstance().getTransitStationLocationsOnTrack(track); int
-		 * newLocationInTrack = indexOnTrack + sum; for (int i = 0; i <
-		 * transitLocationsOfTrack.length; i++) { if (indexOnTrack <
-		 * transitLocationsOfTrack[i] && newLocationInTrack > transitLocationsOfTrack[i]
-		 * ) {
-		 * 
-		 * } } }
-		 */
 
 		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
 		message = "MOVE/" + 0 + "/";
-		message += 3 + "/" + 0 + "/" + 3 + "/" + 23;
+		message += currentTrack.getValue() + "/" + indexOnTrack + "/" + newTrack.getValue() + "/" + newIndexOnTrack;
 		publishGameEvent(message);
-		//indexOnTrack= newIndexOnTrack;
+		indexOnTrack = newIndexOnTrack;
 	}
 
 	public Square getLocation() {
@@ -143,10 +159,10 @@ public class Player {
 		}
 		return reduceMoney(rent);
 	}
-	
+
 	public boolean payBail(int amount) {
 		Pool.getInstance().payToPool(amount);
-		return reduceMoney(amount);		
+		return reduceMoney(amount);
 	}
 
 	public void collectRent(int rent) {
@@ -182,7 +198,7 @@ public class Player {
 	}
 
 	public void pickCard(Card card) {
-		//card.executeAction();
+		// card.executeAction();
 	}
 
 	public boolean reduceMoney(int m) {
