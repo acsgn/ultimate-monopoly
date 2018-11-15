@@ -110,9 +110,9 @@ public class Player {
 
 		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
 		message = "MOVE/" + 0 + "/";
-		message += trackID + "/" + indexOnTrack + "/" + trackID + "/" + newIndexOnTrack;
+		message += trackID + "/" + indexOnTrack + "/" + 3 + "/" + 15;
 		publishGameEvent(message);
-		indexOnTrack= newIndexOnTrack;
+		//indexOnTrack= newIndexOnTrack;
 	}
 
 	public Square getLocation() {

@@ -172,7 +172,8 @@ public class UIScreen extends JFrame implements GameListener {
 		endGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				message = "ENDGAME";
+				message = "UISCREEN/ENDGAME";
+				animator.destruct();
 				controller.dispatchMessage(message);
 				dispose();
 			}

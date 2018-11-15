@@ -19,7 +19,7 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		connectPlayers();
-		orderPlayers();
+		//orderPlayers();
 		play();
 	}
 
@@ -27,13 +27,18 @@ public class Server implements Runnable {
 		int currentPlayer = 0;
 		while (true) {
 			sendMessageToPlayer("PLAY", currentPlayer);
-			String message = receiveMessageFromPlayer(currentPlayer);
-			sendMessageToOtherPlayers(message, currentPlayer);
-			if (message.compareTo("CLOSE") == 0) {
-				players.remove(currentPlayer);
-				currentPlayer = currentPlayer == players.size()+1 ? 0 : currentPlayer;
-				continue;
-			}
+			String message;
+			do {
+				message = receiveMessageFromPlayer(currentPlayer);
+				sendMessageToOtherPlayers(message, currentPlayer);
+				if (message.compareTo("CLOSE") == 0) {
+					players.remove(currentPlayer);
+					currentPlayer = currentPlayer == players.size() + 1 ? 0 : currentPlayer;
+					break;
+				}
+			} while (!message.equals("ENDTURN"));
+			if (players.isEmpty())
+				break;
 			currentPlayer++;
 			currentPlayer = currentPlayer == players.size() ? 0 : currentPlayer;
 		}
