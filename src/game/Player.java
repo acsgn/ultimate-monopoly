@@ -17,7 +17,7 @@ public class Player {
 	private String name;
 	private String color;
 	private int money;
-	private int trackID;
+	private TrackType currentTrack;
 	private int indexOnTrack;
 	private Square location;
 	// private Board board;
@@ -34,8 +34,8 @@ public class Player {
 		// this.board = board;
 		listeners = new ArrayList<GameListener>();
 		indexOnTrack = 0;
-		trackID = 2;
-		location = Board.getInstance().getSquare(indexOnTrack, trackID);
+		currentTrack = TrackType.MIDDLE_TRACK;
+		location = Board.getInstance().getSquare(indexOnTrack, currentTrack);
 	}
 
 	public void setName(String name) {
@@ -110,7 +110,7 @@ public class Player {
 
 		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
 		message = "MOVE/" + 0 + "/";
-		message += trackID + "/" + indexOnTrack + "/" + 3 + "/" + 15;
+		message += 3 + "/" + 0 + "/" + 3 + "/" + 23;
 		publishGameEvent(message);
 		//indexOnTrack= newIndexOnTrack;
 	}

@@ -6,12 +6,15 @@ import game.square.*;
 
 public class Track {
 
+	private TrackType type;
+
 	private ArrayList<Square> squares;
 
 	private int[] transitLocations;
 
-	public Track() {
+	public Track(TrackType type) {
 		squares = new ArrayList<Square>();
+		this.type = type;
 	}
 
 	public void addSquare(Square sq) {
@@ -29,8 +32,13 @@ public class Track {
 	public void setTransitlocations(int[] locations) {
 		transitLocations = locations;
 	}
-	
+
 	public int[] getTransitlocations() {
 		return transitLocations;
 	}
+
+	public TrackType getTrackType() {
+		return type;
+	}
+
 }
