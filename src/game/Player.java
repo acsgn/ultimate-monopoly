@@ -126,7 +126,7 @@ public class Player {
 
 		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
 		message = "MOVE/" + 0 + "/";
-		message += currentTrack.getValue() + "/" + indexOnTrack + "/" + newTrack.getValue() + "/" + newIndexOnTrack;
+		message += currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/" + newIndexOnTrack;
 		publishGameEvent(message);
 		indexOnTrack = newIndexOnTrack;
 	}

@@ -2,9 +2,9 @@ package ui;
 
 public class PathFinder {
 
-	private static final int OUTER_TRACK = 1;
-	private static final int MIDDLE_TRACK = 2;
-	private static final int INNER_TRACK = 3;
+	private static final int OUTER_TRACK = 0;
+	private static final int MIDDLE_TRACK = 1;
+	private static final int INNER_TRACK = 2;
 
 	private static final int outerTrackUpLeftCorner = 248;
 	private static final int outerTrackDownRightCorner = 2671;
