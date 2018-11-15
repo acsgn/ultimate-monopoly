@@ -9,9 +9,8 @@ public class UtilitySquare extends Square {
 	private int price;
 	private Player owner;
 	
-	public UtilitySquare(String name, int number, int rent, int price, Player owner) {
+	public UtilitySquare(String name, int number, int price, Player owner) {
 		super(name, number);
-		this.rent = rent;
 		this.price = price;
 		this.owner = owner;
 	}

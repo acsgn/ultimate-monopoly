@@ -4,6 +4,7 @@ import java.util.List;
 
 import game.Player;
 import game.building.Building;
+import game.card.deed.TitleDeed;
 import game.square.Square;
 import game.strategy.RentStrategyFactory;
 
@@ -12,11 +13,13 @@ public class PropertySquare extends Square {
 	private int price;
 	private Player owner;
 	private List<Building> buildings;
+	private TitleDeed titleDeed;
 	
-	public PropertySquare(String name, int number, int price, Player owner) {
+	public PropertySquare(String name, int number, int price, Player owner, TitleDeed titleDeed) {
 		super(name, number);
 		this.price = price;
 		this.owner = owner;
+		this.titleDeed = titleDeed;
 	}
 
 	//The rent system is prone to change

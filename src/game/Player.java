@@ -117,7 +117,7 @@ public class Player {
 		TrackType newTrack = currentTrack;
 		int i = sum;
 		int newIndex = 0;
-		int currentIndex = indexOnTrack;
+		int   currentIndex = indexOnTrack;
 		boolean transitUsed = false;
 		while (true) {
 			System.out.println(newLocation.getName());
@@ -144,6 +144,7 @@ public class Player {
 		message += currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
+		currentTrack = newTrack;
 	}
 
 	public Square getLocation() {
