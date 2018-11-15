@@ -60,7 +60,7 @@ public class UIScreen extends JFrame implements GameListener {
 			Image.SCALE_SMOOTH);
 
 	private int pieceSize = (int) (screenHeight * 80 / 3000.0);
-	private int initialPieceLocation = (int) (screenHeight * 2432 / 3000.0);
+	private int initialPieceLocation = (int) (screenHeight * 2310 / 3000.0);
 
 	/**
 	 * Create the panel.
@@ -109,8 +109,12 @@ public class UIScreen extends JFrame implements GameListener {
 		controlPanel.add(infoArea);
 
 		JComboBox<String> propertiesList = new JComboBox<String>();
-		propertiesList.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
+		propertiesList.setBounds(controlPaneXSpace, getButtonY(6)+30, controlPaneButtonWidth, controlPaneButtonHeight-30);
 		controlPanel.add(propertiesList);
+		
+		JButton bailButton = new JButton("Pay Bail");
+		bailButton.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
+		controlPanel.add(bailButton);
 
 		JButton buildingButton = new JButton("Build/Sell Building");
 		buildingButton.setBounds(controlPaneXSpace, getButtonY(4), controlPaneButtonWidth, controlPaneButtonHeight);
@@ -168,7 +172,8 @@ public class UIScreen extends JFrame implements GameListener {
 		endGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				message = "ENDGAME";
+				message = "UISCREEN/ENDGAME";
+				animator.destruct();
 				controller.dispatchMessage(message);
 				dispose();
 			}

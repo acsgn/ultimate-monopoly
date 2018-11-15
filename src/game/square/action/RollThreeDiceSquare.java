@@ -1,10 +1,11 @@
-package game.square;
+package game.square.action;
 
 import game.Player;
+import game.square.Square;
 
-public class SubwaySquare extends Square{
+public class RollThreeDiceSquare extends Square{
 
-	public SubwaySquare(String name, int number) {
+	public RollThreeDiceSquare(String name, int number) {
 		super(name, number);
 		// TODO Auto-generated constructor stub
 	}

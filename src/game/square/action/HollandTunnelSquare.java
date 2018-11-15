@@ -1,10 +1,11 @@
-package game.square;
+package game.square.action;
 
 import game.Player;
+import game.square.Square;
 
-public class TransitstationSquare extends Square{
+public class HollandTunnelSquare extends Square{
 
-	public TransitstationSquare(String name, int number) {
+	public HollandTunnelSquare(String name, int number) {
 		super(name, number);
 		// TODO Auto-generated constructor stub
 	}
@@ -15,6 +16,6 @@ public class TransitstationSquare extends Square{
 		
 	}
 
-	
+
 
 }

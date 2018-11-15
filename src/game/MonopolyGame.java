@@ -9,7 +9,6 @@ public class MonopolyGame {
 	private List<Player> players;
 	// private Board board;
 	private Player currentPlayer;
-	private Network network;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
@@ -39,7 +38,9 @@ public class MonopolyGame {
 		case "UISCREEN":
 			switch (parsed[1]) {
 			case "ROLLDICE":
-				currentPlayer.play();
+				currentPlayer.play(); break;
+			case "ENDGAME": 
+				Network.getInstance().sendMessageToOthers("CLOSE");
 			}
 		case "UICREATOR":
 			switch (parsed[1]) {
@@ -50,12 +51,12 @@ public class MonopolyGame {
 				currentPlayer.setColor(parsed[2]);
 				break;
 			case "SERVER":
-				network = new Network(Integer.parseInt(parsed[2]));
+				Network.getInstance().connect(Integer.parseInt(parsed[2]));
 				currentPlayer.startGame();
 				break;
 			case "CLIENT":
-				network = new Network(parsed[2]);
-				if (!network.isConnected()) {
+				Network.getInstance().connect(parsed[2]);
+				if (!Network.getInstance().isConnected()) {
 					currentPlayer.networkError();
 					break;
 				}

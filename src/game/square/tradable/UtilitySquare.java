@@ -1,19 +1,17 @@
-package game.square;
-
-import java.util.List;
+package game.square.tradable;
 
 import game.Player;
-import game.building.Building;
+import game.square.Square;
 import game.strategy.RentStrategyFactory;
 
-public class PropertySquare extends Square {
+public class UtilitySquare extends Square {
 	private int rent;
 	private int price;
 	private Player owner;
-	private List<Building> buildings;
 	
-	public PropertySquare(String name, int number, int price, Player owner) {
+	public UtilitySquare(String name, int number, int rent, int price, Player owner) {
 		super(name, number);
+		this.rent = rent;
 		this.price = price;
 		this.owner = owner;
 	}
@@ -35,18 +33,6 @@ public class PropertySquare extends Square {
 	public Player getOwner() {
 		return owner;
 	}
-	
-	public List<Building> getBuildings() {
-		return buildings;
-	}
-
-	public void setBuildings(List<Building> buildings) {
-		this.buildings = buildings;
-	}
-
-	public void setOwner(Player owner) {
-		this.owner = owner;
-	}
 
 	@Override
 	public void executeAction(Player player) {
@@ -59,6 +45,6 @@ public class PropertySquare extends Square {
 			player.payRent(this);
 		}
 	}
-
+	
 	
 }

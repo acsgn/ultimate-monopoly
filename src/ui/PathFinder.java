@@ -6,16 +6,16 @@ public class PathFinder {
 	private static final int MIDDLE_TRACK = 2;
 	private static final int INNER_TRACK = 3;
 
-	private static final int outerTrackUpLeftCorner = 204;
-	private static final int outerTrackDownRightCorner = 2795;
+	private static final int outerTrackUpLeftCorner = 248;
+	private static final int outerTrackDownRightCorner = 2671;
 	private static final int outerTrackCornerDifference = 14;
 
-	private static final int middleTrackUpLeftCorner = 566;
-	private static final int middleTrackDownRightCorner = 2432;
+	private static final int middleTrackUpLeftCorner = 608;
+	private static final int middleTrackDownRightCorner = 2310;
 	private static final int middleTrackCornerDifference = 10;
 
-	private static final int innerTrackUpLeftCorner = 922;
-	private static final int innerTrackDownRightCorner = 2074;
+	private static final int innerTrackUpLeftCorner = 960;
+	private static final int innerTrackDownRightCorner = 1956;
 	private static final int innerTrackCornerDifference = 6;
 
 	private static final int middleToOuterFirstTransitLocation = 5;

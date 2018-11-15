@@ -7,6 +7,7 @@ public class Animator implements Runnable {
 	private static long sleepTime = 25;
 
 	private boolean animatorStopped = true;
+	private boolean animatorDestruct = false;
 	private JFrame frame;
 
 	@Override
@@ -14,6 +15,9 @@ public class Animator implements Runnable {
 		while (true) {
 			try {
 				synchronized (this) {
+					if (animatorDestruct) {
+						break;
+					}
 					if (animatorStopped != true) {
 						Thread.sleep(sleepTime);
 						frame.repaint();
@@ -36,4 +40,7 @@ public class Animator implements Runnable {
 		animatorStopped = true;
 	}
 
+	public void destruct() {
+		animatorDestruct = true;
+	}
 }

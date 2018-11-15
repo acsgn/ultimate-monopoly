@@ -1,10 +1,11 @@
-package game.square;
+package game.square.action;
 
 import game.Player;
+import game.square.Square;
 
-public class BonusSquare extends Square{
+public class TaxrefundSquare extends Square{
 
-	public BonusSquare(String name, int number) {
+	public TaxrefundSquare(String name, int number) {
 		super(name, number);
 		// TODO Auto-generated constructor stub
 	}
@@ -12,9 +13,8 @@ public class BonusSquare extends Square{
 	@Override
 	public void executeAction(Player player) {
 		// TODO Auto-generated method stub
-		player.increaseMoney(300);
+		
 	}
 
-
-
+	
 }

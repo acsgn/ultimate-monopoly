@@ -1,10 +1,11 @@
-package game.square;
+package game.square.action;
 
 import game.Player;
+import game.square.Square;
 
-public class TaxrefundSquare extends Square{
+public class BirthGiftSquare extends Square{
 
-	public TaxrefundSquare(String name, int number) {
+	public BirthGiftSquare(String name, int number) {
 		super(name, number);
 		// TODO Auto-generated constructor stub
 	}
@@ -15,5 +16,4 @@ public class TaxrefundSquare extends Square{
 		
 	}
 
-	
 }

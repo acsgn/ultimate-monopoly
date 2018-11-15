@@ -2,35 +2,42 @@ package network;
 
 public class Network {
 
-	private Network self;
+	private static Network self;
+
 	private MessageSocket mS;
 	private Thread server;
 	private boolean isConnected = true;
+	private boolean isInitiated = false;
 
-	public Network(int numOfPlayers) {
-		server = new Thread(new Server(numOfPlayers), "Server");
-		server.start();
-		try {
-			mS = new Client("localhost").getMessageSocket();
-		} catch (Exception e) {
-		}
-		self = this;
+	private Network() {
 	}
 
-	public Network(String IPAddress) {
-		try {
-			mS = new Client(IPAddress).getMessageSocket();
-		} catch (Exception e) {
-			isConnected = false;
+	public void connect(int numOfPlayers) {
+		if (!isInitiated) {
+			server = new Thread(new Server(numOfPlayers), "Server");
+			server.start();
+			try {
+				mS = new Client("localhost").getMessageSocket();
+			} catch (Exception e) {
+			}
 		}
-		self = this;
+	}
+
+	public void connect(String IPAddress) {
+		if (!isInitiated) {
+			try {
+				mS = new Client(IPAddress).getMessageSocket();
+			} catch (Exception e) {
+				isConnected = false;
+			}
+		}
 	}
 
 	public void sendMessageToOthers(String message) {
 		mS.sendMessage(message);
 	}
 
-	public String receiveMessageFromOtherPlayer() {
+	public String receiveMessage() {
 		return mS.receiveMessage();
 	}
 
@@ -45,7 +52,10 @@ public class Network {
 			}
 	}
 
-	public Network getInstance() {
+	public static synchronized Network getInstance() {
+		if (self == null) {
+			self = new Network();
+		}
 		return self;
 	}
 

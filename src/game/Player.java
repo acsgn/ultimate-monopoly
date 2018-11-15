@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.building.Building;
-import game.card.Card;
 import game.dice.SingletonDice;
-import game.square.PropertySquare;
-import game.square.RailroadSquare;
 import game.square.Square;
-import game.square.UtilitySquare;
+import game.square.tradable.PropertySquare;
+import game.square.tradable.RailroadSquare;
+import game.square.tradable.UtilitySquare;
 
 public class Player {
 
@@ -18,7 +17,7 @@ public class Player {
 	private String name;
 	private String color;
 	private int money;
-	private int trackID;
+	private TrackType currentTrack;
 	private int indexOnTrack;
 	private Square location;
 	// private Board board;
@@ -35,8 +34,8 @@ public class Player {
 		// this.board = board;
 		listeners = new ArrayList<GameListener>();
 		indexOnTrack = 0;
-		trackID = 2;
-		location = Board.getInstance().getSquare(indexOnTrack, trackID);
+		currentTrack = TrackType.MIDDLE_TRACK;
+		location = Board.getInstance().getSquare(indexOnTrack, currentTrack);
 	}
 
 	public void setName(String name) {
@@ -111,9 +110,9 @@ public class Player {
 
 		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
 		message = "MOVE/" + 0 + "/";
-		message += trackID + "/" + indexOnTrack + "/" + trackID + "/" + newIndexOnTrack;
+		message += 3 + "/" + 0 + "/" + 3 + "/" + 23;
 		publishGameEvent(message);
-		indexOnTrack= newIndexOnTrack;
+		//indexOnTrack= newIndexOnTrack;
 	}
 
 	public Square getLocation() {
@@ -143,7 +142,11 @@ public class Player {
 			rent = ((UtilitySquare) s).getRent();
 		}
 		return reduceMoney(rent);
-
+	}
+	
+	public boolean payBail(int amount) {
+		Pool.getInstance().payToPool(amount);
+		return reduceMoney(amount);		
 	}
 
 	public void collectRent(int rent) {
@@ -179,7 +182,7 @@ public class Player {
 	}
 
 	public void pickCard(Card card) {
-		card.executeAction();
+		//card.executeAction();
 	}
 
 	public boolean reduceMoney(int m) {
