@@ -347,6 +347,10 @@ public class Board {
 	public int getNoOfSquaresOnTrack(TrackType type) {
 		return getTrack(type).getSquareNumber();
 	}
+	
+	public int getIndexOfSquare(Square sq, TrackType type) {
+		return getTrack(type).getSquareIndex(sq);
+	}
 
 	public int[] getTransitStationLocationsOnTrack(TrackType type) {
 		Track track = getTrack(type);

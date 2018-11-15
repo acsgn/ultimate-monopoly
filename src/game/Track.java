@@ -25,6 +25,10 @@ public class Track {
 		return squares.get(index);
 	}
 
+	public int getSquareIndex(Square sq) {
+		return squares.indexOf(sq);
+	}
+
 	public int getSquareNumber() {
 		return squares.size();
 	}
