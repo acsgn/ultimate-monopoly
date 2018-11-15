@@ -1,4 +1,4 @@
-package game.square.tradable;
+package game.square.estate;
 
 import java.util.Hashtable;
 

@@ -4,7 +4,7 @@ import java.util.List;
 
 import game.building.Building;
 import game.square.Square;
-import game.square.tradable.PropertySquare;
+import game.square.estate.PropertySquare;
 
 public class PropertyRentStrategy implements RentStrategy{
 

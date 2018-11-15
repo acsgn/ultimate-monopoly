@@ -6,10 +6,10 @@ import java.util.List;
 import game.building.Building;
 import game.dice.SingletonDice;
 import game.square.Square;
-import game.square.tradable.PropertySquare;
-import game.square.tradable.RailroadSquare;
-import game.square.tradable.UtilitySquare;
-import game.square.tradable.TransitstationSquare;
+import game.square.estate.PropertySquare;
+import game.square.estate.RailroadSquare;
+import game.square.estate.UtilitySquare;
+import game.square.estate.TransitstationSquare;
 
 public class Player {
 
@@ -94,41 +94,56 @@ public class Player {
 		int sum = diceRolls.get(0) + diceRolls.get(1);
 
 		int newIndexOnTrack = 0;
-		TrackType newTrack = null;
-		if (sum % 2 != 0) {
-			int noOfSquares = Board.getInstance().getNoOfSquaresOnTrack(currentTrack);
-			newIndexOnTrack = +sum;
-			newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack : newIndexOnTrack - noOfSquares;
-			newTrack = currentTrack;
-		} else {
-			boolean transitNotUsed = true;
-			int[] transitLocationsOfTrack = Board.getInstance().getTransitStationLocationsOnTrack(currentTrack);
-			for (int transitLocation : transitLocationsOfTrack) {
-				int difference = transitLocation - indexOnTrack;
-				if (difference < 0)
-					difference += Board.getInstance().getNoOfSquaresOnTrack(currentTrack);
-				if (difference < sum) {
-					TransitstationSquare transit = (TransitstationSquare) Board.getInstance().getSquare(transitLocation,
-							currentTrack);
-					newTrack = transit.getOtherTrack(currentTrack);
-					newIndexOnTrack = transit.getOtherIndex(currentTrack) + sum - difference;
-					transitNotUsed = true;
-					break;
-				}
+		/*
+		 * if (sum % 2 != 0) { int noOfSquares =
+		 * Board.getInstance().getNoOfSquaresOnTrack(currentTrack); newIndexOnTrack =
+		 * +sum; newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack :
+		 * newIndexOnTrack - noOfSquares; newTrack = currentTrack; } else { boolean
+		 * transitNotUsed = true; int[] transitLocationsOfTrack =
+		 * Board.getInstance().getTransitStationLocationsOnTrack(currentTrack); for (int
+		 * transitLocation : transitLocationsOfTrack) { int difference = transitLocation
+		 * - indexOnTrack; if (difference < 0) difference +=
+		 * Board.getInstance().getNoOfSquaresOnTrack(currentTrack); if (difference <
+		 * sum) { TransitstationSquare transit = (TransitstationSquare)
+		 * Board.getInstance().getSquare(transitLocation, currentTrack); newTrack =
+		 * transit.getOtherTrack(currentTrack); newIndexOnTrack =
+		 * transit.getOtherIndex(currentTrack) + sum - difference; transitNotUsed =
+		 * true; break; } } if (transitNotUsed) { int noOfSquares =
+		 * Board.getInstance().getNoOfSquaresOnTrack(currentTrack); newIndexOnTrack =
+		 * +sum; newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack :
+		 * newIndexOnTrack - noOfSquares; newTrack = currentTrack; } }
+		 */
+		Square newLocation = location;
+		TrackType newTrack = currentTrack;
+		int i = sum;
+		int newIndex = 0;
+		int currentIndex = indexOnTrack;
+		boolean transitUsed = false;
+		while (true) {
+			System.out.println(newLocation.getName());
+			if ( !transitUsed && newLocation instanceof TransitstationSquare && sum % 2 == 0 ) {
+				newIndex = ((TransitstationSquare)newLocation).getOtherIndex(newTrack);
+				newTrack = ((TransitstationSquare)newLocation).getOtherTrack(newTrack);
+				currentIndex = newIndex;
+				transitUsed = true;
+			} else {
+				newIndex = (currentIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
+				newLocation = Board.getInstance().getSquare(newIndex, newTrack);
+				i--;
+				currentIndex = newIndex;
+				transitUsed = false;
 			}
-			if (transitNotUsed) {
-				int noOfSquares = Board.getInstance().getNoOfSquaresOnTrack(currentTrack);
-				newIndexOnTrack = +sum;
-				newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack : newIndexOnTrack - noOfSquares;
-				newTrack = currentTrack;
+			if (i == 0) {
+				location = newLocation;
+				break;
 			}
 		}
 
 		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
 		message = "MOVE/" + 0 + "/";
-		message += currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/" + newIndexOnTrack;
+		message += currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/" + newIndex;
 		publishGameEvent(message);
-		indexOnTrack = newIndexOnTrack;
+		indexOnTrack = newIndex;
 	}
 
 	public Square getLocation() {

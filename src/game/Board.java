@@ -3,8 +3,9 @@ package game;
 import game.card.deed.TitleDeed;
 import game.square.*;
 import game.square.action.*;
+import game.square.estate.PropertySquare;
 import game.square.paycorner.*;
-import game.square.tradable.*;
+import game.square.estate.*;
 
 public class Board {
 
