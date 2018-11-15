@@ -4,7 +4,7 @@ import game.Card;
 import game.CardType;
 import game.Player;
 
-public abstract class Action implements Card{
+public abstract class Action extends Card{
 	
 	private static final CardType type = CardType.ACTION;
 	private String text;

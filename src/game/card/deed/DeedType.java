@@ -1,5 +1,5 @@
 package game.card.deed;
 
 public enum DeedType {
-	TITLE_DEED, UTILY_DEED, RAILROAD_DEED
+	TITLE_DEED, UTILITY_DEED, RAILROAD_DEED
 }

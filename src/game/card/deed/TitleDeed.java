@@ -2,6 +2,9 @@ package game.card.deed;
 
 
 public class TitleDeed extends Deed{
+
+		private static final DeedType type = DeedType.TITLE_DEED;
+
 	private int rent;
 	private int oneHouseRent;
 	private int twoHouseRent;
@@ -118,6 +121,11 @@ public class TitleDeed extends Deed{
 
 	public void setSkyscrapperCost(int skyscrapperCost) {
 		this.skyscrapperCost = skyscrapperCost;
+	}
+
+	@Override
+	public DeedType getDeedType() {
+		return type;
 	}
 
 }

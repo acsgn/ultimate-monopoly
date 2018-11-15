@@ -1,8 +1,8 @@
 package game;
 
-public interface Card {
+public abstract class Card {
 	
-	public CardType getType();
+	public abstract CardType getType();
 	//public boolean hasAOwner();
 	
 }
