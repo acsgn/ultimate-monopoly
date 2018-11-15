@@ -281,6 +281,8 @@ public class Board {
 		PropertySquare boardwalk = new PropertySquare("Boardwalk", 40, 400, null);
 		track2.addSquare(boardwalk);
 		
+		//trying
+		
 	}
 
 	public Square getSquare(int index, int trackID) {
