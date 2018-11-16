@@ -1,6 +1,6 @@
 package game.strategy;
 
-import game.Square;
+import game.square.Square;
 import game.square.estate.PropertySquare;
 import game.square.estate.RailroadSquare;
 import game.square.estate.UtilitySquare;

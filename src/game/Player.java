@@ -7,6 +7,7 @@ import game.building.Building;
 import game.card.action.Chance;
 import game.card.action.CommunityChest;
 import game.dice.SingletonDice;
+import game.square.Square;
 import game.square.estate.PropertySquare;
 import game.square.estate.RailroadSquare;
 import game.square.estate.UtilitySquare;

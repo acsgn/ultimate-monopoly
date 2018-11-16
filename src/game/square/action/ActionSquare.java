@@ -2,8 +2,8 @@ package game.square.action;
 
 import game.Action;
 import game.Player;
-import game.Square;
-import game.SquareType;
+import game.square.Square;
+import game.square.SquareType;
 
 public class ActionSquare extends Square {
 	
@@ -17,7 +17,7 @@ public class ActionSquare extends Square {
 	}
 	
 	public void doAction(Player player) {
-		action.perform(player);
+		action.doAction(player);
 	}
 	
 	public ActionSquareType getActionType() {

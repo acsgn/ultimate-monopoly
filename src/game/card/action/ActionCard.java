@@ -7,17 +7,15 @@ import game.Player;
 public class ActionCard extends Card{
 	
 	private static final CardType type = CardType.ACTION;
-	private String text;
+	private ActionCardType actionCardType;
 	
-	public String getText() {
-		return text;
-	}
-	
-	public ActionType getActionType() {
-		return actionType;
+	public ActionCardType getActionType() {
+		return actionCardType;
 	}
 
-	public void executeAction(Player player);
+	public void executeAction(Player player) {
+		
+	}
 	
 	public CardType getType() {
 		return type;

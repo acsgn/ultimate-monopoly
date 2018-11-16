@@ -1,4 +1,4 @@
-package game.card.deed;
+package game.square.deed;
 
 
 public class TitleDeed extends Deed{

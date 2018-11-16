@@ -1,6 +1,6 @@
 package game.strategy;
 
-import game.Square;
+import game.square.Square;
 
 public interface RentStrategy {
 	public int getRent(Square square);

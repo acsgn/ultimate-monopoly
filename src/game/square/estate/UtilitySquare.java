@@ -1,7 +1,7 @@
 package game.square.estate;
 
 import game.Player;
-import game.Square;
+import game.square.Square;
 import game.strategy.RentStrategyFactory;
 
 public class UtilitySquare extends Square {
