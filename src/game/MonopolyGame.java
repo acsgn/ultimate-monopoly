@@ -7,19 +7,13 @@ import network.Network;
 
 public class MonopolyGame {
 	private List<Player> players;
-	// private Board board;
 	private Player currentPlayer;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
-		// board = new Board();
 		currentPlayer = new Player();
 		players.add(currentPlayer);
 	}
-
-	/*
-	 * public void runGame() { for (Player p : players) { p.play(); } }
-	 */
 
 	public List<Player> getPlayers() {
 		return players;
@@ -28,10 +22,6 @@ public class MonopolyGame {
 	public void setPlayers(List<Player> players) {
 		this.players = players;
 	}
-	/*
-	 * public Board getboard(){ return board; }
-	 */
-
 	public void executeMessage(String message) {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
@@ -40,7 +30,9 @@ public class MonopolyGame {
 			case "ROLLDICE":
 				currentPlayer.play(); break;
 			case "ENDGAME": 
-				Network.getInstance().sendMessageToOthers("CLOSE");
+				Network.getInstance().sendMessageToOthers("CLOSE");break;
+			case "BUYPROPERTY":
+				currentPlayer.buySquare();
 			}
 		case "UICREATOR":
 			switch (parsed[1]) {
