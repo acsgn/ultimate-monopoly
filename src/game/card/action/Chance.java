@@ -2,9 +2,9 @@ package game.card.action;
 
 import game.Player;
 
-public class Chance extends Action {
+public class Chance extends ActionCard {
 
-	private static final ActionType type = ActionType.CHANCE;
+	private static final ActionCardType type = ActionCardType.CHANCE;
 	private String name;
 	
 	public Chance(String name){
@@ -18,7 +18,7 @@ public class Chance extends Action {
 	}
 
 	@Override
-	public ActionType getActionType() {
+	public ActionCardType getActionCardType() {
 		return type;
 	}
 	

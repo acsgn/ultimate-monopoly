@@ -2,9 +2,9 @@ package game.card.action;
 
 import game.Player;
 
-public class CommunityChest extends Action {
+public class CommunityChest extends ActionCard {
 	
-	private static final ActionType type = ActionType.COMMUNITY_CHEST;
+	private static final ActionCardType type = ActionCardType.COMMUNITY_CHEST;
 	private String name;
 	
 	public CommunityChest(String name){
@@ -19,7 +19,7 @@ public class CommunityChest extends Action {
 	}
 
 	@Override
-	public ActionType getActionType() {
+	public ActionCardType getActionCardType() {
 		return type;
 	}
 	

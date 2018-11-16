@@ -9,6 +9,7 @@ import game.strategy.RentStrategyFactory;
 public class TransitStation extends Estate {
 
 	private static final EstateSquareType type = EstateSquareType.TRANSITSTATION;
+	private static final int TRANSIT_STATION_PRICE = 200;
 	
 	private int trainDepot = 0;
 
@@ -19,8 +20,8 @@ public class TransitStation extends Estate {
 
 	private int rent = 100;
 
-	public TransitStation(String name, int price,  TrackType track1, TrackType track2) {
-		super(name, price, type);
+	public TransitStation(String name,  TrackType track1, TrackType track2) {
+		super(name, TRANSIT_STATION_PRICE, type);
 		this.track1 = track1;
 		this.track2 = track2;
 	}

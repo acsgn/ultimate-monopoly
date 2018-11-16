@@ -8,16 +8,11 @@ import game.square.SquareType;
 public class ActionSquare extends Square {
 	
 	private static final SquareType type = SquareType.ACTION;
+	
 	private Action action;
-	private ActionSquareType actionType;
 	
-	public ActionSquare(Action action, ActionSquareType type) {
+	public ActionSquare(Action action, boolean doWhenPassed) {
 		this.action = action;
-		this.actionType = type;
-	}
-	
-	public ActionSquareType getActionType() {
-		return actionType;
 	}
 	
 	@Override

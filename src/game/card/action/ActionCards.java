@@ -1,19 +1,14 @@
-package game;
+package game.card.action;
 
 import java.util.ArrayList;
 
-import game.card.action.Action;
-import game.card.action.Chance;
-import game.card.action.CommunityChest;
-import game.card.action.RollThree;
-
 public class ActionCards {
+	
+	private static ActionCards actionCards;
 	
 	private ArrayList<Chance> chance;
 	private ArrayList<CommunityChest> communityChest;
 	private ArrayList<RollThree> rollThree;
-
-	private static ActionCards actionCards;
 	
 	private ActionCards(){
 		constructCommunityChestCards();
@@ -37,13 +32,17 @@ public class ActionCards {
 		chance.add(partyTime);
 	}
 	public CommunityChest getCommunityChestCard(){
-		// should return a card randomly
-		return communityChest.get(communityChest.size()-1);
+		CommunityChest tmp = communityChest.remove(0);
+		communityChest.add(tmp);
+		return tmp;
 	}
 	public Chance getChanceCard(){
-		return chance.get(chance.size()-1);
+		Chance tmp = chance.remove(0);
+		chance.add(tmp);
+		return tmp;
 	}
-	public void putTheCardBack(Action card) {
+	
+	public void putTheCardBack(ActionCard card) {
 
 	}
 	

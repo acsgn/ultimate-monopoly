@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import game.building.Building;
 import game.card.Card;
@@ -26,11 +27,11 @@ public class Player {
 	private Square location;
 	boolean inJail;
 	boolean isBankrupt;
-	
+
 	private ArrayList<Property> properties;
 	private ArrayList<TransitStation> transitStations;
 	private ArrayList<Utility> utilities;
-	
+
 	private ArrayList<GameListener> listeners;
 	private String message;
 
@@ -114,18 +115,16 @@ public class Player {
 				currentIndex = newIndex;
 				transitUsed = false;
 			}
-			if (i == 0) {
-				location = newLocation;
+			if (i == 0)
 				break;
-			}
 		}
 
-		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
-		message = "MOVE/" + 0 + "/";
-		message += currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/" + newIndex;
+		message = "MOVE/" + 0 + "/" + currentTrack.ordinal() + "/" + indexOnTrack
+				+ "/" + newTrack.ordinal() + "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
+		location = newLocation;
 	}
 
 	public Square getLocation() {
@@ -145,7 +144,7 @@ public class Player {
 	}
 
 	public boolean payRent(Square s) {
-		 int rent = ((Estate) s).getRent();
+		int rent = ((Estate) s).getRent();
 		// publishGameEvent(message);
 		return reduceMoney(rent);
 	}
@@ -169,8 +168,8 @@ public class Player {
 				publishGameEvent(message);
 				updateState();
 				return true;
-			}else{
-				message = "ACTION/"+"Property: is owned by "+ estate.getOwner().getName()+"\n";
+			} else {
+				message = "ACTION/" + "Property: is owned by " + estate.getOwner().getName() + "\n";
 				publishGameEvent(message);
 				return false;
 			}
@@ -180,31 +179,25 @@ public class Player {
 			return false;
 		}
 	}
-
-	public boolean passGo(int prevIndex, int newIndex) {
-		return false;
-	}
-
-	public boolean passPayDay(int prevIndex, int newIndex) {
-		return false;
-
-	}
-
-	public boolean passBonus(int prevIndex, int newIndex) {
-		return false;
-
+	
+	public void goTo(TrackType track, int index) {
+		message = "JUMP/" + 0 + "/" + currentTrack.ordinal() + "/" + indexOnTrack
+				+ "/" + track.ordinal() + "/" + index;
+		publishGameEvent(message);
+		indexOnTrack = index;
+		currentTrack = track;
+		location = Board.getInstance().getSquare(index, track);
 	}
 
 	public boolean buyBuilding(Building building, Property Property) {
 		return false;
-
 	}
 
 	public void sellBuilding(Building building, Property Property) {
 
 	}
 
-	public void pickCard(Card card) {
+	/*public void pickCard(Card card) {
 		if (card instanceof CommunityChest) {
 			((CommunityChest) card).executeAction(this);
 			message = "ACTION/ " + ((CommunityChest) card).getName();
@@ -216,7 +209,7 @@ public class Player {
 			publishGameEvent(message);
 		}
 
-	}
+	}*/
 
 	public boolean reduceMoney(int m) {
 		if (money > m) {

@@ -1,6 +1,7 @@
 package game.card.action;
 
 import game.Player;
+import game.card.Card;
 import game.card.CardType;
 
 public class ActionCard extends Card{
@@ -8,7 +9,7 @@ public class ActionCard extends Card{
 	private static final CardType type = CardType.ACTION;
 	private ActionCardType actionCardType;
 	
-	public ActionCardType getActionType() {
+	public ActionCardType getActionCardType() {
 		return actionCardType;
 	}
 

@@ -2,16 +2,16 @@ package game.card.action;
 
 import game.Player;
 
-public class RollThree extends Action {
+public class RollThree extends ActionCard {
 
-	private static final ActionType type = ActionType.ROLL_THREE;
+	private static final ActionCardType type = ActionCardType.ROLL_THREE;
 	
 	@Override
 	public void executeAction(Player player) {
 	}
 
 	@Override
-	public ActionType getActionType() {
+	public ActionCardType getActionCardType() {
 		return type;
 	}
 

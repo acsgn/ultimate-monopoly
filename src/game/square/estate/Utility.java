@@ -5,11 +5,12 @@ import game.strategy.RentStrategyFactory;
 public class Utility extends Estate {
 	
 	private static final EstateSquareType type = EstateSquareType.UTILITY;
+	private static final int UTILITY_PRICE = 150;
 	
 	private int rent;
 	
-	public Utility(String name, int price) {
-		super(name, price, type);
+	public Utility(String name) {
+		super(name, UTILITY_PRICE, type);
 	}
 
 	//The rent system is prone to change
