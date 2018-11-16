@@ -1,8 +1,7 @@
 package game.card.action;
 
-import game.Card;
-import game.CardType;
 import game.Player;
+import game.card.CardType;
 
 public class ActionCard extends Card{
 	

@@ -1,7 +1,7 @@
 package game.square.deed;
 
-import game.Card;
-import game.CardType;
+import game.card.CardType;
+import game.card.action.Card;
 
 public abstract class Deed extends Card {
 	

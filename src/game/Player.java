@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.building.Building;
+import game.card.action.Card;
 import game.card.action.Chance;
 import game.card.action.CommunityChest;
 import game.dice.SingletonDice;
