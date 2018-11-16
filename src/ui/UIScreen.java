@@ -187,6 +187,7 @@ public class UIScreen extends JFrame implements GameListener {
 	@Override
 	public void onGameEvent(String message) {
 		String[] parsed = message.split("/");
+		System.out.println(parsed);
 		switch (parsed[0]) {
 		case "START":
 			createPlayerPiece();
@@ -203,6 +204,9 @@ public class UIScreen extends JFrame implements GameListener {
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
 			pieces.get(toInt(parsed[1])).setPath(path);
 			animator.startAnimator();
+			break;
+		case "PLAYERDATA": 
+			playerText.setText(parsed[1]);
 		}
 	}
 
