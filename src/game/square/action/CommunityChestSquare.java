@@ -2,8 +2,8 @@ package game.square.action;
 
 import game.ActionCards;
 import game.Player;
+import game.Square;
 import game.card.action.CommunityChest;
-import game.square.Square;
 
 public class CommunityChestSquare extends Square {
 	

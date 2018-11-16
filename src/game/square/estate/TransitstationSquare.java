@@ -4,8 +4,8 @@ import java.util.Hashtable;
 
 import game.Board;
 import game.Player;
+import game.Square;
 import game.TrackType;
-import game.square.Square;
 
 public class TransitstationSquare extends Square {
 

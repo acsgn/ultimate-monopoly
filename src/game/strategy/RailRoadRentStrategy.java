@@ -3,7 +3,7 @@ package game.strategy;
 import java.util.List;
 
 import game.Player;
-import game.square.Square;
+import game.Square;
 import game.square.estate.RailroadSquare;
 
 public class RailRoadRentStrategy implements RentStrategy{

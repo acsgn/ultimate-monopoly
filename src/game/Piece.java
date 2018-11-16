@@ -1,7 +1,5 @@
 package game;
 
-import game.square.Square;
-
 public class Piece {
 	private Square location;
 	

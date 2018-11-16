@@ -3,32 +3,31 @@ package game.dice;
 import java.util.ArrayList;
 
 public class SingletonDice {
-	private RegularDie regularDie1; 
+	private RegularDie regularDie1;
 	private RegularDie regularDie2;
-	private SpeedDie speedDie; 
-	
+	private SpeedDie speedDie;
+
 	private static SingletonDice dice;
-	
-	private SingletonDice(){
+
+	private SingletonDice() {
 		regularDie1 = new RegularDie();
 		regularDie2 = new RegularDie();
 		speedDie = new SpeedDie();
 	}
-	
-	public static synchronized SingletonDice getInstance(){
-		if(dice==null){
+
+	public static synchronized SingletonDice getInstance() {
+		if (dice == null)
 			dice = new SingletonDice();
-		}
 		return dice;
 	}
-	
-	public void rollDice(){
+
+	public void rollDice() {
 		regularDie1.roll();
 		regularDie2.roll();
 		speedDie.roll();
 	}
-	
-	public ArrayList<Integer> getFaceValues(){
+
+	public ArrayList<Integer> getFaceValues() {
 		ArrayList<Integer> diceRolls = new ArrayList<Integer>();
 		int r1 = regularDie1.getFaceValue();
 		int r2 = regularDie2.getFaceValue();
@@ -38,5 +37,5 @@ public class SingletonDice {
 		diceRolls.add(r3);
 		return diceRolls;
 	}
-	
+
 }

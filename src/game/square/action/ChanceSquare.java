@@ -2,8 +2,8 @@ package game.square.action;
 
 import game.ActionCards;
 import game.Player;
+import game.Square;
 import game.card.action.Chance;
-import game.square.Square;
 
 public class ChanceSquare extends Square {
 	

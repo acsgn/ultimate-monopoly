@@ -3,9 +3,9 @@ package game.square.estate;
 import java.util.List;
 
 import game.Player;
+import game.Square;
 import game.building.Building;
 import game.card.deed.TitleDeed;
-import game.square.Square;
 import game.strategy.RentStrategyFactory;
 
 public class PropertySquare extends Square {

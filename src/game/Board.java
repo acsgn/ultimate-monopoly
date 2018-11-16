@@ -10,10 +10,6 @@ import game.square.paycorner.*;
 
 public class Board {
 
-	private final int[] OUTER_TRACK_TRANSIT_LOCATIONS = { 21, 35 };
-	private final int[] MIDDLE_TRACK_TRANSIT_LOCATIONS = { 5, 15, 25, 35 };
-	private final int[] INNER_TRACK_TRANSIT_LOCATIONS = { 9, 21 };
-
 	private Track outerTrack;
 	private Track middleTrack;
 	private Track innerTrack;
@@ -24,20 +20,51 @@ public class Board {
 		middleTrack = new Track(TrackType.MIDDLE_TRACK);
 		innerTrack = new Track(TrackType.INNER_TRACK);
 
-		outerTrack.setTransitlocations(OUTER_TRACK_TRANSIT_LOCATIONS);
-		middleTrack.setTransitlocations(MIDDLE_TRACK_TRANSIT_LOCATIONS);
-		innerTrack.setTransitlocations(INNER_TRACK_TRANSIT_LOCATIONS);
+		constructDeeds();
 		constructSquares();
+		constructTracks();
 	}
-
-	public static Board getInstance() {
+	
+	public static synchronized Board getInstance() {
 		if (board == null) {
 			board = new Board();
 		}
 		return board;
 	}
 
-	public void constructSquares() {
+	private void constructDeeds() {
+		constructOuterTrackDeeds();
+		constructMiddleTrackDeeds();
+		constructInnerTrackDeeds();
+	}
+
+	private void constructSquares() {
+		constructOuterTrackSquares();
+		constructMiddleTrackSquares();
+		constructInnerTrackSquares();
+	}
+
+	private void constructTracks() {
+		constructOuterTrack();
+		constructMiddleTrack();
+		constructInnerTrack();
+	}
+
+	private void constructInnerTrackDeeds() {
+		
+	}
+
+	private void constructMiddleTrackDeeds() {
+		TitleDeed mediterraneanAveTD = new TitleDeed(2, 10, 30, 90, 160, 250, 750, 30, 50, 50, 50);
+		TitleDeed balticAveTD = new TitleDeed(4, 20, 60, 180, 320, 450, 900, 30, 50, 50, 50);
+		TitleDeed orientalAveTD = new TitleDeed(6, 30, 90, 270, 400, 550, 1050, 50, 50, 50, 50);
+	}
+
+	private void constructOuterTrackDeeds() {
+		
+	}
+
+	public void asdf() {
 		// mortgage values will be added.
 
 		// The removed squares are replaced with free parking
@@ -45,12 +72,12 @@ public class Board {
 		// MiddleTrack
 		GoSquare go = new GoSquare("GO", 1);
 		middleTrack.addSquare(go);
-		TitleDeed mediterraneanAveTD = new TitleDeed(2, 10, 30, 90, 160, 250, 750, 30, 50, 50, 50);
+		
 		PropertySquare mediterraneanAve = new PropertySquare("Mediterranean Avenue", 2, 60, null, mediterraneanAveTD);
 		middleTrack.addSquare(mediterraneanAve);
 		CommunityChestSquare communityChest1middleTrack = new CommunityChestSquare("Community Chest", 3);
 		middleTrack.addSquare(communityChest1middleTrack);
-		TitleDeed balticAveTD = new TitleDeed(4, 20, 60, 180, 320, 450, 900, 30, 50, 50, 50);
+		
 		PropertySquare balticAve = new PropertySquare("Baltic Avenue", 4, 60, null, balticAveTD);
 		middleTrack.addSquare(balticAve);
 		// IncomeTaxSquare incomeTax1 = new IncomeTaxSquare("Income Tax", 5);
@@ -64,7 +91,7 @@ public class Board {
 				TrackType.OUTER_TRACK);
 		middleTrack.addSquare(transitSquare1);
 		//
-		TitleDeed orientalAveTD = new TitleDeed(6, 30, 90, 270, 400, 550, 1050, 50, 50, 50, 50);
+		
 		PropertySquare orientalAve = new PropertySquare("Oriental Avenue", 7, 100, null, orientalAveTD);
 		middleTrack.addSquare(orientalAve);
 		ChanceSquare chanceSquare1middleTrack = new ChanceSquare("Chance", 8);
@@ -75,7 +102,7 @@ public class Board {
 		TitleDeed connecticutAveTD = new TitleDeed(8, 40, 100, 300, 450, 600, 1100, 60, 50, 50, 50);
 		PropertySquare connecticutAve = new PropertySquare("Connecticut Avenue", 10, 120, null, connecticutAveTD);
 		middleTrack.addSquare(connecticutAve);
-		JailSquare jailSquare = new JailSquare("Jail", 11);
+		JailSquare jailSquare = new JailSquare();
 		middleTrack.addSquare(jailSquare);
 		TitleDeed stCharlesPlaceTD = new TitleDeed(10, 50, 150, 450, 625, 750, 1250, 70, 100, 100, 100);
 		PropertySquare stCharlesPlace = new PropertySquare("St. Charles Place", 12, 140, null, stCharlesPlaceTD);
@@ -106,7 +133,7 @@ public class Board {
 		TitleDeed newYorkAveTD = new TitleDeed(16, 80, 220, 600, 800, 1000, 1500, 100, 100, 100, 100);
 		PropertySquare newYorkAve = new PropertySquare("New York Avenue", 20, 200, null, newYorkAveTD);
 		middleTrack.addSquare(newYorkAve);
-		FreeParkingSquare freeParking1Track2 = new FreeParkingSquare("Free Parking", 21);
+		FreeParkingSquare freeParking1Track2 = new FreeParkingSquare();
 		middleTrack.addSquare(freeParking1Track2);
 		TitleDeed kentuckyAveTD = new TitleDeed(18, 90, 250, 700, 875, 1050, 2050, 100, 150, 150, 150);
 		PropertySquare kentuckyAve = new PropertySquare("Kentucky Avenue", 22, 220, null, kentuckyAveTD);
@@ -173,8 +200,6 @@ public class Board {
 		PropertySquare boardwalk = new PropertySquare("Boardwalk", 40, 400, null, boardwalkTD);
 		middleTrack.addSquare(boardwalk);
 
-		
-		
 		// oUTERtRACK
 		FreeParkingSquare freeParking1Track1 = new FreeParkingSquare("Free Parking", 1);
 		outerTrack.addSquare(freeParking1Track1);
@@ -346,7 +371,7 @@ public class Board {
 		PropertySquare fishermansWharf = new PropertySquare("Fisherman's Wharf", 21, 250, null, fishermansWharfTD);
 		innerTrack.addSquare(fishermansWharf);
 		///
-		UtilitySquare telephoneCompany = new UtilitySquare ("Telephone Company", 22, 150, null);
+		UtilitySquare telephoneCompany = new UtilitySquare("Telephone Company", 22, 150, null);
 		innerTrack.addSquare(telephoneCompany);
 		//
 		CommunityChestSquare communityChestInnerTrack = new CommunityChestSquare("Community Chest", 23);
@@ -379,7 +404,7 @@ public class Board {
 		TaxrefundSquare taxRefund = new TaxrefundSquare("Tax Refund", 9);
 		innerTrack.addSquare(taxRefund);
 		// Utility Square
-		UtilitySquare gasCompany = new UtilitySquare ("Gas Company", 10, 150, null);
+		UtilitySquare gasCompany = new UtilitySquare("Gas Company", 10, 150, null);
 		innerTrack.addSquare(gasCompany);
 		//
 		ChanceSquare chanceTrackInnerTrack = new ChanceSquare("Chance", 11);
@@ -414,11 +439,6 @@ public class Board {
 
 	public int getIndexOfSquare(Square sq, TrackType type) {
 		return getTrack(type).getSquareIndex(sq);
-	}
-
-	public int[] getTransitStationLocationsOnTrack(TrackType type) {
-		Track track = getTrack(type);
-		return track.getTransitlocations();
 	}
 
 	private Track getTrack(TrackType type) {

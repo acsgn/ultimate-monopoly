@@ -3,8 +3,8 @@ package game.strategy;
 import java.util.List;
 
 import game.Player;
+import game.Square;
 import game.dice.SingletonDice;
-import game.square.Square;
 import game.square.estate.UtilitySquare;
 
 public class UtilityRentStrategy implements RentStrategy{

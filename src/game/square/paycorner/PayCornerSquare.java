@@ -1,7 +1,7 @@
 package game.square.paycorner;
 
 import game.Player;
-import game.square.Square;
+import game.Square;
 
 public class PayCornerSquare extends Square {
 	private int salary;

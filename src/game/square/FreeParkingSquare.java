@@ -1,19 +1,18 @@
 package game.square;
 
-import game.Player;
+import game.Square;
+import game.SquareType;
 
 public class FreeParkingSquare extends Square {
 	
-	public FreeParkingSquare(String name, int number) {
-		super(name, number);
+	private static final SquareType type = SquareType.FREE_PARKING;
+	
+	public FreeParkingSquare() {
 	}
 
 	@Override
-	public void executeAction(Player player) {
-		// TODO Auto-generated method stub
-		
+	public SquareType getType() {
+		return type;
 	}
-
-	
 	
 }

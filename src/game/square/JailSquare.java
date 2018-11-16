@@ -1,20 +1,18 @@
 package game.square;
 
-import game.Player;
+import game.Square;
+import game.SquareType;
 
 public class JailSquare extends Square{
 
-	public JailSquare(String name, int number) {
-		super(name, number);
-		// TODO Auto-generated constructor stub
+	private static final SquareType type = SquareType.JAIL;
+	
+	public JailSquare() {
 	}
 
 	@Override
-	public void executeAction(Player player) {
-		// TODO Auto-generated method stub
-		player.setInJail(true);
+	public SquareType getType() {
+		return type;
 	}
-
-
 
 }

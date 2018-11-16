@@ -10,8 +10,6 @@ public class Track {
 
 	private ArrayList<Square> squares;
 
-	private int[] transitLocations;
-
 	public Track(TrackType type) {
 		squares = new ArrayList<Square>();
 		this.type = type;
@@ -31,14 +29,6 @@ public class Track {
 
 	public int getSquareNumber() {
 		return squares.size();
-	}
-
-	public void setTransitlocations(int[] locations) {
-		transitLocations = locations;
-	}
-
-	public int[] getTransitlocations() {
-		return transitLocations;
 	}
 
 	public TrackType getTrackType() {

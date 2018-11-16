@@ -2,8 +2,8 @@ package game.strategy;
 
 import java.util.List;
 
+import game.Square;
 import game.building.Building;
-import game.square.Square;
 import game.square.estate.PropertySquare;
 
 public class PropertyRentStrategy implements RentStrategy{

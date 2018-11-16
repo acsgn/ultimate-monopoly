@@ -1,7 +1,7 @@
 package game.square.action;
 
 import game.Player;
-import game.square.Square;
+import game.Square;
 
 public class RollThreeDiceSquare extends Square{
 
