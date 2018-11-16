@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.building.Building;
+import game.card.action.Chance;
+import game.card.action.CommunityChest;
 import game.dice.SingletonDice;
 import game.square.Square;
 import game.square.estate.PropertySquare;
@@ -36,9 +38,10 @@ public class Player {
 		listeners = new ArrayList<GameListener>();
 		// this.board = board;
 		money = BEGIN_MONEY;
-		currentTrack = TrackType.MIDDLE_TRACK;
+		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
 		location = Board.getInstance().getSquare(indexOnTrack, currentTrack);
+		propertySquares = new ArrayList<>();
 	}
 
 	public void setName(String name) {
@@ -79,8 +82,8 @@ public class Player {
 		}
 		publishGameEvent(message);
 		move(diceRolls);
-
-		// location.executeAction(this);
+		updateState();
+		location.executeAction(this);
 	}
 
 	public List<Integer> rollDice() {
@@ -92,38 +95,17 @@ public class Player {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
 		int sum = diceRolls.get(0) + diceRolls.get(1);
-
-		int newIndexOnTrack = 0;
-		/*
-		 * if (sum % 2 != 0) { int noOfSquares =
-		 * Board.getInstance().getNoOfSquaresOnTrack(currentTrack); newIndexOnTrack =
-		 * +sum; newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack :
-		 * newIndexOnTrack - noOfSquares; newTrack = currentTrack; } else { boolean
-		 * transitNotUsed = true; int[] transitLocationsOfTrack =
-		 * Board.getInstance().getTransitStationLocationsOnTrack(currentTrack); for (int
-		 * transitLocation : transitLocationsOfTrack) { int difference = transitLocation
-		 * - indexOnTrack; if (difference < 0) difference +=
-		 * Board.getInstance().getNoOfSquaresOnTrack(currentTrack); if (difference <
-		 * sum) { TransitstationSquare transit = (TransitstationSquare)
-		 * Board.getInstance().getSquare(transitLocation, currentTrack); newTrack =
-		 * transit.getOtherTrack(currentTrack); newIndexOnTrack =
-		 * transit.getOtherIndex(currentTrack) + sum - difference; transitNotUsed =
-		 * true; break; } } if (transitNotUsed) { int noOfSquares =
-		 * Board.getInstance().getNoOfSquaresOnTrack(currentTrack); newIndexOnTrack =
-		 * +sum; newIndexOnTrack = newIndexOnTrack < noOfSquares ? newIndexOnTrack :
-		 * newIndexOnTrack - noOfSquares; newTrack = currentTrack; } }
-		 */
 		Square newLocation = location;
 		TrackType newTrack = currentTrack;
 		int i = sum;
 		int newIndex = 0;
-		int   currentIndex = indexOnTrack;
+		int currentIndex = indexOnTrack;
 		boolean transitUsed = false;
 		while (true) {
 			System.out.println(newLocation.getName());
-			if ( !transitUsed && newLocation instanceof TransitstationSquare && sum % 2 == 0 ) {
-				newIndex = ((TransitstationSquare)newLocation).getOtherIndex(newTrack);
-				newTrack = ((TransitstationSquare)newLocation).getOtherTrack(newTrack);
+			if (!transitUsed && newLocation instanceof TransitstationSquare && sum % 2 == 0) {
+				newIndex = ((TransitstationSquare) newLocation).getOtherIndex(newTrack);
+				newTrack = ((TransitstationSquare) newLocation).getOtherTrack(newTrack);
 				currentIndex = newIndex;
 				transitUsed = true;
 			} else {
@@ -186,8 +168,25 @@ public class Player {
 	}
 
 	public boolean buySquare() {
-		return false;
-
+		if (location instanceof PropertySquare) {
+			if (((PropertySquare) location).getOwner() == null) {
+				((PropertySquare) location).setOwner(this);
+				propertySquares.add((PropertySquare) location);
+				reduceMoney(((PropertySquare) location).getPrice());
+				message = "ACTION/" + "ProperySquare" + location.getName() + " is bought\n";
+				publishGameEvent(message);
+				updateState();
+				return true;
+			}else{
+				message = "ACTION/"+"PropertySquare: is owned by "+ ((PropertySquare) location).getOwner().getName()+"\n";
+				publishGameEvent(message);
+				return false;
+			}
+		} else {
+			message = "ACTION/" + "Sale Failed. It's not a property Square";
+			publishGameEvent(message);
+			return false;
+		}
 	}
 
 	public boolean passGo(int prevIndex, int newIndex) {
@@ -214,7 +213,17 @@ public class Player {
 	}
 
 	public void pickCard(Card card) {
-		// card.executeAction();
+		if (card instanceof CommunityChest) {
+			((CommunityChest) card).executeAction(this);
+			message = "ACTION/ " + ((CommunityChest) card).getName();
+			publishGameEvent(message);
+		}
+		if (card instanceof Chance) {
+			((Chance) card).executeAction(this);
+			message = "ACTION/ " + ((Chance) card).getName();
+			publishGameEvent(message);
+		}
+
 	}
 
 	public boolean reduceMoney(int m) {
@@ -259,6 +268,19 @@ public class Player {
 
 	public void setInJail(boolean inJail) {
 		this.inJail = inJail;
+	}
+
+	public void updateState() {
+		message = "PLAYERDATA/";
+		message += "Player Name: " + name + "\n";
+		message += "Player Money: " + money + "\n";
+		message += "Player Properties: \n";
+		int i = 1;
+		for (PropertySquare property : propertySquares) {
+			message += i + "- " + property.getName() + "\n";
+			i++;
+		}
+		publishGameEvent(message);
 	}
 
 	public void addGamelistener(GameListener lis) {
