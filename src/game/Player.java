@@ -21,6 +21,7 @@ public class Player {
 
 	private String name;
 	private String color;
+	private int playerIndex = 0;
 	private int money;
 	private TrackType currentTrack;
 	private int indexOnTrack;
@@ -68,7 +69,6 @@ public class Player {
 
 	public void play() {
 		List<Integer> diceRolls = rollDice();
-		// move(diceRolls);
 		// location.executeAction();
 		message = "ACTION/";
 		message += "Regular Die 1: " + diceRolls.get(0) + "\n";
@@ -98,21 +98,17 @@ public class Player {
 		Square newLocation = location;
 		TrackType newTrack = currentTrack;
 		int i = sum;
-		int newIndex = 0;
-		int currentIndex = indexOnTrack;
+		int newIndex = indexOnTrack;
 		boolean transitUsed = false;
 		while (true) {
-			System.out.println(newLocation.getName());
-			if (!transitUsed && newLocation instanceof TransitstationSquare && sum % 2 == 0) {
+			if (sum % 2 == 0 && !transitUsed && newLocation instanceof TransitstationSquare) {
 				newIndex = ((TransitstationSquare) newLocation).getOtherIndex(newTrack);
 				newTrack = ((TransitstationSquare) newLocation).getOtherTrack(newTrack);
-				currentIndex = newIndex;
 				transitUsed = true;
 			} else {
-				newIndex = (currentIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
+				newIndex = (newIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
 				newLocation = Board.getInstance().getSquare(newIndex, newTrack);
 				i--;
-				currentIndex = newIndex;
 				transitUsed = false;
 			}
 			if (i == 0) {
@@ -121,9 +117,8 @@ public class Player {
 			}
 		}
 
-		// location = Board.getInstance().getSquare(indexOnTrack , trackID);
-		message = "MOVE/" + 0 + "/";
-		message += currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/" + newIndex;
+		message = "MOVE/" + playerIndex + "/" + currentTrack.ordinal() + "/" + indexOnTrack
+				+ "/" + newTrack.ordinal() + "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
@@ -177,8 +172,9 @@ public class Player {
 				publishGameEvent(message);
 				updateState();
 				return true;
-			}else{
-				message = "ACTION/"+"PropertySquare: is owned by "+ ((PropertySquare) location).getOwner().getName()+"\n";
+			} else {
+				message = "ACTION/" + "PropertySquare: is owned by " + ((PropertySquare) location).getOwner().getName()
+						+ "\n";
 				publishGameEvent(message);
 				return false;
 			}
