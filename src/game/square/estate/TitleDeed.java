@@ -1,9 +1,6 @@
-package game.square.deed;
+package game.square.estate;
 
-
-public class TitleDeed extends Deed{
-
-		private static final DeedType type = DeedType.TITLE_DEED;
+public class TitleDeed {
 
 	private int rent;
 	private int oneHouseRent;
@@ -121,11 +118,6 @@ public class TitleDeed extends Deed{
 
 	public void setSkyscrapperCost(int skyscrapperCost) {
 		this.skyscrapperCost = skyscrapperCost;
-	}
-
-	@Override
-	public DeedType getDeedType() {
-		return type;
 	}
 
 }

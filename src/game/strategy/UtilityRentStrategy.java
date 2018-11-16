@@ -11,7 +11,6 @@ public class UtilityRentStrategy implements RentStrategy{
 
 	@Override
 	public int getRent(Square square) {
-		// TODO Auto-generated method stub
 		Player owner = ((UtilitySquare)square).getOwner();
 		List<UtilitySquare> ownedUtilities = owner.getUtilitySquares();
 		List<Integer> diceRolls = SingletonDice.getInstance().getFaceValues();
@@ -31,7 +30,6 @@ public class UtilityRentStrategy implements RentStrategy{
 			case 8: return 150 * amountOnDice;
 		}
 		return 0;
-		/// Chance Cards case will be implemented next week
 	}
 
 }

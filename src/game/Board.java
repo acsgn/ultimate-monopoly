@@ -2,8 +2,8 @@ package game;
 
 import game.square.*;
 import game.square.action.*;
-import game.square.deed.TitleDeed;
 import game.square.estate.PropertySquare;
+import game.square.estate.TitleDeed;
 import game.square.estate.TransitstationSquare;
 import game.square.estate.UtilitySquare;
 import game.square.paycorner.*;

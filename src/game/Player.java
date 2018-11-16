@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.building.Building;
-import game.card.action.Card;
+import game.card.Card;
 import game.card.action.Chance;
 import game.card.action.CommunityChest;
 import game.dice.SingletonDice;
 import game.square.Square;
-import game.square.estate.PropertySquare;
-import game.square.estate.RailroadSquare;
-import game.square.estate.UtilitySquare;
-import game.square.estate.TransitstationSquare;
+import game.square.SquareType;
+import game.square.estate.*;
 
 public class Player {
 
@@ -26,12 +24,13 @@ public class Player {
 	private TrackType currentTrack;
 	private int indexOnTrack;
 	private Square location;
-	// private Board board;
 	boolean inJail;
 	boolean isBankrupt;
-	private List<PropertySquare> propertySquares;
-	private List<RailroadSquare> railRoadSquares;
-	private List<UtilitySquare> utilitySquares;
+	
+	private ArrayList<Property> properties;
+	private ArrayList<TransitStation> transitStations;
+	private ArrayList<Utility> utilities;
+	
 	private ArrayList<GameListener> listeners;
 	private String message;
 
@@ -42,7 +41,7 @@ public class Player {
 		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
 		location = Board.getInstance().getSquare(indexOnTrack, currentTrack);
-		propertySquares = new ArrayList<>();
+		properties = new ArrayList<>();
 	}
 
 	public void setName(String name) {
@@ -103,10 +102,9 @@ public class Player {
 		int currentIndex = indexOnTrack;
 		boolean transitUsed = false;
 		while (true) {
-			System.out.println(newLocation.getName());
-			if (!transitUsed && newLocation instanceof TransitstationSquare && sum % 2 == 0) {
-				newIndex = ((TransitstationSquare) newLocation).getOtherIndex(newTrack);
-				newTrack = ((TransitstationSquare) newLocation).getOtherTrack(newTrack);
+			if (!transitUsed && newLocation instanceof TransitStation && sum % 2 == 0) {
+				newIndex = ((TransitStation) newLocation).getOtherIndex(newTrack);
+				newTrack = ((TransitStation) newLocation).getOtherTrack(newTrack);
 				currentIndex = newIndex;
 				transitUsed = true;
 			} else {
@@ -142,20 +140,13 @@ public class Player {
 		return isBankrupt;
 	}
 
-	public List<PropertySquare> getProperties() {
-		return this.propertySquares;
+	public List<Property> getProperties() {
+		return this.properties;
 	}
 
 	public boolean payRent(Square s) {
+		 int rent = ((Estate) s).getRent();
 		// publishGameEvent(message);
-		int rent = 0;
-		if (s instanceof PropertySquare) {
-			rent = ((PropertySquare) s).getRent();
-		} else if (s instanceof RailroadSquare) {
-			rent = ((RailroadSquare) s).getRent();
-		} else if (s instanceof UtilitySquare) {
-			rent = ((UtilitySquare) s).getRent();
-		}
 		return reduceMoney(rent);
 	}
 
@@ -169,17 +160,17 @@ public class Player {
 	}
 
 	public boolean buySquare() {
-		if (location instanceof PropertySquare) {
-			if (((PropertySquare) location).getOwner() == null) {
-				((PropertySquare) location).setOwner(this);
-				propertySquares.add((PropertySquare) location);
-				reduceMoney(((PropertySquare) location).getPrice());
-				message = "ACTION/" + "ProperySquare" + location.getName() + " is bought\n";
+		if (location instanceof Estate) {
+			Estate estate = (Estate) location;
+			if (estate.getOwner() == null) {
+				estate.setOwner(this);
+				reduceMoney(estate.getPrice());
+				message = "ACTION/" + "ProperySquare" + estate.getName() + " is bought\n";
 				publishGameEvent(message);
 				updateState();
 				return true;
 			}else{
-				message = "ACTION/"+"PropertySquare: is owned by "+ ((PropertySquare) location).getOwner().getName()+"\n";
+				message = "ACTION/"+"Property: is owned by "+ estate.getOwner().getName()+"\n";
 				publishGameEvent(message);
 				return false;
 			}
@@ -204,12 +195,12 @@ public class Player {
 
 	}
 
-	public boolean buyBuilding(Building building, PropertySquare propertySquare) {
+	public boolean buyBuilding(Building building, Property Property) {
 		return false;
 
 	}
 
-	public void sellBuilding(Building building, PropertySquare propertySquare) {
+	public void sellBuilding(Building building, Property Property) {
 
 	}
 
@@ -243,28 +234,28 @@ public class Player {
 		return name;
 	}
 
-	public List<PropertySquare> getPropertySquares() {
-		return propertySquares;
+	public List<Property> getPropertys() {
+		return properties;
 	}
 
-	public void setPropertySquares(List<PropertySquare> propertySquares) {
-		this.propertySquares = propertySquares;
+	public void setPropertys(ArrayList<Property> properties) {
+		this.properties = properties;
 	}
 
-	public List<RailroadSquare> getRailRoadSquares() {
-		return railRoadSquares;
+	public ArrayList<TransitStation> getTransitStations() {
+		return transitStations;
 	}
 
-	public void setRailRoadSquares(List<RailroadSquare> railRoadSquares) {
-		this.railRoadSquares = railRoadSquares;
+	public void setRailRoadSquares(ArrayList<TransitStation> transitStations) {
+		this.transitStations = transitStations;
 	}
 
-	public List<UtilitySquare> getUtilitySquares() {
-		return utilitySquares;
+	public List<Utility> getUtilitySquares() {
+		return utilities;
 	}
 
-	public void setUtilitySquares(List<UtilitySquare> utilitySquares) {
-		this.utilitySquares = utilitySquares;
+	public void setUtilitySquares(ArrayList<Utility> utilities) {
+		this.utilities = utilities;
 	}
 
 	public void setInJail(boolean inJail) {
@@ -277,7 +268,7 @@ public class Player {
 		message += "Player Money: " + money + "\n";
 		message += "Player Properties: \n";
 		int i = 1;
-		for (PropertySquare property : propertySquares) {
+		for (Property property : properties) {
 			message += i + "- " + property.getName() + "\n";
 			i++;
 		}

@@ -6,18 +6,20 @@ import game.Board;
 import game.TrackType;
 import game.strategy.RentStrategyFactory;
 
-public class TransitStationSquare extends Estate {
+public class TransitStation extends Estate {
 
 	private static final EstateSquareType type = EstateSquareType.TRANSITSTATION;
+	
+	private int trainDepot = 0;
 
 	private Hashtable<TrackType, TrackLocationPair> transit = new Hashtable<TrackType, TrackLocationPair>(2);
 	private TrackType track1;
 	private TrackType track2;
 	private boolean notInitialized = true;
 
-	private int rent;
+	private int rent = 100;
 
-	public TransitStationSquare(String name, int price,  TrackType track1, TrackType track2) {
+	public TransitStation(String name, int price,  TrackType track1, TrackType track2) {
 		super(name, price, type);
 		this.track1 = track1;
 		this.track2 = track2;
@@ -26,8 +28,7 @@ public class TransitStationSquare extends Estate {
 	// The rent system is prone to change
 	@Override
 	public int getRent() {
-		// TODO Auto-generated method stub
-		return 0;
+		return rent;
 	}
 
 	public TrackType getOtherTrack(TrackType track) {

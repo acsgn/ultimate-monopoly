@@ -16,10 +16,6 @@ public class ActionSquare extends Square {
 		this.actionType = type;
 	}
 	
-	public void doAction(Player player) {
-		action.doAction(player);
-	}
-	
 	public ActionSquareType getActionType() {
 		return actionType;
 	}
@@ -27,6 +23,11 @@ public class ActionSquare extends Square {
 	@Override
 	public SquareType getType() {
 		return type;
+	}
+
+	@Override
+	public void executeAction(Player player) {
+		action.doAction(player);
 	}	
 	
 }
