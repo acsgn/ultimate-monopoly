@@ -13,10 +13,11 @@ public class Main {
 		MonopolyGame game = new MonopolyGame();
 		Controller gameController = new Controller(game);
 		UIScreen screen = new UIScreen(gameController);
-		game.getPlayers().get(0).addGamelistener(screen);
+		game.addGamelistener(screen);
 		UICreator gameCreator = new UICreator(gameController);
 		UILinker.getInstance().initalize(gameCreator, screen);
 		gameCreator.setVisible(true);
+
 	}
 
 }

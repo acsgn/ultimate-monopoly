@@ -35,11 +35,9 @@ public class Player {
 	private ArrayList<TransitStation> transitStations;
 	private ArrayList<Utility> utilities;
 
-	private ArrayList<GameListener> listeners;
 	private String message;
 
 	public Player() {
-		listeners = new ArrayList<GameListener>();
 		money = BEGIN_MONEY;
 		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
@@ -280,14 +278,8 @@ public class Player {
 		this.goAnyWhere = true;
 	}
 
-	public void addGamelistener(GameListener lis) {
-		listeners.add(lis);
-	}
-
 	public void publishGameEvent(String message) {
-		for (GameListener l : listeners) {
-			l.onGameEvent(message);
-		}
+		MonopolyGame.publishGameEvent(message);
 	}
 
 	public String getColor() {

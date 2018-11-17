@@ -10,11 +10,13 @@ import ui.UILinker;
 public class MonopolyGame {
 	private ArrayList<Player> players;
 	private Player currentPlayer;
+	private static ArrayList<GameListener> listeners;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
 		currentPlayer = new Player();
 		players.add(currentPlayer);
+		listeners = new ArrayList<GameListener>();
 	}
 
 	public ArrayList<Player> getPlayers() {
@@ -141,5 +143,15 @@ public class MonopolyGame {
 	private int toInt(String string) {
 		return Integer.parseInt(string);
 	}
+	public void addGamelistener(GameListener lis) {
+		listeners.add(lis);
+	}
+
+	public static void publishGameEvent(String message) {
+		for (GameListener l : listeners) {
+			l.onGameEvent(message);
+		}
+	}
+
 
 }
