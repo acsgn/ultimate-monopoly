@@ -1,5 +1,5 @@
 package game.card;
 
 public enum CardType {
-	DEED, ACTION
+	CHANCE, COMMUNITY_CHEST, ROLL_THREE
 }

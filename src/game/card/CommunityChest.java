@@ -1,10 +1,10 @@
-package game.card.action;
+package game.card;
 
 import game.Player;
 
-public class CommunityChest extends ActionCard {
+public class CommunityChest extends Card {
 	
-	private static final ActionCardType type = ActionCardType.COMMUNITY_CHEST;
+	private static final CardType type = CardType.COMMUNITY_CHEST;
 	private String name;
 	
 	public CommunityChest(String name){
@@ -19,7 +19,7 @@ public class CommunityChest extends ActionCard {
 	}
 
 	@Override
-	public ActionCardType getActionCardType() {
+	public CardType getCardType() {
 		return type;
 	}
 	

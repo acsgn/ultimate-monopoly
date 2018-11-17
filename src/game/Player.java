@@ -6,8 +6,8 @@ import java.util.function.BiConsumer;
 
 import game.building.Building;
 import game.card.Card;
-import game.card.action.Chance;
-import game.card.action.CommunityChest;
+import game.card.Chance;
+import game.card.CommunityChest;
 import game.dice.SingletonDice;
 import game.square.Square;
 import game.square.SquareType;

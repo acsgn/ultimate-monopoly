@@ -1,4 +1,4 @@
-package game.card.action;
+package game.card;
 
 import java.util.ArrayList;
 
@@ -42,7 +42,7 @@ public class ActionCards {
 		return tmp;
 	}
 	
-	public void putTheCardBack(ActionCard card) {
+	public void putTheCardBack(Card card) {
 
 	}
 	

@@ -1,7 +1,17 @@
 package game.card;
 
-public abstract class Card {
+import game.Player;
+
+public class Card {
+
+	private CardType cardType;
 	
-	public abstract CardType getType();
+	public CardType getCardType() {
+		return cardType;
+	}
+
+	public void executeAction(Player player) {
+		
+	}
 	
 }
