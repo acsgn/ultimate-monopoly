@@ -80,6 +80,7 @@ public class Player {
 		}
 		publishGameEvent(message);
 		move(diceRolls);
+		NetworkFaçade.getInstance().sendMessageToOthers(this.name+"/MOVE/"+diceRolls[0]+"/"+diceRolls[1]+"/"+diceRolls[2]);
 		updateState();
 		location.executeWhenLanded(this);
 	}
@@ -126,9 +127,7 @@ public class Player {
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
 		location = newLocation;
-		
-		NetworkFaçade.getInstance().sendMessageToOthers(this.name+"/"+"MOVE"+"/"+diceRolls[0]+"/"+diceRolls[1]+"/"+diceRolls[2]);
-	}
+		}
 	
 
 	public Square getLocation() {
