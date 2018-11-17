@@ -4,13 +4,11 @@ import game.Player;
 
 public abstract class Square {
 
-	private boolean executeWhenPassed = false;
-
-	public boolean executeWhenPassed() {
-		return executeWhenPassed;
+	public void executeWhenPassed(Player player) {
 	}
 
-	public abstract void executeAction(Player player);
+	public void executeWhenLanded(Player player) {
+	}
 
 	public abstract SquareType getType();
 

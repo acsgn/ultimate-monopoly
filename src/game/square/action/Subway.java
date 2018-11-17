@@ -8,9 +8,8 @@ public class Subway extends Action {
 	}
 
 	@Override
-	public void executeAction(Player player) {
-		// TODO Auto-generated method stub
-
+	public void executeWhenLanded(Player player) {
+		player.setGoAnyWhere();
 	}
 
 }

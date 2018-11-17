@@ -8,9 +8,8 @@ public class GoToJail extends Action {
 	}
 
 	@Override
-	public void executeAction(Player player) {
-		// player.setLocation(Board.getInstance().getSquare("Jail"))
-		// player.setInJail(true)
+	public void executeWhenLanded(Player player) {
+		player.setInJail();
 	}
-
+	
 }

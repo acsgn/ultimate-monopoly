@@ -12,7 +12,6 @@ public class CommunityChest extends Card {
 	}
 	@Override
 	public void executeAction(Player player) {
-		// TODO Auto-generated method stub
 		if(name.equals("Income Tax Refund")){
 			player.increaseMoney(20);
 		}

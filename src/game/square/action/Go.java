@@ -10,7 +10,12 @@ public class Go extends Action{
 	}
 
 	@Override
-	public void executeAction(Player player) {
+	public void executeWhenPassed(Player player) {
+		player.increaseMoney(amount);
+	}
+	
+	@Override
+	public void executeWhenLanded(Player player) {
 		player.increaseMoney(amount);
 	}
 

@@ -6,10 +6,10 @@ public class BirthGift extends Action{
 	
 	public BirthGift() {
 	}
-
+	
 	@Override
-	public void executeAction(Player player) {
-		
+	public void executeWhenLanded(Player player) {
+		//TODO
 	}
 
 }

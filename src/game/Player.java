@@ -2,7 +2,6 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import game.building.Building;
 import game.card.Card;
@@ -10,7 +9,6 @@ import game.card.Chance;
 import game.card.CommunityChest;
 import game.dice.SingletonDice;
 import game.square.Square;
-import game.square.SquareType;
 import game.square.estate.*;
 
 public class Player {
@@ -22,11 +20,14 @@ public class Player {
 	private String name;
 	private String color;
 	private int money;
+
 	private TrackType currentTrack;
 	private int indexOnTrack;
 	private Square location;
+
 	boolean inJail;
 	boolean isBankrupt;
+	boolean goAnyWhere;
 
 	private ArrayList<Property> properties;
 	private ArrayList<TransitStation> transitStations;
@@ -68,59 +69,62 @@ public class Player {
 	}
 
 	public void play() {
-		List<Integer> diceRolls = rollDice();
+		int[] diceRolls = rollDice();
 		// move(diceRolls);
 		// location.executeAction();
 		message = "ACTION/";
-		message += "Regular Die 1: " + diceRolls.get(0) + "\n";
-		message += "Regular Die 2: " + diceRolls.get(1) + "\n";
-		if (diceRolls.get(2) == 4) {
+		message += "Regular Die 1: " + diceRolls[0] + "\n";
+		message += "Regular Die 2: " + diceRolls[1] + "\n";
+		if (diceRolls[2] == 4) {
 			message += "Speed Die : Bus Icon\n";
-		} else if (diceRolls.get(2) == 5) {
+		} else if (diceRolls[2] == 5) {
 			message += "Speed Die : Mr.Monopoly Bonus Move\n";
 		} else {
-			message += "Speed Die: " + diceRolls.get(2) + "\n";
+			message += "Speed Die: " + diceRolls[2] + "\n";
 		}
 		publishGameEvent(message);
 		move(diceRolls);
 		updateState();
-		location.executeAction(this);
+		location.executeWhenLanded(this);
 	}
 
-	public List<Integer> rollDice() {
+	public int[] rollDice() {
 		SingletonDice.getInstance().rollDice();
 		return SingletonDice.getInstance().getFaceValues();
 	}
 
-	public void move(List<Integer> diceRolls) {
+	public void move(int[] diceRolls) {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
-		int sum = diceRolls.get(0) + diceRolls.get(1);
+		int sum = diceRolls[0] + diceRolls[1];
+
 		Square newLocation = location;
 		TrackType newTrack = currentTrack;
-		int i = sum;
-		int newIndex = 0;
-		int currentIndex = indexOnTrack;
+		int newIndex = indexOnTrack;
+
+		boolean isEven = sum % 2 == 0;
 		boolean transitUsed = false;
+
 		while (true) {
-			if (!transitUsed && newLocation instanceof TransitStation && sum % 2 == 0) {
+			if (!transitUsed && isEven && newLocation instanceof TransitStation) {
 				newIndex = ((TransitStation) newLocation).getOtherIndex(newTrack);
 				newTrack = ((TransitStation) newLocation).getOtherTrack(newTrack);
-				currentIndex = newIndex;
 				transitUsed = true;
 			} else {
-				newIndex = (currentIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
+				newIndex = (newIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
 				newLocation = Board.getInstance().getSquare(newIndex, newTrack);
-				i--;
-				currentIndex = newIndex;
+				newLocation.executeWhenPassed(this);
+				sum--;
 				transitUsed = false;
 			}
-			if (i == 0)
+			if (sum == 1)
 				break;
 		}
+		newIndex = (newIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
+		newLocation = Board.getInstance().getSquare(newIndex, newTrack);
 
-		message = "MOVE/" + 0 + "/" + currentTrack.ordinal() + "/" + indexOnTrack
-				+ "/" + newTrack.ordinal() + "/" + newIndex;
+		message = "MOVE/" + 0 + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/"
+				+ newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
@@ -129,6 +133,10 @@ public class Player {
 
 	public Square getLocation() {
 		return location;
+	}
+
+	public int getPosition() {
+		return indexOnTrack;
 	}
 
 	public boolean isInJail() {
@@ -154,10 +162,6 @@ public class Player {
 		return reduceMoney(amount);
 	}
 
-	public void collectRent(int rent) {
-		money += rent;
-	}
-
 	public boolean buySquare() {
 		if (location instanceof Estate) {
 			Estate estate = (Estate) location;
@@ -179,10 +183,9 @@ public class Player {
 			return false;
 		}
 	}
-	
+
 	public void goTo(TrackType track, int index) {
-		message = "JUMP/" + 0 + "/" + currentTrack.ordinal() + "/" + indexOnTrack
-				+ "/" + track.ordinal() + "/" + index;
+		message = "JUMP/" + 0 + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + track.ordinal() + "/" + index;
 		publishGameEvent(message);
 		indexOnTrack = index;
 		currentTrack = track;
@@ -197,7 +200,7 @@ public class Player {
 
 	}
 
-	/*public void pickCard(Card card) {
+	public void pickCard(Card card) {
 		if (card instanceof CommunityChest) {
 			((CommunityChest) card).executeAction(this);
 			message = "ACTION/ " + ((CommunityChest) card).getName();
@@ -208,12 +211,12 @@ public class Player {
 			message = "ACTION/ " + ((Chance) card).getName();
 			publishGameEvent(message);
 		}
-
-	}*/
+	}
 
 	public boolean reduceMoney(int m) {
 		if (money > m) {
 			this.money -= m;
+			updateState();
 			return true;
 		}
 		return false;
@@ -221,6 +224,7 @@ public class Player {
 
 	public void increaseMoney(int m) {
 		this.money += m;
+		updateState();
 	}
 
 	public String getName() {
@@ -231,7 +235,7 @@ public class Player {
 		return properties;
 	}
 
-	public void setPropertys(ArrayList<Property> properties) {
+	public void setProperties(ArrayList<Property> properties) {
 		this.properties = properties;
 	}
 
@@ -251,8 +255,9 @@ public class Player {
 		this.utilities = utilities;
 	}
 
-	public void setInJail(boolean inJail) {
-		this.inJail = inJail;
+	public void setInJail() {
+		this.inJail = true;
+		updateState();
 	}
 
 	public void updateState() {
@@ -266,6 +271,10 @@ public class Player {
 			i++;
 		}
 		publishGameEvent(message);
+	}
+
+	public void setGoAnyWhere() {
+		this.goAnyWhere = true;
 	}
 
 	public void addGamelistener(GameListener lis) {

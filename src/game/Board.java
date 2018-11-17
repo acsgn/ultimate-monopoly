@@ -1,10 +1,8 @@
 package game;
 
-import game.square.Square;
-import game.square.estate.Property;
-import game.square.estate.TitleDeed;
-import game.square.estate.TransitStation;
-import game.square.estate.Utility;
+import game.square.*;
+import game.square.action.*;
+import game.square.estate.*;
 
 public class Board {
 
@@ -18,8 +16,12 @@ public class Board {
 	private TransitStation secondTS;
 	private TransitStation thirdTS;
 	private TransitStation fourthTS;
-
-	// private ChanceSquare cS;
+	
+	private HollandTunnel hollandTunnel;
+	
+	private Chance chance;
+	private CommunityChest communityChest;
+	private FreeParking freeParking;
 
 	private Board() {
 		outerTrack = new Track(TrackType.OUTER_TRACK);
@@ -30,6 +32,12 @@ public class Board {
 		secondTS = new TransitStation("Pennsylvania Railroad", middleTrack.getTrackType(), innerTrack.getTrackType());
 		thirdTS = new TransitStation("B & O Railroad", middleTrack.getTrackType(), outerTrack.getTrackType());
 		fourthTS = new TransitStation("Short Line", middleTrack.getTrackType(), innerTrack.getTrackType());
+
+		hollandTunnel = new HollandTunnel();
+		
+		chance = new Chance();
+		communityChest = new CommunityChest();
+		freeParking = new FreeParking();
 
 		constructOuterTrack();
 		constructMiddleTrack();
@@ -94,31 +102,33 @@ public class Board {
 		Utility telephoneCompany = new Utility("Telephone Company");
 		Utility gasCompany = new Utility("Gas Company");
 
-		// BonusSquare bonus = new BonusSquare("Bonus", 1);
-		// innerTrack.addSquare(bonus);
+		Bonus bonus = new Bonus();
 
-		// TaxrefundSquare taxRefund = new TaxrefundSquare("Tax Refund", 9);
-		// innerTrack.addSquare(taxRefund);
+		TaxRefund taxRefund = new TaxRefund();
 
-		// HollandTunnelSquare hollandTunnel2 = new HollandTunnelSquare("Holland
-		// Tunnel", 13);
-		// innerTrack.addSquare(hollandTunnel2);
-
+		innerTrack.addSquare(freeParking);
 		innerTrack.addSquare(theEmbarcadero);
 		innerTrack.addSquare(fishermansWharf);
 		innerTrack.addSquare(telephoneCompany);
+		innerTrack.addSquare(communityChest);
 		innerTrack.addSquare(beaconSt);
+		innerTrack.addSquare(bonus);
 		innerTrack.addSquare(boylstonSt);
 		innerTrack.addSquare(newburySt);
 		innerTrack.addSquare(secondTS);
 		innerTrack.addSquare(fifthAve);
 		innerTrack.addSquare(madisonAve);
+		innerTrack.addSquare(freeParking);
 		innerTrack.addSquare(wallSt);
+		innerTrack.addSquare(taxRefund);
 		innerTrack.addSquare(gasCompany);
+		innerTrack.addSquare(chance);
 		innerTrack.addSquare(floridaAve);
+		innerTrack.addSquare(hollandTunnel);
 		innerTrack.addSquare(miamiAve);
 		innerTrack.addSquare(biscayneAve);
 		innerTrack.addSquare(fourthTS);
+		innerTrack.addSquare(freeParking);
 		innerTrack.addSquare(lombardSt);
 	}
 
@@ -146,21 +156,6 @@ public class Board {
 		TitleDeed parkPlaceTD = new TitleDeed(35, 175, 500, 1100, 1300, 1500, 2500, 200, 200, 200, 200);
 		TitleDeed boardwalkTD = new TitleDeed(50, 200, 600, 1400, 1700, 2000, 3000, 200, 200, 200, 200);
 
-		// GoSquare go = new GoSquare("GO", 1);
-		// middleTrack.addSquare(go);
-
-		// IncomeTaxSquare incomeTax1 = new IncomeTaxSquare("Income Tax", 5);
-		// squares.add(incomeTax1);
-
-		// JailSquare jailSquare = new JailSquare();
-		// middleTrack.addSquare(jailSquare);
-
-		// GoToJailSquare goToJail = new GoToJailSquare("Go to Jail", 31);
-		// middleTrack.addSquare(goToJail);
-
-		// IncomeTaxSquare incomeTax1 = new IncomeTaxSquare("Income Tax", 39);
-		// squares.add(incomeTax1);
-
 		Property mediterraneanAve = new Property("Mediterranean Avenue", 60, mediterraneanAveTD);
 		Property balticAve = new Property("Baltic Avenue", 60, balticAveTD);
 		Property orientalAve = new Property("Oriental Avenue", 100, orientalAveTD);
@@ -186,22 +181,37 @@ public class Board {
 
 		Utility electricCompany = new Utility("Electric Company");
 		Utility waterWorks = new Utility("Water Works");
+		
 
+		Go go = new Go();
+		IncomeTax incomeTax = new IncomeTax();
+		Jail jail = new Jail();
+		GoToJail goToJail = new GoToJail();
+		LuxuryTax luxuryTax = new LuxuryTax();
+
+		middleTrack.addSquare(go);
 		middleTrack.addSquare(mediterraneanAve);
+		middleTrack.addSquare(communityChest);
 		middleTrack.addSquare(balticAve);
+		middleTrack.addSquare(incomeTax);
 		middleTrack.addSquare(firstTS);
 		middleTrack.addSquare(orientalAve);
+		middleTrack.addSquare(chance);
 		middleTrack.addSquare(vermontAve);
 		middleTrack.addSquare(connecticutAve);
+		middleTrack.addSquare(jail);
 		middleTrack.addSquare(stCharlesPlace);
 		middleTrack.addSquare(electricCompany);
 		middleTrack.addSquare(statesAve);
 		middleTrack.addSquare(virginiaAve);
 		middleTrack.addSquare(secondTS);
 		middleTrack.addSquare(stJamesPlace);
+		middleTrack.addSquare(communityChest);
 		middleTrack.addSquare(tennesseeAve);
 		middleTrack.addSquare(newYorkAve);
+		middleTrack.addSquare(freeParking);
 		middleTrack.addSquare(kentuckyAve);
+		middleTrack.addSquare(chance);
 		middleTrack.addSquare(indianaAve);
 		middleTrack.addSquare(illinoisAve);
 		middleTrack.addSquare(thirdTS);
@@ -209,11 +219,15 @@ public class Board {
 		middleTrack.addSquare(ventnorAve);
 		middleTrack.addSquare(waterWorks);
 		middleTrack.addSquare(marvinGardens);
+		middleTrack.addSquare(goToJail);
 		middleTrack.addSquare(pacificAve);
 		middleTrack.addSquare(noCarolinaAve);
+		middleTrack.addSquare(communityChest);
 		middleTrack.addSquare(pennsylvaniaAve);
 		middleTrack.addSquare(fourthTS);
+		middleTrack.addSquare(chance);
 		middleTrack.addSquare(parkPlace);
+		middleTrack.addSquare(luxuryTax);
 		middleTrack.addSquare(boardwalk);
 	}
 
@@ -286,50 +300,65 @@ public class Board {
 		Utility trashCollector = new Utility("Trash Collector");
 		Utility sewageSystem = new Utility("Sewage System");
 
-		// PayCornerSquare payDay = new PayCornerSquare("PAY DAY", 29);
-		// outerTrack.addSquare(payDay);
+		PayDay payDay = new PayDay();
+		Subway subway = new Subway();
+		BirthGift birthdayGift = new BirthGift();
 
-		// SubwaySquare subway = new SubwaySquare ("Subway", 43);
-		// outerTrack.addSquare(subway);
-
-		// BirthGiftSquare birthdayGift = new BirthGiftSquare("Birthday Gift", 52);
-		// outerTrack.addSquare(birthdayGift);
-
+		outerTrack.addSquare(freeParking);
 		outerTrack.addSquare(lakeStreet);
+		outerTrack.addSquare(communityChest);
 		outerTrack.addSquare(nicolletAve);
 		outerTrack.addSquare(hennepinAve);
+		outerTrack.addSquare(freeParking);
+		outerTrack.addSquare(freeParking);
 		outerTrack.addSquare(firstTS);
 		outerTrack.addSquare(esplanadeAve);
 		outerTrack.addSquare(canalStreet);
+		outerTrack.addSquare(chance);
 		outerTrack.addSquare(cableCompany);
 		outerTrack.addSquare(magazineStreet);
 		outerTrack.addSquare(bourbonStreet);
+		outerTrack.addSquare(hollandTunnel);
+		outerTrack.addSquare(freeParking);
 		outerTrack.addSquare(katyFreeway);
 		outerTrack.addSquare(westheimerRoad);
 		outerTrack.addSquare(internetServiceProvider);
 		outerTrack.addSquare(kirbyDr);
 		outerTrack.addSquare(cullenBlvd);
+		outerTrack.addSquare(chance);
+		outerTrack.addSquare(freeParking);
 		outerTrack.addSquare(dekalbAve);
+		outerTrack.addSquare(communityChest);		
 		outerTrack.addSquare(andrewYoungIntlBlvd);
 		outerTrack.addSquare(decaturSt);
 		outerTrack.addSquare(peachtreeSt);
+		outerTrack.addSquare(payDay);
 		outerTrack.addSquare(randolphSt);
+		outerTrack.addSquare(chance);
 		outerTrack.addSquare(lakeShoreDr);
 		outerTrack.addSquare(wackerDr);
 		outerTrack.addSquare(michiganAve);
+		outerTrack.addSquare(freeParking);
 		outerTrack.addSquare(thirdTS);
+		outerTrack.addSquare(communityChest);
 		outerTrack.addSquare(southTemple);
 		outerTrack.addSquare(westTemple);
 		outerTrack.addSquare(trashCollector);
 		outerTrack.addSquare(northTemple);
 		outerTrack.addSquare(templeSquare);
+		outerTrack.addSquare(subway);
 		outerTrack.addSquare(southSt);
 		outerTrack.addSquare(broadSt);
 		outerTrack.addSquare(walnutSt);
+		outerTrack.addSquare(communityChest);
 		outerTrack.addSquare(marketSt);
+		outerTrack.addSquare(freeParking);
 		outerTrack.addSquare(sewageSystem);
+		outerTrack.addSquare(freeParking);
+		outerTrack.addSquare(birthdayGift);
 		outerTrack.addSquare(mulhollandDr);
 		outerTrack.addSquare(venturaBlvd);
+		outerTrack.addSquare(chance);
 		outerTrack.addSquare(rodeoDr);
 	}
 

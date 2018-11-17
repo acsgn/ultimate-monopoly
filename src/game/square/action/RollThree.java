@@ -8,8 +8,9 @@ public class RollThree extends Action {
 	}
 
 	@Override
-	public void executeAction(Player player) {
-
+	public void executeWhenLanded(Player player) {
+		// TODO Auto-generated method stub
+		super.executeWhenLanded(player);
 	}
 
 }

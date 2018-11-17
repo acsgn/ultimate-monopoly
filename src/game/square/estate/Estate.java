@@ -7,7 +7,6 @@ import game.square.SquareType;
 public abstract class Estate extends Square {
 
 	private static final SquareType type = SquareType.ESTATE;
-	private static final boolean executeWhenPassed = false;
 
 	private String name;
 	private int price;
@@ -38,17 +37,14 @@ public abstract class Estate extends Square {
 		return owner;
 	}
 
-	public void executeAction(Player player) {
-		//will ask to pay rent or buy, same for all
+	@Override
+	public void executeWhenLanded(Player player) {
+		// TODO Auto-generated method stub
+		super.executeWhenLanded(player);
 	}
 
 	public EstateSquareType getEstateSquareType() {
 		return estateSquareType;
-	}
-	
-	@Override
-	public boolean executeWhenPassed() {
-		return executeWhenPassed;
 	}
 
 	@Override

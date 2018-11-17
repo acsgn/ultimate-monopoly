@@ -2,7 +2,7 @@ package game.card;
 
 import game.Player;
 
-public class Card {
+public abstract class Card {
 
 	private CardType cardType;
 	
@@ -10,8 +10,6 @@ public class Card {
 		return cardType;
 	}
 
-	public void executeAction(Player player) {
-		
-	}
+	public abstract void executeAction(Player player);
 	
 }

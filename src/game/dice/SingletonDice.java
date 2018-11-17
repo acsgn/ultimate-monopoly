@@ -27,14 +27,11 @@ public class SingletonDice {
 		speedDie.roll();
 	}
 
-	public ArrayList<Integer> getFaceValues() {
-		ArrayList<Integer> diceRolls = new ArrayList<Integer>();
-		int r1 = regularDie1.getFaceValue();
-		int r2 = regularDie2.getFaceValue();
-		int r3 = speedDie.getFaceValue();
-		diceRolls.add(r1);
-		diceRolls.add(r2);
-		diceRolls.add(r3);
+	public int[] getFaceValues() {
+		int[] diceRolls = new int[3];
+		diceRolls[0] = regularDie1.getFaceValue();
+		diceRolls[1] = regularDie2.getFaceValue();
+		diceRolls[2]= speedDie.getFaceValue();
 		return diceRolls;
 	}
 
