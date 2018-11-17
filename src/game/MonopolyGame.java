@@ -55,6 +55,9 @@ public class MonopolyGame {
 				players.add(newPlayer);
 			}
 			return;
+		}else if(parsed[0].equals("ALLDONE")) {
+			UILinker.getInstance().connectionDone();
+			return;
 		}
 		updateCurrentPlayer(parsed[0]);
 		switch (parsed[1]) {
@@ -119,11 +122,10 @@ public class MonopolyGame {
 				break;
 			case "PLAYERCOLOR":
 				currentPlayer.setColor(parsed[2]);
+				receiveMessage();
 				break;
 			case "SERVER":
 				NetworkFaçade.getInstance().connect(Integer.parseInt(parsed[2]));
-				receiveMessage();
-				UILinker.getInstance().connectionDone();
 				break;
 			case "CLIENT":
 				NetworkFaçade.getInstance().connect(parsed[2]);
@@ -131,8 +133,6 @@ public class MonopolyGame {
 					UILinker.getInstance().connectionError();
 					break;
 				}
-				receiveMessage();
-				UILinker.getInstance().connectionDone();
 				break;
 			}
 		}

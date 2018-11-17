@@ -169,6 +169,8 @@ public class UIScreen extends JFrame implements GameListener {
 		endTurnButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				message = "UISCREEN/ENDTURN";
+				controller.dispatchMessage(message);
 			}
 		});
 
@@ -221,6 +223,7 @@ public class UIScreen extends JFrame implements GameListener {
 			piece.lastPoint = pathFinder.getLocation(trackID, location);
 			repaint();
 			pieces.add(piece);
+			System.out.println(pieces.size());
 			break;
 		case "PLAYERDATA":
 			playerText.setText(parsed[1]);

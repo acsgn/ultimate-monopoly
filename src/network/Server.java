@@ -13,9 +13,11 @@ public class Server implements Runnable {
 	private static final int DEFAULT_PORT = 302;
 
 	private ArrayList<MessageSocket> players;
+	private int numberOfConnections;
 
 	public Server(int numOfPlayers) {
 		players = new ArrayList<MessageSocket>(numOfPlayers);
+		numberOfConnections = numOfPlayers;
 	}
 
 	@Override
@@ -28,28 +30,32 @@ public class Server implements Runnable {
 
 	private void informPlayers() {
 		String getName = "SENDNAME";
-		ArrayList<String> names = new ArrayList<>(players.size());
+		ArrayList<String> names = new ArrayList<>();
 		for (int i = 0; i < players.size(); i++) {
 			sendMessageToPlayer(getName, i);
 			String name = receiveMessageFromPlayer(i);
-			names.set(i, name);
+			names.add(name);
 		}
 		for (int i = 0; i < players.size(); i++) {
 			for (String name : names) {
-				sendMessageToPlayer("RECEIVENAME/"+name, i);
+				sendMessageToPlayer("RECEIVENAME/" + name, i);
 			}
 		}
 		String getColor = "SENDCOLOR";
-		ArrayList<String> colors = new ArrayList<>(players.size());
+		ArrayList<String> colors = new ArrayList<>();
 		for (int i = 0; i < players.size(); i++) {
 			sendMessageToPlayer(getColor, i);
 			String color = receiveMessageFromPlayer(i);
-			colors.set(i, color);
+			colors.add(color);
 		}
 		for (int i = 0; i < players.size(); i++) {
 			for (String color : colors) {
-				sendMessageToPlayer(names.get(i) +"/RECEIVECOLOR/"+color, i);
+				sendMessageToPlayer(names.get(i) + "/RECEIVECOLOR/" + color, i);
 			}
+		}
+		String done = "ALLDONE";
+		for (int i = 0; i < players.size(); i++) {
+			sendMessageToPlayer(done, i);
 		}
 	}
 
@@ -58,19 +64,20 @@ public class Server implements Runnable {
 		while (true) {
 			sendMessageToPlayer("PLAY", currentPlayer);
 			String message;
-			do {
+			while (true) {
 				message = receiveMessageFromPlayer(currentPlayer);
+				if (message.equals("ENDTURN"))
+					break;
 				sendMessageToOtherPlayers(message, currentPlayer);
 				if (message.compareTo("CLOSE") == 0) {
 					players.remove(currentPlayer);
 					currentPlayer = currentPlayer == players.size() + 1 ? 0 : currentPlayer;
 					break;
 				}
-			} while (!message.equals("ENDTURN"));
+			}
 			if (players.isEmpty())
 				break;
-			currentPlayer++;
-			currentPlayer = currentPlayer == players.size() ? 0 : currentPlayer;
+			currentPlayer = (currentPlayer + 1) % players.size();
 		}
 	}
 
@@ -99,7 +106,7 @@ public class Server implements Runnable {
 				MessageSocket mS = new MessageSocket(s);
 				players.add(mS);
 				i++;
-				if (i == players.size())
+				if (i == numberOfConnections)
 					break;
 			}
 			server.close();
@@ -112,7 +119,7 @@ public class Server implements Runnable {
 		for (int i = 0; i < players.size(); i++) {
 			if (i == index)
 				continue;
-			sendMessageToPlayer(message, index);
+			sendMessageToPlayer(message, i);
 		}
 	}
 
