@@ -30,6 +30,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
 	private Animator animator;
+	private Controller controller;
 	private String message;
 	private JTextArea infoText;
 	private JTextArea playerText;
@@ -60,13 +61,13 @@ public class UIScreen extends JFrame implements GameListener {
 			Image.SCALE_SMOOTH);
 
 	private int pieceSize = (int) (screenHeight * 80 / 3000.0);
-	private int initialPieceLocation = 0;
-	private int initialTrack = 1;
 
 	/**
 	 * Create the panel.
 	 */
 	public UIScreen(Controller controller) {
+		this.controller = controller;
+
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
@@ -76,7 +77,7 @@ public class UIScreen extends JFrame implements GameListener {
 		animator = new Animator(this);
 		new Thread(animator, "Animator").start();
 
-		pathFinder = new PathFinder(screenHeight / 3000.0, initialTrack, initialPieceLocation);
+		pathFinder = new PathFinder(screenHeight / 3000.0);
 
 		JLabel board = new JLabel();
 		board.setIcon(new ImageIcon(boardImage));
@@ -187,7 +188,7 @@ public class UIScreen extends JFrame implements GameListener {
 	}
 
 	public void start() {
-		createPlayerPiece();
+		controller.dispatchMessage("UISCREEN/START");
 		setVisible(true);
 	}
 
@@ -212,6 +213,16 @@ public class UIScreen extends JFrame implements GameListener {
 			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 			pieces.get(toInt(parsed[1])).lastPoint = point;
 			repaint();
+			break;
+		case "PIECE":
+			Piece piece = new Piece();
+			int trackID = toInt(parsed[1]);
+			int location = toInt(parsed[2]);
+			pathFinder.setInitialValues(trackID, location);
+			piece.lastPoint = pathFinder.getLocation(trackID, location);
+			repaint();
+			pieces.add(piece);
+			break;
 		case "PLAYERDATA":
 			playerText.setText(parsed[1]);
 		}
@@ -229,18 +240,11 @@ public class UIScreen extends JFrame implements GameListener {
 		}
 	}
 
-	private void createPlayerPiece() {
-		Piece piece = new Piece();
-		repaint();
-		pieces.add(piece);
-	}
-
 	private class Piece {
 		private Path path;
 		private Point lastPoint;
 
 		public Piece() {
-			lastPoint = pathFinder.getLocation(1, 0);
 		}
 
 		public void paint(Graphics g) {

@@ -22,15 +22,21 @@ public class MonopolyGame {
 	public void setPlayers(ArrayList<Player> players) {
 		this.players = players;
 	}
+
 	public void executeMessage(String message) {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
 		case "UISCREEN":
 			switch (parsed[1]) {
+			case "START":
+				currentPlayer.createPiece();
+				break;
 			case "ROLLDICE":
-				currentPlayer.play(); break;
-			case "ENDGAME": 
-				NetworkFaçade.getInstance().sendMessageToOthers("CLOSE");break;
+				currentPlayer.play();
+				break;
+			case "ENDGAME":
+				NetworkFaçade.getInstance().sendMessageToOthers("CLOSE");
+				break;
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
 			}
@@ -57,5 +63,5 @@ public class MonopolyGame {
 			}
 		}
 	}
-	
+
 }

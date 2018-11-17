@@ -39,7 +39,6 @@ public class Player {
 
 	public Player() {
 		listeners = new ArrayList<GameListener>();
-		// this.board = board;
 		money = BEGIN_MONEY;
 		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
@@ -56,6 +55,11 @@ public class Player {
 	public void setColor(String color) {
 		this.color = color;
 		message = "COLOR/" + color;
+		publishGameEvent(message);
+	}
+
+	public void createPiece() {
+		message = "PIECE/" + BEGIN_TRACK.ordinal() + "/" + BEGIN_INDEX;
 		publishGameEvent(message);
 	}
 
@@ -86,7 +90,7 @@ public class Player {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
 		int sum = diceRolls[0] + diceRolls[1];
-		
+
 		sum = 6;
 
 		Square newLocation = location;
@@ -122,6 +126,7 @@ public class Player {
 		currentTrack = newTrack;
 		location = newLocation;
 	}
+	
 
 	public Square getLocation() {
 		return location;

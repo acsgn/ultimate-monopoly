@@ -15,7 +15,7 @@ public class UIFaçade {
 	}
 
 	public void connectionDone() {
-		uiC.dispose();
+		uiC.close();
 		uiS.start();
 	}
 	

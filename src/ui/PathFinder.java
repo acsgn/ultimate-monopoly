@@ -48,11 +48,9 @@ public class PathFinder {
 	private TransitStation innerToMiddleFirst;
 	private TransitStation innerToMiddleSecond;
 
-	public PathFinder(double scaleFactor, int trackId, int location) {
+	public PathFinder(double scaleFactor) {
 
 		this.scaleFactor = scaleFactor;
-		this.trackID = trackId;
-		this.location = location;
 
 		outerTrack = new Track(getScaled(outerTrackUpLeftCorner), getScaled(outerTrackDownRightCorner),
 				outerTrackCornerDifference);
@@ -80,6 +78,11 @@ public class PathFinder {
 		innerToMiddleSecond = new TransitStation(innerTrack, innerToMiddleSecondTransitLocation, middleTrack,
 				middleToInnerSecondTransitLocation);
 
+	}
+	
+	public void setInitialValues(int trackID, int location) {
+		this.trackID = trackID;
+		this.location = location;
 	}
 
 	public Point getLocation(int trackID, int location) {

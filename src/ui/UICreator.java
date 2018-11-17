@@ -192,6 +192,10 @@ public class UICreator extends JFrame {
 
 	}
 
+	public void close() {
+		dispose();
+	}
+
 	public void serverNotFound() {
 		JOptionPane.showMessageDialog(UICreator.this, "No server found on given IP Address!", "Error",
 				JOptionPane.ERROR_MESSAGE);

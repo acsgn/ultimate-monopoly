@@ -17,7 +17,7 @@ public class HollandTunnel extends Action {
 	public HollandTunnel() {
 	}
 
-	@Override
+	/*@Override
 	public void executeWhenLanded(Player player) {
 		if (notInitialized)
 			initialize();
@@ -25,7 +25,7 @@ public class HollandTunnel extends Action {
 			player.goTo(track2, index2);
 		else
 			player.goTo(track1, index1);
-	}
+	}*/
 
 	private void initialize() {
 		index1 = Board.getInstance().getIndexOfSquare(this, track1);
