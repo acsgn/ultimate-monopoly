@@ -12,4 +12,8 @@ public class IncomeTax extends Action{
 		// TODO
 	}
 
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
+	
 }

@@ -14,5 +14,9 @@ public class Chance extends Action {
 		game.card.Chance chanceCard = ActionCards.getInstance().getChanceCard();
 		player.pickCard(chanceCard);
 	}
+
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
 	
 }

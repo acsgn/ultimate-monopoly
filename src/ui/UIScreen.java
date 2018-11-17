@@ -195,7 +195,6 @@ public class UIScreen extends JFrame implements GameListener {
 	@Override
 	public void onGameEvent(String message) {
 		String[] parsed = message.split("/");
-		System.out.println(parsed);
 		switch (parsed[0]) {
 		case "ACTION":
 			infoText.append(parsed[1]);

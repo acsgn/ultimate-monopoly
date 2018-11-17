@@ -14,4 +14,8 @@ public class LuxuryTax extends Action {
 		player.reduceMoney(amount);
 	}
 
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
+	
 }

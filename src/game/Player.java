@@ -91,7 +91,7 @@ public class Player {
 		// Now we just sum the first two regular dice/
 		int sum = diceRolls[0] + diceRolls[1];
 
-		sum = 6;
+		sum = 12;
 
 		Square newLocation = location;
 		TrackType newTrack = currentTrack;

@@ -39,10 +39,13 @@ public abstract class Estate extends Square {
 
 	@Override
 	public void executeWhenLanded(Player player) {
-		// TODO Auto-generated method stub
-		super.executeWhenLanded(player);
+		// TODO
 	}
 
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
+	
 	public EstateSquareType getEstateSquareType() {
 		return estateSquareType;
 	}

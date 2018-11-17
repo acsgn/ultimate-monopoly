@@ -12,4 +12,8 @@ public class BirthGift extends Action{
 		//TODO
 	}
 
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
+
 }

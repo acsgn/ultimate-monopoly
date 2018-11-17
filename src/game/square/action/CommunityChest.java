@@ -13,5 +13,9 @@ public class CommunityChest extends Action {
 		game.card.CommunityChest card = ActionCards.getInstance().getCommunityChestCard();
 		player.pickCard(card);
 	}
+
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
 	
 }

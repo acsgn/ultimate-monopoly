@@ -11,5 +11,9 @@ public class GoToJail extends Action {
 	public void executeWhenLanded(Player player) {
 		player.setInJail();
 	}
+
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
 	
 }

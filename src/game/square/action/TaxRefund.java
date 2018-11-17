@@ -15,4 +15,8 @@ public class TaxRefund extends Action {
 		player.increaseMoney(amount);
 	}
 
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
+
 }

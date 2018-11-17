@@ -12,4 +12,8 @@ public class Subway extends Action {
 		player.setGoAnyWhere();
 	}
 
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
+	
 }

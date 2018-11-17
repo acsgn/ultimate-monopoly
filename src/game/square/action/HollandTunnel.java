@@ -33,4 +33,12 @@ public class HollandTunnel extends Action {
 		notInitialized = false;
 	}
 
+	@Override
+	public void executeWhenPassed(Player player) {
+	}
+
+	@Override
+	public void executeWhenLanded(Player player) {
+	}
+	
 }
