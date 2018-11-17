@@ -21,9 +21,8 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import game.Controller;
-import game.GameListener;
 
-public class UICreator extends JFrame implements GameListener {
+public class UICreator extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final String ultimateMonopoly = "resources/ultimate_monopoly.jpg";
 
@@ -35,7 +34,7 @@ public class UICreator extends JFrame implements GameListener {
 	/**
 	 * Create the frame.
 	 * 
-	 * @param screen
+	 * @param controller
 	 */
 	public UICreator(Controller controller) {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
@@ -193,17 +192,9 @@ public class UICreator extends JFrame implements GameListener {
 
 	}
 
-	@Override
-	public void onGameEvent(String message) {
-		String[] parsed = message.split("/");
-		switch (parsed[0]) {
-		case "START":
-			dispose();
-			break;
-		case "NETWORKERROR":
-			JOptionPane.showMessageDialog(UICreator.this, "No server found on given IP Address!", "Error",
-					JOptionPane.ERROR_MESSAGE);
-		}
+	public void serverNotFound() {
+		JOptionPane.showMessageDialog(UICreator.this, "No server found on given IP Address!", "Error",
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	private Hashtable<Integer, JLabel> createLabelTable() {

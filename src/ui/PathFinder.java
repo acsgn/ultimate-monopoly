@@ -1,5 +1,7 @@
 package ui;
 
+import java.awt.Point;
+
 public class PathFinder {
 
 	private static final int OUTER_TRACK = 0;
@@ -30,6 +32,8 @@ public class PathFinder {
 	private static final int innerToMiddleSecondTransitLocation = 21;
 
 	private double scaleFactor;
+	private int trackID;
+	private int location;
 
 	private Track outerTrack;
 	private Track middleTrack;
@@ -44,9 +48,11 @@ public class PathFinder {
 	private TransitStation innerToMiddleFirst;
 	private TransitStation innerToMiddleSecond;
 
-	public PathFinder(double scaleFactor) {
+	public PathFinder(double scaleFactor, int trackId, int location) {
 
 		this.scaleFactor = scaleFactor;
+		this.trackID = trackId;
+		this.location = location;
 
 		outerTrack = new Track(getScaled(outerTrackUpLeftCorner), getScaled(outerTrackDownRightCorner),
 				outerTrackCornerDifference);
@@ -76,10 +82,18 @@ public class PathFinder {
 
 	}
 
-	public Path findPath(int trackID, int location, int newTrackID, int newLocation) {
+	public Point getLocation(int trackID, int location) {
+		Track track = getTrackByID(trackID);
+		return new Point(track.getLocation(location)[0], track.getLocation(location)[1]);
+	}
+
+	public Path findPath(int newTrackID, int newLocation) {
 		if (trackID == newTrackID) {
 			Track track = getTrackByID(trackID);
-			return findPathOnSameTrack(location, newLocation, track);
+			Path path = findPathOnSameTrack(location, newLocation, track);
+			trackID = newTrackID;
+			location = newLocation;
+			return path;
 		} else if (Math.abs(trackID - newTrackID) == 1) {
 			Track track = getTrackByID(trackID);
 			Track newTrack = getTrackByID(newTrackID);
@@ -87,6 +101,8 @@ public class PathFinder {
 			Path path = findPathOnSameTrack(location, transitStation.fromLocation, track);
 			path.mergePaths(transitStation.getPath());
 			path.mergePaths(findPathOnSameTrack(transitStation.toLocation, newLocation, newTrack));
+			trackID = newTrackID;
+			location = newLocation;
 			return path;
 		} else {
 			Track track = getTrackByID(trackID);
@@ -99,6 +115,8 @@ public class PathFinder {
 					findPathOnSameTrack(transitStation.toLocation, secondTransitStation.fromLocation, middleTrack));
 			path.mergePaths(secondTransitStation.getPath());
 			path.mergePaths(findPathOnSameTrack(secondTransitStation.toLocation, newLocation, newTrack));
+			trackID = newTrackID;
+			location = newLocation;
 			return path;
 		}
 	}
@@ -207,7 +225,7 @@ public class PathFinder {
 		}
 
 	}
-	
+
 	private int getScaled(int i) {
 		return (int) (i * scaleFactor);
 	}

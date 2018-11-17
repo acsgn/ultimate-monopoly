@@ -60,7 +60,8 @@ public class UIScreen extends JFrame implements GameListener {
 			Image.SCALE_SMOOTH);
 
 	private int pieceSize = (int) (screenHeight * 80 / 3000.0);
-	private int initialPieceLocation = (int) (screenHeight * 2310 / 3000.0);
+	private int initialPieceLocation = 0;
+	private int initialTrack = 1;
 
 	/**
 	 * Create the panel.
@@ -73,9 +74,9 @@ public class UIScreen extends JFrame implements GameListener {
 		setLayout(null);
 
 		animator = new Animator(this);
-		new Thread(animator,"Animator").start();
+		new Thread(animator, "Animator").start();
 
-		pathFinder = new PathFinder(screenHeight / 3000.0);
+		pathFinder = new PathFinder(screenHeight / 3000.0, initialTrack, initialPieceLocation);
 
 		JLabel board = new JLabel();
 		board.setIcon(new ImageIcon(boardImage));
@@ -109,9 +110,10 @@ public class UIScreen extends JFrame implements GameListener {
 		controlPanel.add(infoArea);
 
 		JComboBox<String> propertiesList = new JComboBox<String>();
-		propertiesList.setBounds(controlPaneXSpace, getButtonY(6)+30, controlPaneButtonWidth, controlPaneButtonHeight-30);
+		propertiesList.setBounds(controlPaneXSpace, getButtonY(6) + 30, controlPaneButtonWidth,
+				controlPaneButtonHeight - 30);
 		controlPanel.add(propertiesList);
-		
+
 		JButton bailButton = new JButton("Pay Bail");
 		bailButton.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(bailButton);
@@ -184,15 +186,16 @@ public class UIScreen extends JFrame implements GameListener {
 		return controlPaneHeight - (i * controlPaneButtonHeight + i * controlPaneYSpace);
 	}
 
+	public void start() {
+		createPlayerPiece();
+		setVisible(true);
+	}
+
 	@Override
 	public void onGameEvent(String message) {
 		String[] parsed = message.split("/");
 		System.out.println(parsed);
 		switch (parsed[0]) {
-		case "START":
-			createPlayerPiece();
-			setVisible(true);
-			break;
 		case "ACTION":
 			infoText.append(parsed[1]);
 			break;
@@ -201,11 +204,15 @@ public class UIScreen extends JFrame implements GameListener {
 			playerArea.setBackground(playerColor);
 			break;
 		case "MOVE":
-			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
-			pieces.get(toInt(parsed[1])).setPath(path);
+			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
+			pieces.get(toInt(parsed[1])).path = path;
 			animator.startAnimator();
 			break;
-		case "PLAYERDATA": 
+		case "JUMP":
+			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
+			pieces.get(toInt(parsed[1])).lastPoint = point;
+			repaint();
+		case "PLAYERDATA":
 			playerText.setText(parsed[1]);
 		}
 	}
@@ -228,12 +235,12 @@ public class UIScreen extends JFrame implements GameListener {
 		pieces.add(piece);
 	}
 
-	public class Piece {
+	private class Piece {
 		private Path path;
 		private Point lastPoint;
 
 		public Piece() {
-			lastPoint = new Point(initialPieceLocation, initialPieceLocation);
+			lastPoint = pathFinder.getLocation(1, 0);
 		}
 
 		public void paint(Graphics g) {
@@ -241,11 +248,8 @@ public class UIScreen extends JFrame implements GameListener {
 			g.fillRect(screenX + lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (path != null && path.hasMoreSteps()) {
 				lastPoint = path.nextPosition();
-			}else animator.stopAnimator();
-		}
-
-		public void setPath(Path path) {
-			this.path = path;
+			} else
+				animator.stopAnimator();
 		}
 
 	}

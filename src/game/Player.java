@@ -59,16 +59,6 @@ public class Player {
 		publishGameEvent(message);
 	}
 
-	public void startGame() {
-		message = "START";
-		publishGameEvent(message);
-	}
-
-	public void networkError() {
-		message = "NETWORKERROR";
-		publishGameEvent(message);
-	}
-
 	public void play() {
 		int[] diceRolls = rollDice();
 		message = "ACTION/";
@@ -96,6 +86,8 @@ public class Player {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
 		int sum = diceRolls[0] + diceRolls[1];
+		
+		sum = 6;
 
 		Square newLocation = location;
 		TrackType newTrack = currentTrack;
@@ -103,6 +95,7 @@ public class Player {
 
 		boolean isEven = sum % 2 == 0;
 		boolean transitUsed = false;
+		boolean isLastMove = false;
 
 		while (true) {
 			if (!transitUsed && isEven && newLocation instanceof TransitStation) {
@@ -112,18 +105,18 @@ public class Player {
 			} else {
 				newIndex = (newIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
 				newLocation = Board.getInstance().getSquare(newIndex, newTrack);
-				newLocation.executeWhenPassed(this);
+				if (!isLastMove)
+					newLocation.executeWhenPassed(this);
 				sum--;
 				transitUsed = false;
 			}
 			if (sum == 1)
+				isLastMove = true;
+			if (sum == 0)
 				break;
 		}
-		newIndex = (newIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
-		newLocation = Board.getInstance().getSquare(newIndex, newTrack);
 
-		message = "MOVE/" + playerIndex + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal()
-				+ "/" + newIndex;
+		message = "MOVE/" + playerIndex + "/" + newTrack.ordinal() + "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
@@ -184,7 +177,7 @@ public class Player {
 	}
 
 	public void goTo(TrackType track, int index) {
-		message = "JUMP/" + 0 + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + track.ordinal() + "/" + index;
+		message = "JUMP/" + playerIndex + "/" + track.ordinal() + "/" + index;
 		publishGameEvent(message);
 		indexOnTrack = index;
 		currentTrack = track;

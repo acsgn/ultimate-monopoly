@@ -1,12 +1,12 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import network.Network;
+import network.NetworkFaçade;
+import ui.UIFaçade;
 
 public class MonopolyGame {
-	private List<Player> players;
+	private ArrayList<Player> players;
 	private Player currentPlayer;
 
 	public MonopolyGame() {
@@ -15,11 +15,11 @@ public class MonopolyGame {
 		players.add(currentPlayer);
 	}
 
-	public List<Player> getPlayers() {
+	public ArrayList<Player> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(List<Player> players) {
+	public void setPlayers(ArrayList<Player> players) {
 		this.players = players;
 	}
 	public void executeMessage(String message) {
@@ -30,7 +30,7 @@ public class MonopolyGame {
 			case "ROLLDICE":
 				currentPlayer.play(); break;
 			case "ENDGAME": 
-				Network.getInstance().sendMessageToOthers("CLOSE");break;
+				NetworkFaçade.getInstance().sendMessageToOthers("CLOSE");break;
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
 			}
@@ -43,16 +43,16 @@ public class MonopolyGame {
 				currentPlayer.setColor(parsed[2]);
 				break;
 			case "SERVER":
-				Network.getInstance().connect(Integer.parseInt(parsed[2]));
-				currentPlayer.startGame();
+				NetworkFaçade.getInstance().connect(Integer.parseInt(parsed[2]));
+				UIFaçade.getInstance().connectionDone();
 				break;
 			case "CLIENT":
-				Network.getInstance().connect(parsed[2]);
-				if (!Network.getInstance().isConnected()) {
-					currentPlayer.networkError();
+				NetworkFaçade.getInstance().connect(parsed[2]);
+				if (!NetworkFaçade.getInstance().isConnected()) {
+					UIFaçade.getInstance().connectionError();
 					break;
 				}
-				currentPlayer.startGame();
+				UIFaçade.getInstance().connectionDone();
 				break;
 			}
 		}
