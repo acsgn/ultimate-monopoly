@@ -10,6 +10,7 @@ import game.card.CommunityChest;
 import game.dice.SingletonDice;
 import game.square.Square;
 import game.square.estate.*;
+import network.NetworkFaçade;
 
 public class Player {
 
@@ -123,6 +124,8 @@ public class Player {
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
 		location = newLocation;
+		
+		NetworkFaçade.getInstance().sendMessageToOthers(this.name+"/"+"MOVE"+"/"+diceRolls[0]+"/"+diceRolls[1]+"/"+diceRolls[2]);
 	}
 	
 
@@ -166,6 +169,7 @@ public class Player {
 				message = "ACTION/" + "ProperySquare" + estate.getName() + " is bought\n";
 				publishGameEvent(message);
 				updateState();
+				NetworkFaçade.getInstance().sendMessageToOthers(this.name+"/"+"BUYESTATE");
 				return true;
 			} else {
 				message = "ACTION/" + "Property: is owned by " + estate.getOwner().getName() + "\n";
@@ -196,16 +200,20 @@ public class Player {
 	}
 
 	public void pickCard(Card card) {
+		int cardType = 0;
 		if (card instanceof CommunityChest) {
 			((CommunityChest) card).executeAction(this);
 			message = "ACTION/ " + ((CommunityChest) card).getName();
 			publishGameEvent(message);
+			cardType = 1;
 		}
 		if (card instanceof Chance) {
 			((Chance) card).executeAction(this);
 			message = "ACTION/ " + ((Chance) card).getName();
 			publishGameEvent(message);
+			cardType = 0;
 		}
+		NetworkFaçade.getInstance().sendMessageToOthers(this.name+"/CARD/"+cardType);
 	}
 
 	public boolean reduceMoney(int m) {
@@ -280,6 +288,10 @@ public class Player {
 		for (GameListener l : listeners) {
 			l.onGameEvent(message);
 		}
+	}
+
+	public String getColor() {
+		return color;
 	}
 
 }

@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import sun.management.snmp.util.SnmpNamedListTableCache;
+
 public class Server implements Runnable {
 
 	private static final int DEFAULT_PORT = 302;
@@ -19,8 +21,36 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		connectPlayers();
-		//orderPlayers();
+		orderPlayers();
+		informPlayers();
 		play();
+	}
+
+	private void informPlayers() {
+		String getName = "SENDNAME";
+		ArrayList<String> names = new ArrayList<>(players.size());
+		for (int i = 0; i < players.size(); i++) {
+			sendMessageToPlayer(getName, i);
+			String name = receiveMessageFromPlayer(i);
+			names.set(i, name);
+		}
+		for (int i = 0; i < players.size(); i++) {
+			for (String name : names) {
+				sendMessageToPlayer("RECEIVENAME/"+name, i);
+			}
+		}
+		String getColor = "SENDCOLOR";
+		ArrayList<String> colors = new ArrayList<>(players.size());
+		for (int i = 0; i < players.size(); i++) {
+			sendMessageToPlayer(getColor, i);
+			String color = receiveMessageFromPlayer(i);
+			colors.set(i, color);
+		}
+		for (int i = 0; i < players.size(); i++) {
+			for (String color : colors) {
+				sendMessageToPlayer(names.get(i) +"/RECEIVECOLOR/"+color, i);
+			}
+		}
 	}
 
 	private void play() {
