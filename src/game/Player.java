@@ -19,6 +19,7 @@ public class Player {
 
 	private String name;
 	private String color;
+	private int playerIndex = 0;
 	private int money;
 
 	private TrackType currentTrack;
@@ -70,8 +71,6 @@ public class Player {
 
 	public void play() {
 		int[] diceRolls = rollDice();
-		// move(diceRolls);
-		// location.executeAction();
 		message = "ACTION/";
 		message += "Regular Die 1: " + diceRolls[0] + "\n";
 		message += "Regular Die 2: " + diceRolls[1] + "\n";
@@ -123,8 +122,8 @@ public class Player {
 		newIndex = (newIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
 		newLocation = Board.getInstance().getSquare(newIndex, newTrack);
 
-		message = "MOVE/" + 0 + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/"
-				+ newIndex;
+		message = "MOVE/" + playerIndex + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal()
+				+ "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
