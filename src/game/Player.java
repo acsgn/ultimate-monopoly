@@ -90,9 +90,7 @@ public class Player {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
 		int sum = diceRolls[0] + diceRolls[1];
-
-		sum = 12;
-
+		
 		Square newLocation = location;
 		TrackType newTrack = currentTrack;
 		int newIndex = indexOnTrack;

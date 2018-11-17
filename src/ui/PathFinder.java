@@ -126,12 +126,12 @@ public class PathFinder {
 	private Path findPathOnSameTrack(int location, int newLocation, Track track) {
 		Path path = new Path(scaleFactor);
 		int[] point = track.getLocation(location);
-		do {
-			location = location == 4 * track.cornerDifference - 1 ? 0 : location + 1;
+		while (location != newLocation) {
+			location = (location + 1) % (4 * track.cornerDifference);
 			int[] nextPoint = track.getLocation(location);
 			path.addLine(point[0], point[1], nextPoint[0], nextPoint[1]);
 			point = nextPoint;
-		} while (location != newLocation);
+		}
 		return path;
 	}
 
@@ -156,7 +156,7 @@ public class PathFinder {
 			if (location > middleInnerFirst.getIndexOnTrack(track))
 				result = middleOuterSecond;
 			if (location > middleOuterSecond.getIndexOnTrack(track))
-				result = middleInnerFirst;
+				result = middleInnerSecond;
 			if (location > middleInnerSecond.getIndexOnTrack(track))
 				result = middleOuterFirst;
 		}
