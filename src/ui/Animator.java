@@ -1,6 +1,6 @@
 package ui;
 
-import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class Animator implements Runnable {
 
@@ -8,7 +8,7 @@ public class Animator implements Runnable {
 
 	private boolean animatorStopped = true;
 	private boolean animatorDestruct = false;
-	private JFrame frame;
+	private JLabel board;
 
 	@Override
 	public void run() {
@@ -20,7 +20,8 @@ public class Animator implements Runnable {
 					}
 					if (animatorStopped != true) {
 						Thread.sleep(sleepTime);
-						frame.repaint();
+						System.out.println("APO");
+						board.repaint();
 					}
 				}
 			} catch (InterruptedException e) {
@@ -28,8 +29,8 @@ public class Animator implements Runnable {
 		}
 	}
 
-	public Animator(JFrame frame) {
-		this.frame = frame;
+	public Animator(JLabel board) {
+		this.board = board;
 	}
 
 	public void startAnimator() {

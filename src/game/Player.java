@@ -18,9 +18,11 @@ public class Player {
 	private static final TrackType BEGIN_TRACK = TrackType.MIDDLE_TRACK;
 	private static final int BEGIN_INDEX = 0;
 
+	private static int playerIndexCounter = 0;
+	
 	private String name;
 	private String color;
-	private int playerIndex = 0;
+	private int playerIndex;
 	private int money;
 
 	private TrackType currentTrack;
@@ -41,6 +43,8 @@ public class Player {
 		money = BEGIN_MONEY;
 		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
+		playerIndex = playerIndexCounter;
+		playerIndexCounter++;
 		location = Board.getInstance().getSquare(indexOnTrack, currentTrack);
 		properties = new ArrayList<>();
 	}

@@ -37,6 +37,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private Color playerColor;
 	private PathFinder pathFinder;
 	private JPanel playerArea;
+	private JPanel piecePanel;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -74,15 +75,15 @@ public class UIScreen extends JFrame implements GameListener {
 		setUndecorated(true);
 		setLayout(null);
 
-		animator = new Animator(this);
-		new Thread(animator, "Animator").start();
-
 		pathFinder = new PathFinder(screenHeight / 3000.0);
 
-		JLabel board = new JLabel();
+		JBoard board = new JBoard();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
 		add(board);
+		
+		animator = new Animator(board);
+		new Thread(animator, "Animator").start();
 
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(null);
@@ -205,12 +206,12 @@ public class UIScreen extends JFrame implements GameListener {
 			playerColor = colorTable.get(parsed[1]);
 			playerArea.setBackground(playerColor);
 			break;
-		case "MOVE":
+		case "MOVeE":
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
 			pieces.get(toInt(parsed[1])).path = path;
 			animator.startAnimator();
 			break;
-		case "JUMP":
+		case "MOVE":
 			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 			pieces.get(toInt(parsed[1])).lastPoint = point;
 			repaint();
@@ -223,7 +224,6 @@ public class UIScreen extends JFrame implements GameListener {
 			piece.lastPoint = pathFinder.getLocation(trackID, location);
 			repaint();
 			pieces.add(piece);
-			System.out.println(pieces.size());
 			break;
 		case "PLAYERDATA":
 			playerText.setText(parsed[1]);
@@ -232,14 +232,6 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private int toInt(String string) {
 		return Integer.parseInt(string);
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-		for (Piece piece : pieces) {
-			piece.paint(g);
-		}
 	}
 
 	private class Piece {
@@ -251,13 +243,24 @@ public class UIScreen extends JFrame implements GameListener {
 
 		public void paint(Graphics g) {
 			g.setColor(playerColor);
-			g.fillRect(screenX + lastPoint.x, lastPoint.y, pieceSize, pieceSize);
+			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (path != null && path.hasMoreSteps()) {
 				lastPoint = path.nextPosition();
 			} else
 				animator.stopAnimator();
 		}
 
+	}
+	
+	private class JBoard extends JLabel{
+		private static final long serialVersionUID = 1L;
+		@Override
+		public void paint(Graphics g) {
+			super.paint(g);
+			for (Piece piece : pieces) {
+				piece.paint(g);
+			}
+		}
 	}
 
 	private static Hashtable<String, Color> colorTable = new Hashtable<String, Color>() {

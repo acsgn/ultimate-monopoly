@@ -17,7 +17,6 @@ public class Main {
 		UICreator gameCreator = new UICreator(gameController);
 		UILinker.getInstance().initalize(gameCreator, screen);
 		gameCreator.setVisible(true);
-
 	}
 
 }
