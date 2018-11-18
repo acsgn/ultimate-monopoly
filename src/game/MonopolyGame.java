@@ -126,7 +126,10 @@ public class MonopolyGame implements Runnable {
 			case "PLAYERCOLOR":
 				currentPlayer.setColor(parsed[2]);
 				currentPlayer.sendColor();
-				start = true;
+				synchronized (this) {
+					start = true;
+					notify();
+				}
 				break;
 			case "SERVER":
 				NetworkFaçade.getInstance().connect(Integer.parseInt(parsed[2]));
