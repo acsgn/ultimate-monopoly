@@ -19,7 +19,7 @@ public class Player {
 	private static final int BEGIN_INDEX = 0;
 
 	private static int playerIndexCounter = 0;
-	
+
 	private String name;
 	private String color;
 	private int playerIndex;
@@ -62,7 +62,7 @@ public class Player {
 	}
 
 	public void createPiece() {
-		message = "PIECE/" + BEGIN_TRACK.ordinal() + "/" + BEGIN_INDEX;
+		message = "PIECE/" + color + "/" + BEGIN_TRACK.ordinal() + "/" + BEGIN_INDEX;
 		publishGameEvent(message);
 	}
 
@@ -82,7 +82,8 @@ public class Player {
 		}
 		publishGameEvent(message);
 		move(diceRolls);
-		NetworkFaçade.getInstance().sendMessageToOthers(this.name+"/MOVE/"+diceRolls[0]+"/"+diceRolls[1]+"/"+diceRolls[2]);
+		NetworkFaçade.getInstance()
+				.sendMessageToOthers(this.name + "/MOVE/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 		updateState();
 		location.executeWhenLanded(this);
 	}
@@ -96,7 +97,7 @@ public class Player {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
 		int sum = diceRolls[0] + diceRolls[1];
-		
+
 		Square newLocation = location;
 		TrackType newTrack = currentTrack;
 		int newIndex = indexOnTrack;
@@ -129,8 +130,7 @@ public class Player {
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
 		location = newLocation;
-		}
-	
+	}
 
 	public Square getLocation() {
 		return location;
@@ -169,7 +169,7 @@ public class Player {
 			if (estate.getOwner() == null) {
 				estate.setOwner(this);
 				reduceMoney(estate.getPrice());
-				message = "ACTION/" + "ProperySquare" + estate.getName() + " is bought by" + this.getName()+"\n";
+				message = "ACTION/" + "ProperySquare" + estate.getName() + " is bought by" + this.getName() + "\n";
 				publishGameEvent(message);
 				updateState();
 				return true;

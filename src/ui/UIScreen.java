@@ -217,8 +217,9 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PIECE":
 			Piece piece = new Piece();
-			int trackID = toInt(parsed[1]);
-			int location = toInt(parsed[2]);
+			piece.color = colorTable.get(parsed[1]);
+			int trackID = toInt(parsed[2]);
+			int location = toInt(parsed[3]);
 			pathFinder.setInitialValues(trackID, location);
 			piece.lastPoint = pathFinder.getLocation(trackID, location);
 			repaint();
@@ -242,7 +243,6 @@ public class UIScreen extends JFrame implements GameListener {
 		private Color color;
 
 		public Piece() {
-			color = playerColor;
 		}
 
 		public void paint(Graphics g) {

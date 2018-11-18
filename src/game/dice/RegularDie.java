@@ -12,7 +12,7 @@ public class RegularDie extends Dice {
 	@Override
 	public void roll() {
 		// TODO Auto-generated method stub
-		Random rand = new Random(250);
+		Random rand = new Random(5000);
 		faceValue = rand.nextInt(NORMAL_MAX)+1;
 	}
 
