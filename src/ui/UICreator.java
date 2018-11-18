@@ -73,7 +73,7 @@ public class UICreator extends JFrame {
 		playerCountLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		Hashtable<Integer, JLabel> labelTable = createLabelTable();
-		JSlider slider = new JSlider(2, 10, 4);
+		JSlider slider = new JSlider(2, 10, 2);
 		slider.setBounds(0, 23, 200, 64);
 		slider.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		slider.setLabelTable(labelTable);
