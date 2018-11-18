@@ -186,7 +186,10 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "UISCREEN/ENDGAME";
-				animator.destruct();
+				synchronized (animator) {
+					animator.destruct();
+					animator.notify();
+				}
 				controller.dispatchMessage(message);
 				dispose();
 			}

@@ -106,7 +106,10 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "ENDGAME":
 				NetworkFaçade.getInstance().sendMessageToOthers("CLOSE");
-				destroy = true;
+				synchronized (this) {
+					destroy = true;
+					notify();
+				}
 				break;
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
