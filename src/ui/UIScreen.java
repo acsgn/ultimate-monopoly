@@ -239,12 +239,14 @@ public class UIScreen extends JFrame implements GameListener {
 	private class Piece {
 		private Path path;
 		private Point lastPoint;
+		private Color color;
 
 		public Piece() {
+			color = playerColor;
 		}
 
 		public void paint(Graphics g) {
-			g.setColor(playerColor);
+			g.setColor(color);
 			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (path != null && path.hasMoreSteps()) {
 				lastPoint = path.nextPosition();

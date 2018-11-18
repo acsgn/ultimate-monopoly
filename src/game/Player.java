@@ -67,6 +67,8 @@ public class Player {
 	}
 
 	public void play() {
+		message = "COLOR/" + color;
+		publishGameEvent(message);
 		int[] diceRolls = rollDice();
 		message = "ACTION/";
 		message += "Regular Die 1: " + diceRolls[0] + "\n";
