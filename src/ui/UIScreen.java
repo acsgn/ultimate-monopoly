@@ -29,6 +29,8 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
+	public volatile String gameEvent = "";
+
 	private Animator animator;
 	private Controller controller;
 	private String message;
@@ -80,7 +82,7 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
 		add(board);
-		
+
 		animator = new Animator(board);
 		new Thread(animator, "Animator").start();
 
@@ -196,37 +198,7 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 
 	@Override
 	public void onGameEvent(String message) {
-		String[] parsed = message.split("/");
-		switch (parsed[0]) {
-		case "ACTION":
-			infoText.append(parsed[1]);
-			break;
-		case "COLOR":
-			playerColor = colorTable.get(parsed[1]);
-			playerArea.setBackground(playerColor);
-			break;
-		case "MOVeE":
-			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(toInt(parsed[1])).path = path;
-			animator.startAnimator();
-			break;
-		case "MOVE":
-			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(toInt(parsed[1])).lastPoint = point;
-			repaint();
-			break;
-		case "PIECE":
-			Piece piece = new Piece();
-			int trackID = toInt(parsed[1]);
-			int location = toInt(parsed[2]);
-			pathFinder.setInitialValues(trackID, location);
-			piece.lastPoint = pathFinder.getLocation(trackID, location);
-			repaint();
-			pieces.add(piece);
-			break;
-		case "PLAYERDATA":
-			playerText.setText(parsed[1]);
-		}
+		gameEvent = message;
 	}
 
 	private int toInt(String string) {
@@ -250,9 +222,10 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 		}
 
 	}
-	
-	private class JBoard extends JLabel{
+
+	private class JBoard extends JLabel {
 		private static final long serialVersionUID = 1L;
+
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
@@ -280,6 +253,48 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 
 	@Override
 	public void run() {
+		while (true) {
+			String[] parsed = gameEvent.split("/");
+			switch (parsed[0]) {
+			case "ACTION":
+				infoText.append(parsed[1]);
+				gameEvent = "";
+				break;
+			case "COLOR":
+				playerColor = colorTable.get(parsed[1]);
+				playerArea.setBackground(playerColor);
+				gameEvent = "";
+				break;
+			case "MOVeE":
+				Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
+				pieces.get(toInt(parsed[1])).path = path;
+				animator.startAnimator();
+				gameEvent = "";
+				break;
+			case "MOVE":
+				Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
+				pieces.get(toInt(parsed[1])).lastPoint = point;
+				repaint();
+				gameEvent = "";
+				break;
+			case "PIECE":
+				Piece piece = new Piece();
+				int trackID = toInt(parsed[1]);
+				int location = toInt(parsed[2]);
+				pathFinder.setInitialValues(trackID, location);
+				piece.lastPoint = pathFinder.getLocation(trackID, location);
+				repaint();
+				pieces.add(piece);
+				gameEvent = "";
+				break;
+			case "PLAYERDATA":
+				playerText.setText(parsed[1]);
+				gameEvent = "";
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 }
