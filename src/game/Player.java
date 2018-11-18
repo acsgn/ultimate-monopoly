@@ -166,17 +166,18 @@ public class Player {
 	}
 
 	public boolean buySquare() {
-		if (location instanceof Estate) {
-			Estate estate = (Estate) location;
-			if (estate.getOwner() == null) {
-				estate.setOwner(this);
-				reduceMoney(estate.getPrice());
-				message = "ACTION/" + "ProperySquare" + estate.getName() + " is bought by" + this.getName() + "\n";
+		if (location instanceof Property) {
+			Property property = (Property) location;
+			if (property.getOwner() == null) {
+				property.setOwner(this);
+				reduceMoney(property.getPrice());
+				properties.add(property);
+				message = "ACTION/" + "ProperySquare" + property.getName() + " is bought by" + this.getName() + "\n";
 				publishGameEvent(message);
 				updateState();
 				return true;
 			} else {
-				message = "ACTION/" + "Property: is owned by " + estate.getOwner().getName() + "\n";
+				message = "ACTION/" + "Property: is owned by " + property.getOwner().getName() + "\n";
 				publishGameEvent(message);
 				return false;
 			}
