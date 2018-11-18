@@ -6,8 +6,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import sun.management.snmp.util.SnmpNamedListTableCache;
-
 public class Server implements Runnable {
 
 	private static final int DEFAULT_PORT = 302;

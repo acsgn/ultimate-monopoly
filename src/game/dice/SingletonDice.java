@@ -1,7 +1,5 @@
 package game.dice;
 
-import java.util.ArrayList;
-
 public class SingletonDice {
 	private RegularDie regularDie1;
 	private RegularDie regularDie2;
