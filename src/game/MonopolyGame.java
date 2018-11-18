@@ -111,6 +111,7 @@ public class MonopolyGame implements Runnable {
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
 				NetworkFaçade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/" + "BUYESTATE");
+				break;
 			case "ENDTURN":
 				NetworkFaçade.getInstance().sendMessageToOthers("ENDTURN");
 				synchronized (this) {
