@@ -172,7 +172,7 @@ public class Player {
 				property.setOwner(this);
 				reduceMoney(property.getPrice());
 				properties.add(property);
-				message = "ACTION/" + property.getName() + " is bought by" + this.getName() + "\n";
+				message = "ACTION/" + property.getName() + " is bought by " + this.getName() + "\n";
 				publishGameEvent(message);
 				updateState();
 				return true;
@@ -207,12 +207,12 @@ public class Player {
 	public void pickCard(Card card) {
 		if (card instanceof CommunityChest) {
 			((CommunityChest) card).executeAction(this);
-			message = "ACTION/" + ((CommunityChest) card).getName();
+			message = "ACTION/" + ((CommunityChest) card).getName()+"\n";
 			publishGameEvent(message);
 		}
 		if (card instanceof Chance) {
 			((Chance) card).executeAction(this);
-			message = "ACTION/" + ((Chance) card).getName();
+			message = "ACTION/" + ((Chance) card).getName()+"\n";
 			publishGameEvent(message);
 		}
 	}
