@@ -283,7 +283,7 @@ public class Player {
 	}
 
 	public void publishGameEvent(String message) {
-		MonopolyGame.publishGameEvent(message);
+		Controller.getInstance().publishGameEvent(message);
 	}
 
 	public String getColor() {

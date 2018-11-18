@@ -13,7 +13,7 @@ public class Main {
 		MonopolyGame game = new MonopolyGame();
 		Controller.getInstance().initialize(game);
 		UIScreen screen = new UIScreen();
-		game.addGamelistener(screen);
+		Controller.getInstance().addGamelistener(screen);
 		UICreator gameCreator = new UICreator();
 		UILinker.getInstance().initalize(gameCreator, screen);
 		new Thread(game,"Game").start();
