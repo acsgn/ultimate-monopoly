@@ -8,7 +8,8 @@ import network.NetworkFaçade;
 import ui.UILinker;
 
 public class MonopolyGame implements Runnable {
-	private volatile boolean start = false;
+	private boolean start = false;
+	private boolean destroy = false;
 	private volatile ArrayList<Player> players;
 	private volatile Player currentPlayer;
 	private static ArrayList<GameListener> listeners;
@@ -105,7 +106,7 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "ENDGAME":
 				NetworkFaçade.getInstance().sendMessageToOthers("CLOSE");
-				start = false;
+				destroy = true;
 				break;
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
@@ -164,9 +165,10 @@ public class MonopolyGame implements Runnable {
 		while (true) {
 			try {
 				synchronized (this) {
-					if (!start) {
+					if (!start) 
 						wait();
-					}
+					if(destroy)
+						break;
 				}
 				if (start) {
 					String message = NetworkFaçade.getInstance().receiveMessage();
