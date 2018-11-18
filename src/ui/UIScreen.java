@@ -264,12 +264,12 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 					playerColor = colorTable.get(parsed[1]);
 					playerArea.setBackground(playerColor);
 					break;
-				case "MOVE2":
+				case "MOVE":
 					Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
 					pieces.get(toInt(parsed[1])).path = path;
 					animator.startAnimator();
 					break;
-				case "MOVE":
+				case "MOVE2":
 					Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 					pieces.get(toInt(parsed[1])).lastPoint = point;
 					repaint(0);
