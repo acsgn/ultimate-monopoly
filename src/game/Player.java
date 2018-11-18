@@ -167,10 +167,9 @@ public class Player {
 			if (estate.getOwner() == null) {
 				estate.setOwner(this);
 				reduceMoney(estate.getPrice());
-				message = "ACTION/" + "ProperySquare" + estate.getName() + " is bought\n";
+				message = "ACTION/" + "ProperySquare" + estate.getName() + " is bought by" + this.getName()+"\n";
 				publishGameEvent(message);
 				updateState();
-				NetworkFaçade.getInstance().sendMessageToOthers(this.name+"/"+"BUYESTATE");
 				return true;
 			} else {
 				message = "ACTION/" + "Property: is owned by " + estate.getOwner().getName() + "\n";
@@ -201,20 +200,16 @@ public class Player {
 	}
 
 	public void pickCard(Card card) {
-		int cardType = 0;
 		if (card instanceof CommunityChest) {
 			((CommunityChest) card).executeAction(this);
 			message = "ACTION/ " + ((CommunityChest) card).getName();
 			publishGameEvent(message);
-			cardType = 1;
 		}
 		if (card instanceof Chance) {
 			((Chance) card).executeAction(this);
 			message = "ACTION/ " + ((Chance) card).getName();
 			publishGameEvent(message);
-			cardType = 0;
 		}
-		NetworkFaçade.getInstance().sendMessageToOthers(this.name+"/CARD/"+cardType);
 	}
 
 	public boolean reduceMoney(int m) {

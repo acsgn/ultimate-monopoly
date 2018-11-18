@@ -89,7 +89,7 @@ public class Server implements Runnable {
 		players.sort(new Comparator<MessageSocket>() {
 			@Override
 			public int compare(MessageSocket mS1, MessageSocket mS2) {
-				return Integer.compare(mS1.diceValue, mS2.diceValue);
+				return Integer.compare(mS2.diceValue, mS1.diceValue);
 			}
 		});
 	}

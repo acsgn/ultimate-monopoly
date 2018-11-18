@@ -31,6 +31,7 @@ public class MonopolyGame implements Runnable {
 	public void executeNetworkMessage(String[] parsed) {
 		if (parsed[0].equals("SENDDICE")) {
 			int[] dice = currentPlayer.rollDice();
+			System.out.println(dice[0] + dice[1]) ;
 			NetworkFaçade.getInstance().sendMessageToOthers((dice[0] + dice[1]) + "");
 			return;
 		} else if (parsed[0].equals("SENDNAME")) {
@@ -101,6 +102,7 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
+				NetworkFaçade.getInstance().sendMessageToOthers(currentPlayer.getName()+"/"+"BUYESTATE");
 			case "ENDTURN":
 				NetworkFaçade.getInstance().sendMessageToOthers("ENDTURN");
 				start = true;
@@ -150,6 +152,7 @@ public class MonopolyGame implements Runnable {
 				String message = NetworkFaçade.getInstance().receiveMessage();
 				String[] parsed = message.split("/");
 				while (!parsed[0].equals("PLAY")) {
+					System.out.println(message);
 					executeNetworkMessage(parsed);
 					message = NetworkFaçade.getInstance().receiveMessage();
 					parsed = message.split("/");
