@@ -213,7 +213,7 @@ public class UIScreen extends JFrame implements GameListener {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
 		case "ACTION":
-			infoText.append(parsed[1]);
+			infoText.insert(parsed[1], 0);
 			break;
 		case "COLOR":
 			playerColor = colorTable.get(parsed[1]);
