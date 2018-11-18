@@ -4,14 +4,14 @@ import java.util.List;
 
 import game.building.Building;
 import game.square.Square;
-import game.square.estate.PropertySquare;
+import game.square.estate.Property;
 
 public class PropertyRentStrategy implements RentStrategy{
 
 	@Override
 	public int getRent(Square square) {
 		// TODO Auto-generated method stub
-		List<Building> buildings = ((PropertySquare)square).getBuildings();
+		List<Building> buildings = ((Property)square).getBuildings();
 		if(buildings.size()!=0){
 			// Needs to be implemented!
 			return 0;

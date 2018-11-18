@@ -1,9 +1,7 @@
 package game.strategy;
 
 import game.square.Square;
-import game.square.estate.PropertySquare;
-import game.square.estate.RailroadSquare;
-import game.square.estate.UtilitySquare;
+import game.square.estate.*;
 
 public class RentStrategyFactory {
 	private static RentStrategyFactory rentStrategy;
@@ -20,11 +18,11 @@ public class RentStrategyFactory {
 	}
 	
 	public RentStrategy getStrategy(Square s){
-		if(s instanceof PropertySquare){
+		if(s instanceof Property){
 			return new PropertyRentStrategy();
-		}else if(s instanceof UtilitySquare){
+		}else if(s instanceof Utility){
 			return new UtilityRentStrategy();
-		}else if(s instanceof RailroadSquare){
+		}else if(s instanceof TransitStation){
 			return new RailRoadRentStrategy();
 		}
 		return null;
