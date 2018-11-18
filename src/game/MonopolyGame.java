@@ -166,7 +166,7 @@ public class MonopolyGame implements Runnable {
 					parsed = message.split("/");
 				}
 				currentPlayer = players.get(0);
-				// Enable Buttons in UI
+				currentPlayer.publishGameEvent("PLAY");
 			}
 		}
 	}

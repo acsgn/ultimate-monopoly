@@ -28,15 +28,16 @@ public class UIScreen extends JFrame implements GameListener {
 	private static final String boardImagePath = "resources/board.png";
 
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
+	private static Hashtable<String, JButton> buttons = new Hashtable<String, JButton>();
 
-	private volatile Animator animator;
+	private Animator animator;
 	private Controller controller;
 	private String message;
-	private volatile JTextArea infoText;
-	private volatile JTextArea playerText;
-	private volatile Color playerColor;
+	private JTextArea infoText;
+	private JTextArea playerText;
+	private Color playerColor;
 	private PathFinder pathFinder;
-	private volatile JPanel playerArea;
+	private JPanel playerArea;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -118,22 +119,27 @@ public class UIScreen extends JFrame implements GameListener {
 		JButton bailButton = new JButton("Pay Bail");
 		bailButton.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(bailButton);
+		bailButton.setEnabled(false);
 
 		JButton buildingButton = new JButton("Build/Sell Building");
 		buildingButton.setBounds(controlPaneXSpace, getButtonY(4), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(buildingButton);
+		buildingButton.setEnabled(false);
 
 		JButton buyPropertyButton = new JButton("Buy Property");
 		buyPropertyButton.setBounds(controlPaneXSpace, getButtonY(3), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(buyPropertyButton);
+		buyPropertyButton.setEnabled(false);
 
 		JButton rollDiceButton = new JButton("Roll Dice");
 		rollDiceButton.setBounds(controlPaneXSpace, getButtonY(2), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(rollDiceButton);
+		rollDiceButton.setEnabled(false);
 
 		JButton endTurnButton = new JButton("End Turn");
 		endTurnButton.setBounds(controlPaneXSpace, getButtonY(1), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(endTurnButton);
+		endTurnButton.setEnabled(false);
 
 		controlPanel.setBounds(screenX + screenHeight, screenY, controlPaneWidth, controlPaneHeight);
 		add(controlPanel);
@@ -169,6 +175,8 @@ public class UIScreen extends JFrame implements GameListener {
 		endTurnButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				for(JButton button : buttons.values())
+					button.setEnabled(false);
 				message = "UISCREEN/ENDTURN";
 				controller.dispatchMessage(message);
 			}
@@ -183,6 +191,12 @@ public class UIScreen extends JFrame implements GameListener {
 				dispose();
 			}
 		});
+		
+		buttons.put("ROLL", rollDiceButton);
+		buttons.put("BUY", buyPropertyButton);
+		buttons.put("BUILDING", buildingButton);
+		buttons.put("BAIL", bailButton);
+		buttons.put("ENDTURN", endTurnButton);
 	}
 
 	private int getButtonY(int i) {
@@ -227,10 +241,13 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PLAYERDATA":
 			playerText.setText("");
-			for(int i = 1; i< parsed.length; i++) {
-				playerText.append(parsed[i]+"\n");
+			for (int i = 1; i < parsed.length; i++) {
+				playerText.append(parsed[i] + "\n");
 			}
 			break;
+		case "PLAY":
+			for(JButton button : buttons.values())
+				button.setEnabled(true);
 		default:
 			break;
 		}
