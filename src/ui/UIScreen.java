@@ -29,8 +29,7 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 
-	private volatile String gameEvent = "";
-	private volatile boolean start = false;
+	private volatile ArrayList<String> gameEvents = new ArrayList<>();
 
 	private volatile Animator animator;
 	private Controller controller;
@@ -199,8 +198,7 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 
 	@Override
 	public void onGameEvent(String message) {
-		gameEvent = message;
-		start = true;
+		gameEvents.add(message);
 	}
 
 	private int toInt(String string) {
@@ -256,29 +254,25 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			if (start) {
-				String[] parsed = gameEvent.split("/");
+			if (!gameEvents.isEmpty()) {
+				String[] parsed = gameEvents.remove(0).split("/");
 				switch (parsed[0]) {
 				case "ACTION":
 					infoText.append(parsed[1]);
-					start = false;
 					break;
 				case "COLOR":
 					playerColor = colorTable.get(parsed[1]);
 					playerArea.setBackground(playerColor);
-					start = false;
 					break;
 				case "MOVE2":
 					Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
 					pieces.get(toInt(parsed[1])).path = path;
 					animator.startAnimator();
-					start = false;
 					break;
 				case "MOVE":
 					Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 					pieces.get(toInt(parsed[1])).lastPoint = point;
 					repaint();
-					start = false;
 					break;
 				case "PIECE":
 					Piece piece = new Piece();
@@ -288,11 +282,10 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 					piece.lastPoint = pathFinder.getLocation(trackID, location);
 					repaint();
 					pieces.add(piece);
-					start = false;
+					System.out.println(pieces.size());
 					break;
 				case "PLAYERDATA":
 					playerText.setText(parsed[1]);
-					start = false;
 					break;
 				default:
 					break;
