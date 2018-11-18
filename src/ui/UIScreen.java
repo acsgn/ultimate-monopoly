@@ -67,8 +67,8 @@ public class UIScreen extends JFrame implements GameListener {
 	/**
 	 * Create the panel.
 	 */
-	public UIScreen(Controller controller) {
-		this.controller = controller;
+	public UIScreen() {
+		this.controller = Controller.getInstance();
 
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);

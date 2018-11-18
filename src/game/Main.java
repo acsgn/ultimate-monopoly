@@ -11,10 +11,10 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		MonopolyGame game = new MonopolyGame();
-		Controller gameController = new Controller(game);
-		UIScreen screen = new UIScreen(gameController);
+		Controller.getInstance().initialize(game);
+		UIScreen screen = new UIScreen();
 		game.addGamelistener(screen);
-		UICreator gameCreator = new UICreator(gameController);
+		UICreator gameCreator = new UICreator();
 		UILinker.getInstance().initalize(gameCreator, screen);
 		new Thread(game,"Game").start();
 		gameCreator.setVisible(true);

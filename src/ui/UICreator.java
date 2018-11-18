@@ -36,7 +36,7 @@ public class UICreator extends JFrame {
 	 * 
 	 * @param controller
 	 */
-	public UICreator(Controller controller) {
+	public UICreator() {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
@@ -166,9 +166,9 @@ public class UICreator extends JFrame {
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				controller.dispatchMessage(message + networkMessage);
-				controller.dispatchMessage(message + "PLAYERNAME/" + name);
-				controller.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
+				Controller.getInstance().dispatchMessage(message + networkMessage);
+				Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
+				Controller.getInstance().dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
 			}
 
 			private boolean isLegitIP(String IP) {
