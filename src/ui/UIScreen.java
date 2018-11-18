@@ -23,13 +23,11 @@ import java.util.Hashtable;
 import game.Controller;
 import game.GameListener;
 
-public class UIScreen extends JFrame implements GameListener, Runnable {
+public class UIScreen extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
 	private static final String boardImagePath = "resources/board.png";
 
 	private ArrayList<Piece> pieces = new ArrayList<Piece>();
-
-	private volatile ArrayList<String> gameEvents = new ArrayList<>();
 
 	private volatile Animator animator;
 	private Controller controller;
@@ -198,7 +196,40 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 
 	@Override
 	public void onGameEvent(String message) {
-		gameEvents.add(message);
+		String[] parsed = message.split("/");
+		switch (parsed[0]) {
+		case "ACTION":
+			infoText.append(parsed[1]);
+			break;
+		case "COLOR":
+			playerColor = colorTable.get(parsed[1]);
+			playerArea.setBackground(playerColor);
+			break;
+		case "MOVE2":
+			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
+			pieces.get(toInt(parsed[1])).path = path;
+			animator.startAnimator();
+			break;
+		case "MOVE":
+			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
+			pieces.get(toInt(parsed[1])).lastPoint = point;
+			repaint();
+			break;
+		case "PIECE":
+			Piece piece = new Piece();
+			int trackID = toInt(parsed[1]);
+			int location = toInt(parsed[2]);
+			pathFinder.setInitialValues(trackID, location);
+			piece.lastPoint = pathFinder.getLocation(trackID, location);
+			repaint();
+			pieces.add(piece);
+			break;
+		case "PLAYERDATA":
+			playerText.setText(parsed[1]);
+			break;
+		default:
+			break;
+		}
 	}
 
 	private int toInt(String string) {
@@ -250,48 +281,5 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 			put("Black", Color.BLACK);
 		}
 	};
-
-	@Override
-	public void run() {
-		while (true) {
-			if (!gameEvents.isEmpty()) {
-				String[] parsed = gameEvents.remove(0).split("/");
-				switch (parsed[0]) {
-				case "ACTION":
-					infoText.append(parsed[1]);
-					break;
-				case "COLOR":
-					playerColor = colorTable.get(parsed[1]);
-					playerArea.setBackground(playerColor);
-					break;
-				case "MOVE":
-					Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
-					pieces.get(toInt(parsed[1])).path = path;
-					animator.startAnimator();
-					break;
-				case "MOVE2":
-					Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
-					pieces.get(toInt(parsed[1])).lastPoint = point;
-					repaint(0);
-					break;
-				case "PIECE":
-					Piece piece = new Piece();
-					int trackID = toInt(parsed[1]);
-					int location = toInt(parsed[2]);
-					pathFinder.setInitialValues(trackID, location);
-					piece.lastPoint = pathFinder.getLocation(trackID, location);
-					repaint();
-					pieces.add(piece);
-					System.out.println(pieces.size());
-					break;
-				case "PLAYERDATA":
-					playerText.setText(parsed[1]);
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}
 
 }
