@@ -38,6 +38,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private Color playerColor;
 	private PathFinder pathFinder;
 	private JPanel playerArea;
+	private JButton rollDiceButton;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -131,7 +132,7 @@ public class UIScreen extends JFrame implements GameListener {
 		controlPanel.add(buyPropertyButton);
 		buyPropertyButton.setEnabled(false);
 
-		JButton rollDiceButton = new JButton("Roll Dice");
+		rollDiceButton = new JButton("Roll Dice");
 		rollDiceButton.setBounds(controlPaneXSpace, getButtonY(2), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(rollDiceButton);
 		rollDiceButton.setEnabled(false);
@@ -152,6 +153,7 @@ public class UIScreen extends JFrame implements GameListener {
 			public void actionPerformed(ActionEvent arg0) {
 				message = "UISCREEN/ROLLDICE";
 				controller.dispatchMessage(message);
+				rollDiceButton.setEnabled(false);
 			}
 		});
 
