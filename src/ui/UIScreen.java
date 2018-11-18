@@ -249,8 +249,10 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 			break;
 		case "PLAY":
-			for (JButton button : buttons.values())
+			for (JButton button : buttons.values()) {
 				button.setEnabled(true);
+			}
+			break;
 		default:
 			break;
 		}
