@@ -226,7 +226,10 @@ public class UIScreen extends JFrame implements GameListener {
 			pieces.add(piece);
 			break;
 		case "PLAYERDATA":
-			playerText.setText(parsed[1]);
+			infoText.setText("");
+			for(int i = 1; i< parsed.length; i++) {
+				infoText.append(parsed[i]);
+			}
 			break;
 		default:
 			break;

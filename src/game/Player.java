@@ -263,12 +263,12 @@ public class Player {
 
 	public void updateState() {
 		message = "PLAYERDATA/";
-		message += "Player Name: " + name + "\n";
-		message += "Player Money: " + money + "\n";
-		message += "Player Properties:\n";
+		message += "Player Name: " + name + "/";
+		message += "Player Money: " + money + "/";
+		message += "Player Properties:/";
 		int i = 1;
 		for (Property property : properties) {
-			message += i + "- " + property.getName() + "\n";
+			message += i + "- " + property.getName() + "/";
 			i++;
 		}
 		publishGameEvent(message);
