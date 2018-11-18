@@ -73,6 +73,9 @@ public class MonopolyGame implements Runnable {
 			break;
 		case "RECEIVECOLOR":
 			currentPlayer.setColor(parsed[2]);
+			break;
+		case "UPDATESTATE":
+			currentPlayer.publishGameEvent(parsed[2]);
 		}
 	}
 

@@ -265,13 +265,14 @@ public class Player {
 		message = "PLAYERDATA/";
 		message += "Player Name: " + name + "\n";
 		message += "Player Money: " + money + "\n";
-		message += "Player Properties: \n";
+		message += "Player Properties:\n";
 		int i = 1;
 		for (Property property : properties) {
 			message += i + "- " + property.getName() + "\n";
 			i++;
 		}
 		publishGameEvent(message);
+		NetworkFaçade.getInstance().sendMessageToOthers(name+"/UPDATESTATE/"+message);
 	}
 
 	public void setGoAnyWhere() {
