@@ -15,17 +15,17 @@ public class Animator implements Runnable {
 		while (true) {
 			try {
 				synchronized (this) {
-					if (animatorDestruct) {
+					if (animatorDestruct)
 						break;
-					}
-					if (animatorStopped != true) {
-						Thread.sleep(sleepTime);
-						System.out.println("APO");
-						board.repaint();
-					}
+					if (animatorStopped)
+						wait();
+				}
+				if (!animatorStopped) {
+					Thread.sleep(sleepTime);
 				}
 			} catch (InterruptedException e) {
 			}
+			board.repaint();
 		}
 	}
 

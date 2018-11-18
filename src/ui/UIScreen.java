@@ -175,7 +175,7 @@ public class UIScreen extends JFrame implements GameListener {
 		endTurnButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				for(JButton button : buttons.values())
+				for (JButton button : buttons.values())
 					button.setEnabled(false);
 				message = "UISCREEN/ENDTURN";
 				controller.dispatchMessage(message);
@@ -191,7 +191,7 @@ public class UIScreen extends JFrame implements GameListener {
 				dispose();
 			}
 		});
-		
+
 		buttons.put("ROLL", rollDiceButton);
 		buttons.put("BUY", buyPropertyButton);
 		buttons.put("BUILDING", buildingButton);
@@ -222,7 +222,10 @@ public class UIScreen extends JFrame implements GameListener {
 		case "MOVE2":
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
 			pieces.get(toInt(parsed[1])).path = path;
-			animator.startAnimator();
+			synchronized (animator) {
+				animator.startAnimator();
+				animator.notify();
+			}
 			break;
 		case "MOVE":
 			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
@@ -246,7 +249,7 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 			break;
 		case "PLAY":
-			for(JButton button : buttons.values())
+			for (JButton button : buttons.values())
 				button.setEnabled(true);
 		default:
 			break;

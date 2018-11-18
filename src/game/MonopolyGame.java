@@ -31,7 +31,6 @@ public class MonopolyGame implements Runnable {
 	public void executeNetworkMessage(String[] parsed) {
 		if (parsed[0].equals("SENDDICE")) {
 			int[] dice = currentPlayer.rollDice();
-			System.out.println(dice[0] + dice[1]) ;
 			NetworkFaçade.getInstance().sendMessageToOthers((dice[0] + dice[1]) + "");
 			return;
 		} else if (parsed[0].equals("SENDNAME")) {
@@ -76,8 +75,8 @@ public class MonopolyGame implements Runnable {
 			break;
 		case "UPDATESTATE":
 			String message = "";
-			for(int i = 2; i< parsed.length;i++) {
-				message+=parsed[i]+"/";
+			for (int i = 2; i < parsed.length; i++) {
+				message += parsed[i] + "/";
 			}
 			currentPlayer.publishGameEvent(message);
 		}
@@ -106,13 +105,17 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "ENDGAME":
 				NetworkFaçade.getInstance().sendMessageToOthers("CLOSE");
+				start = false;
 				break;
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
-				NetworkFaçade.getInstance().sendMessageToOthers(currentPlayer.getName()+"/"+"BUYESTATE");
+				NetworkFaçade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/" + "BUYESTATE");
 			case "ENDTURN":
 				NetworkFaçade.getInstance().sendMessageToOthers("ENDTURN");
-				start = true;
+				synchronized (this) {
+					start = true;
+					notify();
+				}
 				break;
 			}
 		case "UICREATOR":
@@ -156,17 +159,25 @@ public class MonopolyGame implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			if (start) {
-				String message = NetworkFaçade.getInstance().receiveMessage();
-				String[] parsed = message.split("/");
-				while (!parsed[0].equals("PLAY")) {
-					System.out.println(message);
-					executeNetworkMessage(parsed);
-					message = NetworkFaçade.getInstance().receiveMessage();
-					parsed = message.split("/");
+			try {
+				synchronized (this) {
+					if (!start) {
+						wait();
+					}
 				}
-				currentPlayer = players.get(0);
-				currentPlayer.publishGameEvent("PLAY");
+				if (start) {
+					String message = NetworkFaçade.getInstance().receiveMessage();
+					String[] parsed = message.split("/");
+					while (!parsed[0].equals("PLAY")) {
+						System.out.println(message);
+						executeNetworkMessage(parsed);
+						message = NetworkFaçade.getInstance().receiveMessage();
+						parsed = message.split("/");
+					}
+					currentPlayer = players.get(0);
+					currentPlayer.publishGameEvent("PLAY");
+				}
+			} catch (InterruptedException e) {
 			}
 		}
 	}
