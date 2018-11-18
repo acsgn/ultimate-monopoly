@@ -32,14 +32,14 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 	private volatile String gameEvent = "";
 	private volatile boolean start = false;
 
-	private Animator animator;
+	private volatile Animator animator;
 	private Controller controller;
 	private String message;
-	private JTextArea infoText;
-	private JTextArea playerText;
-	private Color playerColor;
+	private volatile JTextArea infoText;
+	private volatile JTextArea playerText;
+	private volatile Color playerColor;
 	private PathFinder pathFinder;
-	private JPanel playerArea;
+	private volatile JPanel playerArea;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
