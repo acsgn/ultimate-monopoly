@@ -7,9 +7,10 @@ import game.card.Card;
 import network.NetworkFaçade;
 import ui.UILinker;
 
-public class MonopolyGame {
-	private ArrayList<Player> players;
-	private Player currentPlayer;
+public class MonopolyGame implements Runnable {
+	private volatile boolean start = false;
+	private volatile ArrayList<Player> players;
+	private volatile Player currentPlayer;
 	private static ArrayList<GameListener> listeners;
 
 	public MonopolyGame() {
@@ -27,39 +28,25 @@ public class MonopolyGame {
 		this.players = players;
 	}
 
-	public void receiveMessage() {
-		String message = NetworkFaçade.getInstance().receiveMessage();
-		System.out.println(message);
-		String[] parsed = message.split("/");
-		while (!parsed[0].equals("PLAY")) {
-			executeNetworkMessage(parsed);
-			message = NetworkFaçade.getInstance().receiveMessage();
-			System.out.println(message);
-			parsed = message.split("/");
-		}
-		currentPlayer = players.get(0);
-		// Enable Buttons in UI
-	}
-
 	public void executeNetworkMessage(String[] parsed) {
-		if(parsed[0].equals("SENDDICE")) {
-			int [] dice = currentPlayer.rollDice();
-			NetworkFaçade.getInstance().sendMessageToOthers((dice[0]+dice[1]) + "");
+		if (parsed[0].equals("SENDDICE")) {
+			int[] dice = currentPlayer.rollDice();
+			NetworkFaçade.getInstance().sendMessageToOthers((dice[0] + dice[1]) + "");
 			return;
-		}else if(parsed[0].equals("SENDNAME")) {
+		} else if (parsed[0].equals("SENDNAME")) {
 			NetworkFaçade.getInstance().sendMessageToOthers(players.get(0).getName());
 			return;
-		}else if(parsed[0].equals("SENDCOLOR")) {
+		} else if (parsed[0].equals("SENDCOLOR")) {
 			NetworkFaçade.getInstance().sendMessageToOthers(players.get(0).getColor());
 			return;
-		}else if(parsed[0].equals("RECEIVENAME")) {
-			if(!parsed[1].equals(players.get(0).getName())){
+		} else if (parsed[0].equals("RECEIVENAME")) {
+			if (!parsed[1].equals(players.get(0).getName())) {
 				Player newPlayer = new Player();
 				newPlayer.setName(parsed[1]);
 				players.add(newPlayer);
 			}
 			return;
-		}else if(parsed[0].equals("ALLDONE")) {
+		} else if (parsed[0].equals("ALLDONE")) {
 			UILinker.getInstance().connectionDone();
 			return;
 		}
@@ -75,11 +62,11 @@ public class MonopolyGame {
 		case "BUYESTATE":
 			currentPlayer.buySquare();
 			break;
-		case "CARD": 
+		case "CARD":
 			Card card;
-			if(toInt(parsed[2]) == 0) 
+			if (toInt(parsed[2]) == 0)
 				card = ActionCards.getInstance().getChanceCard();
-			else 
+			else
 				card = ActionCards.getInstance().getCommunityChestCard();
 			currentPlayer.pickCard(card);
 			break;
@@ -103,7 +90,7 @@ public class MonopolyGame {
 		case "UISCREEN":
 			switch (parsed[1]) {
 			case "START":
-				for(Player player: players) 
+				for (Player player : players)
 					player.createPiece();
 				break;
 			case "ROLLDICE":
@@ -116,7 +103,7 @@ public class MonopolyGame {
 				currentPlayer.buySquare();
 			case "ENDTURN":
 				NetworkFaçade.getInstance().sendMessageToOthers("ENDTURN");
-				receiveMessage();
+				start = true;
 				break;
 			}
 		case "UICREATOR":
@@ -126,7 +113,7 @@ public class MonopolyGame {
 				break;
 			case "PLAYERCOLOR":
 				currentPlayer.setColor(parsed[2]);
-				receiveMessage();
+				start = true;
 				break;
 			case "SERVER":
 				NetworkFaçade.getInstance().connect(Integer.parseInt(parsed[2]));
@@ -145,6 +132,7 @@ public class MonopolyGame {
 	private int toInt(String string) {
 		return Integer.parseInt(string);
 	}
+
 	public void addGamelistener(GameListener lis) {
 		listeners.add(lis);
 	}
@@ -155,5 +143,21 @@ public class MonopolyGame {
 		}
 	}
 
+	@Override
+	public void run() {
+		while (true) {
+			if (start) {
+				String message = NetworkFaçade.getInstance().receiveMessage();
+				String[] parsed = message.split("/");
+				while (!parsed[0].equals("PLAY")) {
+					executeNetworkMessage(parsed);
+					message = NetworkFaçade.getInstance().receiveMessage();
+					parsed = message.split("/");
+				}
+				currentPlayer = players.get(0);
+				// Enable Buttons in UI
+			}
+		}
+	}
 
 }

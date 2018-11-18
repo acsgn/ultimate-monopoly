@@ -272,7 +272,7 @@ public class UIScreen extends JFrame implements GameListener, Runnable {
 				case "MOVE":
 					Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 					pieces.get(toInt(parsed[1])).lastPoint = point;
-					repaint();
+					repaint(0);
 					break;
 				case "PIECE":
 					Piece piece = new Piece();
