@@ -23,7 +23,7 @@ import java.util.Hashtable;
 import game.Controller;
 import game.GameListener;
 
-public class UIScreen extends JFrame implements GameListener {
+public class UIScreen extends JFrame implements GameListener, Runnable {
 	private static final long serialVersionUID = 1L;
 	private static final String boardImagePath = "resources/board.png";
 
@@ -37,7 +37,6 @@ public class UIScreen extends JFrame implements GameListener {
 	private Color playerColor;
 	private PathFinder pathFinder;
 	private JPanel playerArea;
-	private JPanel piecePanel;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -278,5 +277,9 @@ public class UIScreen extends JFrame implements GameListener {
 			put("Black", Color.BLACK);
 		}
 	};
+
+	@Override
+	public void run() {
+	}
 
 }
