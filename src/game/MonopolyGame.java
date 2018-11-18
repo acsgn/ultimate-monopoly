@@ -33,6 +33,7 @@ public class MonopolyGame {
 		while (!parsed[0].equals("PLAY")) {
 			executeNetworkMessage(parsed);
 			message = NetworkFaçade.getInstance().receiveMessage();
+			System.out.println(message);
 			parsed = message.split("/");
 		}
 		currentPlayer = players.get(0);
