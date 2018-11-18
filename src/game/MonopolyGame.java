@@ -178,7 +178,6 @@ public class MonopolyGame implements Runnable {
 					String message = NetworkFaçade.getInstance().receiveMessage();
 					String[] parsed = message.split("/");
 					while (!parsed[0].equals("PLAY")) {
-						System.out.println(message);
 						executeNetworkMessage(parsed);
 						message = NetworkFaçade.getInstance().receiveMessage();
 						parsed = message.split("/");
