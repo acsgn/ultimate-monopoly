@@ -235,10 +235,6 @@ public class Player {
 		return name;
 	}
 
-	public List<Property> getPropertys() {
-		return properties;
-	}
-
 	public void setProperties(ArrayList<Property> properties) {
 		this.properties = properties;
 	}
