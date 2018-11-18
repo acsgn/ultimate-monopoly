@@ -29,6 +29,7 @@ public class MonopolyGame {
 
 	public void receiveMessage() {
 		String message = NetworkFaçade.getInstance().receiveMessage();
+		System.out.println(message);
 		String[] parsed = message.split("/");
 		while (!parsed[0].equals("PLAY")) {
 			executeNetworkMessage(parsed);
