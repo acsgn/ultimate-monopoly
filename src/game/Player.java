@@ -57,6 +57,9 @@ public class Player {
 
 	public void setColor(String color) {
 		this.color = color;
+	}
+	
+	public void sendColor() {
 		message = "COLOR/" + color;
 		publishGameEvent(message);
 	}
@@ -67,8 +70,6 @@ public class Player {
 	}
 
 	public void play() {
-		message = "COLOR/" + color;
-		publishGameEvent(message);
 		int[] diceRolls = rollDice();
 		message = "ACTION/";
 		message += "Regular Die 1: " + diceRolls[0] + "\n";
@@ -96,6 +97,7 @@ public class Player {
 	public void move(int[] diceRolls) {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
+		sendColor();
 		int sum = diceRolls[0] + diceRolls[1];
 
 		Square newLocation = location;

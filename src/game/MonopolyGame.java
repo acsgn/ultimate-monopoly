@@ -48,6 +48,7 @@ public class MonopolyGame implements Runnable {
 			}
 			return;
 		} else if (parsed[0].equals("ALLDONE")) {
+			currentPlayer.sendColor();
 			UILinker.getInstance().connectionDone();
 			return;
 		}
