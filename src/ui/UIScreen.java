@@ -191,7 +191,6 @@ public class UIScreen extends JFrame implements GameListener {
 				synchronized (animator) {
 					animator.destruct();
 					animator.notify();
-					System.out.println("this is a experimet");
 				}
 				controller.dispatchMessage(message);
 				dispose();
