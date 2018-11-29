@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
 
 import java.awt.Font;
@@ -119,13 +120,13 @@ public class UICreator extends JFrame {
 		});
 
 		JLabel playerNameLabel = new JLabel("Player Name:");
-		playerNameLabel.setBounds(435, 275, 130, 20);
+		playerNameLabel.setBounds(435, 250, 130, 20);
 		getContentPane().add(playerNameLabel);
 		playerNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		playerNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		JTextField playerNameField = new JTextField();
-		playerNameField.setBounds(400, 300, 200, 30);
+		playerNameField.setBounds(400, 275, 200, 30);
 		playerNameField.setHorizontalAlignment(SwingConstants.CENTER);
 		playerNameField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		getContentPane().add(playerNameField);
@@ -134,13 +135,32 @@ public class UICreator extends JFrame {
 				"Black" };
 		JComboBox<String> colorBox = new JComboBox<String>(colorNames);
 		colorBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		colorBox.setBounds(400, 342, 200, 30);
+		colorBox.setBounds(400, 317, 200, 30);
 		colorBox.setSelectedIndex(2);
 		getContentPane().add(colorBox);
 
+		JFileChooser chooser = new JFileChooser();
+		//We are going to filter file options.
+
+		JButton loadGameButton = new JButton("Load Game");
+		loadGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		loadGameButton.setBounds(400, 360, 200, 40);
+		getContentPane().add(loadGameButton);
+
+		loadGameButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int returnVal = chooser.showOpenDialog(UICreator.this);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					// Line below will return you a FÝle object with selected file.
+					// chooser.getSelectedFile();
+				}
+			}
+		});
+
 		JButton startGameButton = new JButton("Start Game");
 		startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		startGameButton.setBounds(400, 385, 200, 65);
+		startGameButton.setBounds(400, 410, 200, 40);
 		getContentPane().add(startGameButton);
 
 		startGameButton.addActionListener(new ActionListener() {
@@ -168,7 +188,8 @@ public class UICreator extends JFrame {
 				}
 				Controller.getInstance().dispatchMessage(message + networkMessage);
 				Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
-				Controller.getInstance().dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
+				Controller.getInstance()
+						.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
 			}
 
 			private boolean isLegitIP(String IP) {
