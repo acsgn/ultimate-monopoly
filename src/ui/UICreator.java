@@ -41,7 +41,7 @@ public class UICreator extends JFrame {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setBounds((screenWidth - 636) / 2, (screenHeight - 450) / 2, 636, 498);
+		setBounds((screenWidth - 636) / 2, (screenHeight - 450) / 2, 636, 503);
 		getContentPane().setLayout(null);
 
 		JLabel image = new JLabel();
@@ -120,13 +120,13 @@ public class UICreator extends JFrame {
 		});
 
 		JLabel playerNameLabel = new JLabel("Player Name:");
-		playerNameLabel.setBounds(435, 250, 130, 20);
+		playerNameLabel.setBounds(435, 260, 130, 20);
 		getContentPane().add(playerNameLabel);
 		playerNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		playerNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		JTextField playerNameField = new JTextField();
-		playerNameField.setBounds(400, 275, 200, 30);
+		playerNameField.setBounds(400, 285, 200, 30);
 		playerNameField.setHorizontalAlignment(SwingConstants.CENTER);
 		playerNameField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		getContentPane().add(playerNameField);
@@ -135,7 +135,7 @@ public class UICreator extends JFrame {
 				"Black" };
 		JComboBox<String> colorBox = new JComboBox<String>(colorNames);
 		colorBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		colorBox.setBounds(400, 317, 200, 30);
+		colorBox.setBounds(400, 327, 200, 30);
 		colorBox.setSelectedIndex(2);
 		getContentPane().add(colorBox);
 
@@ -144,7 +144,7 @@ public class UICreator extends JFrame {
 
 		JButton loadGameButton = new JButton("Load Game");
 		loadGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		loadGameButton.setBounds(400, 360, 200, 40);
+		loadGameButton.setBounds(400, 370, 200, 40);
 		getContentPane().add(loadGameButton);
 
 		loadGameButton.addActionListener(new ActionListener() {
@@ -160,7 +160,7 @@ public class UICreator extends JFrame {
 
 		JButton startGameButton = new JButton("Start Game");
 		startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		startGameButton.setBounds(400, 410, 200, 40);
+		startGameButton.setBounds(400, 420, 200, 40);
 		getContentPane().add(startGameButton);
 
 		startGameButton.addActionListener(new ActionListener() {
