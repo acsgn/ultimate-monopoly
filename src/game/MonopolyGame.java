@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import game.card.ActionCards;
 import game.card.Card;
-import network.NetworkFaçade;
-import ui.UILinker;
+import network.NetworkFacade;
+import ui.UIFacade;
 
 public class MonopolyGame implements Runnable {
 	private boolean start = false;
@@ -30,13 +30,13 @@ public class MonopolyGame implements Runnable {
 	public void executeNetworkMessage(String[] parsed) {
 		if (parsed[0].equals("SENDDICE")) {
 			int[] dice = currentPlayer.rollDice();
-			NetworkFaçade.getInstance().sendMessageToOthers((dice[0] + dice[1]) + "");
+			NetworkFacade.getInstance().sendMessageToOthers((dice[0] + dice[1]) + "");
 			return;
 		} else if (parsed[0].equals("SENDNAME")) {
-			NetworkFaçade.getInstance().sendMessageToOthers(players.get(0).getName());
+			NetworkFacade.getInstance().sendMessageToOthers(players.get(0).getName());
 			return;
 		} else if (parsed[0].equals("SENDCOLOR")) {
-			NetworkFaçade.getInstance().sendMessageToOthers(players.get(0).getColor());
+			NetworkFacade.getInstance().sendMessageToOthers(players.get(0).getColor());
 			return;
 		} else if (parsed[0].equals("RECEIVENAME")) {
 			if (!parsed[1].equals(players.get(0).getName())) {
@@ -46,7 +46,7 @@ public class MonopolyGame implements Runnable {
 			}
 			return;
 		} else if (parsed[0].equals("ALLDONE")) {
-			UILinker.getInstance().connectionDone();
+			UIFacade.getInstance().connectionDone();
 			return;
 		}
 		updateCurrentPlayer(parsed[0]);
@@ -103,7 +103,7 @@ public class MonopolyGame implements Runnable {
 				currentPlayer.play();
 				break;
 			case "ENDGAME":
-				NetworkFaçade.getInstance().sendMessageToOthers("CLOSE");
+				NetworkFacade.getInstance().sendMessageToOthers("CLOSE");
 				synchronized (this) {
 					destroy = true;
 					notify();
@@ -111,10 +111,10 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
-				NetworkFaçade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/" + "BUYESTATE");
+				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/" + "BUYESTATE");
 				break;
 			case "ENDTURN":
-				NetworkFaçade.getInstance().sendMessageToOthers("ENDTURN");
+				NetworkFacade.getInstance().sendMessageToOthers("ENDTURN");
 				synchronized (this) {
 					start = true;
 					notify();
@@ -135,12 +135,12 @@ public class MonopolyGame implements Runnable {
 				}
 				break;
 			case "SERVER":
-				NetworkFaçade.getInstance().connect(Integer.parseInt(parsed[2]));
+				NetworkFacade.getInstance().connect(Integer.parseInt(parsed[2]));
 				break;
 			case "CLIENT":
-				NetworkFaçade.getInstance().connect(parsed[2]);
-				if (!NetworkFaçade.getInstance().isConnected()) {
-					UILinker.getInstance().connectionError();
+				NetworkFacade.getInstance().connect(parsed[2]);
+				if (!NetworkFacade.getInstance().isConnected()) {
+					UIFacade.getInstance().connectionError();
 					break;
 				}
 				break;
@@ -163,11 +163,11 @@ public class MonopolyGame implements Runnable {
 						break;
 				}
 				if (start) {
-					String message = NetworkFaçade.getInstance().receiveMessage();
+					String message = NetworkFacade.getInstance().receiveMessage();
 					String[] parsed = message.split("/");
 					while (!parsed[0].equals("PLAY")) {
 						executeNetworkMessage(parsed);
-						message = NetworkFaçade.getInstance().receiveMessage();
+						message = NetworkFacade.getInstance().receiveMessage();
 						parsed = message.split("/");
 					}
 					currentPlayer = players.get(0);

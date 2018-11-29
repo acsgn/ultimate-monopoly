@@ -1,15 +1,15 @@
 package network;
 
-public class NetworkFaçade {
+public class NetworkFacade {
 
-	private static NetworkFaçade self;
+	private static NetworkFacade self;
 
 	private MessageSocket mS;
 	private Thread server;
 	private boolean isConnected = true;
 	private boolean isInitiated = false;
 
-	private NetworkFaçade() {
+	private NetworkFacade() {
 	}
 
 	public void connect(int numOfPlayers) {
@@ -52,9 +52,9 @@ public class NetworkFaçade {
 			}
 	}
 
-	public static synchronized NetworkFaçade getInstance() {
+	public static synchronized NetworkFacade getInstance() {
 		if (self == null) {
-			self = new NetworkFaçade();
+			self = new NetworkFacade();
 		}
 		return self;
 	}

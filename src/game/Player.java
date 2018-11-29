@@ -10,7 +10,7 @@ import game.card.CommunityChest;
 import game.dice.SingletonDice;
 import game.square.Square;
 import game.square.estate.*;
-import network.NetworkFaçade;
+import network.NetworkFacade;
 
 public class Player {
 
@@ -83,7 +83,7 @@ public class Player {
 		}
 		publishGameEvent(message);
 		move(diceRolls);
-		NetworkFaçade.getInstance()
+		NetworkFacade.getInstance()
 				.sendMessageToOthers(this.name + "/MOVE/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 		updateState();
 		location.executeWhenLanded(this);
@@ -271,7 +271,7 @@ public class Player {
 			i++;
 		}
 		publishGameEvent(message);
-		NetworkFaçade.getInstance().sendMessageToOthers(name + "/UPDATESTATE/" + message);
+		NetworkFacade.getInstance().sendMessageToOthers(name + "/UPDATESTATE/" + message);
 	}
 
 	public void setGoAnyWhere() {

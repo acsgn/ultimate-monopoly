@@ -1,13 +1,13 @@
 package ui;
 
-public class UILinker {
+public class UIFacade {
 
-	private static UILinker self;
+	private static UIFacade self;
 	
 	private UICreator uiC;
 	private UIScreen uiS;
 	
-	private UILinker() {
+	private UIFacade() {
 	}
 	
 	public void connectionError() {
@@ -24,9 +24,9 @@ public class UILinker {
 		this.uiS = uiS;
 	}
 	
-	public static synchronized UILinker getInstance() {
+	public static synchronized UIFacade getInstance() {
 		if (self == null) {
-			self = new UILinker();
+			self = new UIFacade();
 		}
 		return self;
 	}
