@@ -48,8 +48,6 @@ public class MonopolyGame implements Runnable {
 		} else if (parsed[0].equals("ALLDONE")) {
 			UIFacade.getInstance().connectionDone();
 			return;
-		} else if (parsed[0].equals("CLOSE")) {
-			
 		}
 		updateCurrentPlayer(parsed[0]);
 		switch (parsed[1]) {
@@ -83,7 +81,7 @@ public class MonopolyGame implements Runnable {
 		case "ENDGAME":
 			currentPlayer.endGame();
 			players.remove(currentPlayer);
-			Controller.getInstance().dispatchMessage("ACTION/"+ currentPlayer.getName() + " left the game.");
+			Controller.getInstance().dispatchMessage("ACTION/" + currentPlayer.getName() + " left the game.");
 		}
 	}
 
@@ -110,10 +108,7 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "ENDGAME":
 				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/ENDGAME");
-				synchronized (this) {
-					destroy = true;
-					notify();
-				}
+				destroy = true;
 				break;
 			case "BUYPROPERTY":
 				currentPlayer.buySquare();
@@ -163,9 +158,9 @@ public class MonopolyGame implements Runnable {
 		while (true) {
 			try {
 				synchronized (this) {
-					if (!start) 
+					if (!start)
 						wait();
-					if(destroy)
+					if (destroy)
 						break;
 				}
 				if (start) {
