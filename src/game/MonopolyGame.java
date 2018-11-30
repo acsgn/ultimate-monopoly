@@ -1,5 +1,10 @@
 package game;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import game.card.ActionCards;
@@ -144,6 +149,9 @@ public class MonopolyGame implements Runnable {
 					break;
 				}
 				break;
+			case "LOADGAME":
+				loadGame(parsed[2]);
+				break;
 			}
 		}
 	}
@@ -157,9 +165,9 @@ public class MonopolyGame implements Runnable {
 		while (true) {
 			try {
 				synchronized (this) {
-					if (!start) 
+					if (!start)
 						wait();
-					if(destroy)
+					if (destroy)
 						break;
 				}
 				if (start) {
@@ -176,6 +184,47 @@ public class MonopolyGame implements Runnable {
 			} catch (InterruptedException e) {
 			}
 		}
+	}
+
+	public void saveGame(String savedGameFileName) {
+		// Create the SavedGame Object. 
+		
+		SavedGame saved = new SavedGame(players,currentPlayer);
+		try {
+			// create a new file with an ObjectOutputStream
+			FileOutputStream out = new FileOutputStream(savedGameFileName+".txt");
+			ObjectOutputStream oout = new ObjectOutputStream(out);
+
+			// write something in the file
+			oout.writeObject(saved);
+
+			// close the stream
+			oout.close();
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public void loadGame(String path){
+		try {
+	         // create an ObjectInputStream for the file we created before
+	         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+
+	         // read and print what we wrote before
+	         SavedGame saved = (SavedGame)ois.readObject();
+	         players = saved.getPlayers();
+	         for(Player p: players){
+	        	 if(p.getName().equals(saved.getCurreentPlayer())){
+	        		 currentPlayer = p;
+	        		 break;
+	        	 }
+	         }
+	         
+	         
+	      } catch (Exception ex) {
+	         ex.printStackTrace();
+	      }
 	}
 
 }

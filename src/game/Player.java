@@ -65,7 +65,7 @@ public class Player {
 	}
 
 	public void createPiece() {
-		message = "PIECE/" + color + "/" + BEGIN_TRACK.ordinal() + "/" + BEGIN_INDEX;
+		message = "PIECE/" + color + "/" + currentTrack.ordinal() + "/" + indexOnTrack;
 		publishGameEvent(message);
 	}
 
