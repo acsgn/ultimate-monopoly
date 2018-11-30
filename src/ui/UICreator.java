@@ -30,7 +30,7 @@ public class UICreator extends JFrame {
 
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 	private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-	private int chooserVal;
+	private int chooserVal = 121754780;
 
 	/**
 	 * Create the frame.
@@ -159,24 +159,6 @@ public class UICreator extends JFrame {
 				}
 
 			}
-
-			private boolean isLegitIP(String IP) {
-				String[] areas = IP.split("\\.");
-				if (areas.length != 4)
-					return false;
-				for (String ip : areas) {
-					int number = 0;
-					try {
-						number = Integer.parseInt(ip);
-					} catch (NumberFormatException numberException) {
-						return false;
-					}
-					if (number < 1 || number > 255) {
-						return false;
-					}
-				}
-				return true;
-			}
 		});
 
 		JButton startGameButton = new JButton("Start Game");
@@ -201,7 +183,7 @@ public class UICreator extends JFrame {
 						return;
 					}
 				}
-				if (chooserVal != JFileChooser.APPROVE_OPTION) {
+				if (chooserVal != JFileChooser.APPROVE_OPTION ) {
 					String name = playerNameField.getText();
 					if (name.isEmpty()) {
 						JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
@@ -217,6 +199,8 @@ public class UICreator extends JFrame {
 			}
 
 			private boolean isLegitIP(String IP) {
+				if (IP.equals("localhost"))
+					return true;
 				String[] areas = IP.split("\\.");
 				if (areas.length != 4)
 					return false;
@@ -227,7 +211,7 @@ public class UICreator extends JFrame {
 					} catch (NumberFormatException numberException) {
 						return false;
 					}
-					if (number < 1 || number > 255) {
+					if (number < 0 || number > 255) {
 						return false;
 					}
 				}

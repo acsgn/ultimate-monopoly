@@ -9,7 +9,7 @@ public class Client {
 	private Socket s;
 
 	public Client(String IPAddress) throws Exception {
-		s = new Socket(IPAddress, DEFAULT_PORT);
+		s = new Socket(IPAddress, DEFAULT_PORT); 
 	}
 
 	protected MessageSocket getMessageSocket() {
