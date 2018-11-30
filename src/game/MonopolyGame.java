@@ -98,15 +98,18 @@ public class MonopolyGame implements Runnable {
 				message += parsed[i] + "/";
 			}
 			currentPlayer.publishGameEvent(message);
+			break;
 		case "ENDGAME":
 			currentPlayer.endGame();
 			players.remove(currentPlayer);
 			Controller.getInstance().dispatchMessage("ACTION/" + currentPlayer.getName() + " left the game.");
+			break;
 		}
 	}
 
 	private void updateCurrentPlayer(String name) {
 		for (Player player : players) {
+			System.out.println(player.getName());
 			if (player.getName().equals(name)) {
 				currentPlayer = player;
 				break;
