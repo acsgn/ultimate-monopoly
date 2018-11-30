@@ -127,7 +127,8 @@ public class Player {
 				break;
 		}
 
-		message = "MOVE/" + playerIndex + "/" + newTrack.ordinal() + "/" + newIndex;
+		message = "MOVE/" + playerIndex + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal()
+				+ "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
@@ -207,12 +208,12 @@ public class Player {
 	public void pickCard(Card card) {
 		if (card instanceof CommunityChest) {
 			((CommunityChest) card).executeAction(this);
-			message = "ACTION/" + ((CommunityChest) card).getName()+"\n";
+			message = "ACTION/" + ((CommunityChest) card).getName() + "\n";
 			publishGameEvent(message);
 		}
 		if (card instanceof Chance) {
 			((Chance) card).executeAction(this);
-			message = "ACTION/" + ((Chance) card).getName()+"\n";
+			message = "ACTION/" + ((Chance) card).getName() + "\n";
 			publishGameEvent(message);
 		}
 	}

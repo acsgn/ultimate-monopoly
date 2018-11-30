@@ -32,8 +32,6 @@ public class PathFinder {
 	private static final int innerToMiddleSecondTransitLocation = 21;
 
 	private double scaleFactor;
-	private int trackID;
-	private int location;
 
 	private Track outerTrack;
 	private Track middleTrack;
@@ -68,8 +66,6 @@ public class PathFinder {
 	}
 
 	public void setInitialValues(int trackID, int location) {
-		this.trackID = trackID;
-		this.location = location;
 	}
 
 	public Point getLocation(int trackID, int location) {
@@ -77,12 +73,10 @@ public class PathFinder {
 		return new Point(track.getLocation(location)[0], track.getLocation(location)[1]);
 	}
 
-	public Path findPath(int newTrackID, int newLocation) {
+	public Path findPath(int trackID, int location, int newTrackID, int newLocation) {
 		if (trackID == newTrackID) {
 			Track track = getTrackByID(trackID);
 			Path path = findPathOnSameTrack(location, newLocation, track);
-			trackID = newTrackID;
-			location = newLocation;
 			return path;
 		} else if (Math.abs(trackID - newTrackID) == 1) {
 			Track track = getTrackByID(trackID);

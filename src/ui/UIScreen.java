@@ -38,6 +38,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private Color playerColor;
 	private PathFinder pathFinder;
 	private JPanel playerArea;
+	private JBoard board;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -60,11 +61,11 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private Image boardImage = new ImageIcon(boardImagePath).getImage().getScaledInstance(screenHeight, -1,
 			Image.SCALE_SMOOTH);
-	
-	private double scaleFactor = screenHeight / new ImageIcon(boardImagePath).getIconHeight();
+
+	private double scaleFactor = ((double) screenHeight) / new ImageIcon(boardImagePath).getIconHeight();
 
 	private final int unscaledPieceSize = 80;
-	private int pieceSize = (int) (scaleFactor*unscaledPieceSize);
+	private int pieceSize = (int) (scaleFactor * unscaledPieceSize);
 
 	/**
 	 * Create the panel.
@@ -78,7 +79,7 @@ public class UIScreen extends JFrame implements GameListener {
 		setUndecorated(true);
 		setLayout(null);
 
-		JBoard board = new JBoard();
+		board = new JBoard();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
 		add(board);
@@ -190,8 +191,8 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "UISCREEN/ENDGAME";
+				animator.destruct();
 				synchronized (animator) {
-					animator.destruct();
 					animator.notify();
 				}
 				controller.dispatchMessage(message);
@@ -226,15 +227,13 @@ public class UIScreen extends JFrame implements GameListener {
 			playerColor = colorTable.get(parsed[1]);
 			playerArea.setBackground(playerColor);
 			break;
-		case "MOVE2":
-			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(toInt(parsed[1])).path = path;
-			synchronized (animator) {
-				animator.startAnimator();
-				animator.notify();
-			}
-			break;
 		case "MOVE":
+			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
+			pieces.get(toInt(parsed[1])).path = path;
+			board.indexOfPiece = toInt(parsed[1]);
+			animator.startAnimator();
+			break;
+		case "MOVE2":
 			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 			pieces.get(toInt(parsed[1])).lastPoint = point;
 			repaint();
@@ -277,6 +276,11 @@ public class UIScreen extends JFrame implements GameListener {
 		public Piece() {
 		}
 
+		public void paintOneTime(Graphics g) {
+			g.setColor(color);
+			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
+		}
+
 		public void paint(Graphics g) {
 			g.setColor(color);
 			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
@@ -291,11 +295,16 @@ public class UIScreen extends JFrame implements GameListener {
 	private class JBoard extends JLabel {
 		private static final long serialVersionUID = 1L;
 
+		private int indexOfPiece;
+
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
-			for (Piece piece : pieces) {
-				piece.paint(g);
+			for (int i = 0; i < pieces.size(); i++) {
+				if (i == indexOfPiece)
+					pieces.get(i).paint(g);
+				else
+					pieces.get(i).paintOneTime(g);
 			}
 		}
 	}

@@ -6,26 +6,26 @@ public class Animator implements Runnable {
 
 	private static long sleepTime = 25;
 
-	private boolean animatorStopped = true;
+	private volatile boolean animatorStopped = true;
 	private boolean animatorDestruct = false;
 	private JLabel board;
 
 	@Override
 	public void run() {
 		while (true) {
+			if (animatorDestruct)
+				break;
 			try {
 				synchronized (this) {
-					if (animatorDestruct)
-						break;
 					if (animatorStopped)
 						wait();
-				}
-				if (!animatorStopped) {
-					Thread.sleep(sleepTime);
+					else {
+						Thread.sleep(sleepTime);
+						board.repaint();
+					}
 				}
 			} catch (InterruptedException e) {
 			}
-			board.repaint();
 		}
 	}
 
@@ -34,7 +34,10 @@ public class Animator implements Runnable {
 	}
 
 	public void startAnimator() {
-		animatorStopped = false;
+		synchronized (this) {
+			animatorStopped = false;
+			notify();
+		}
 	}
 
 	public void stopAnimator() {
