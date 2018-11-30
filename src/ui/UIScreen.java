@@ -38,7 +38,6 @@ public class UIScreen extends JFrame implements GameListener {
 	private Color playerColor;
 	private PathFinder pathFinder;
 	private JPanel playerArea;
-	private JButton rollDiceButton;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -61,8 +60,11 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private Image boardImage = new ImageIcon(boardImagePath).getImage().getScaledInstance(screenHeight, -1,
 			Image.SCALE_SMOOTH);
+	
+	private double scaleFactor = screenHeight / new ImageIcon(boardImagePath).getIconHeight();
 
-	private int pieceSize = (int) (screenHeight * 80 / 3000.0);
+	private final int unscaledPieceSize = 80;
+	private int pieceSize = (int) (scaleFactor*unscaledPieceSize);
 
 	/**
 	 * Create the panel.
@@ -76,8 +78,6 @@ public class UIScreen extends JFrame implements GameListener {
 		setUndecorated(true);
 		setLayout(null);
 
-		pathFinder = new PathFinder(screenHeight / 3000.0);
-
 		JBoard board = new JBoard();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
@@ -85,6 +85,8 @@ public class UIScreen extends JFrame implements GameListener {
 
 		animator = new Animator(board);
 		new Thread(animator, "Animator").start();
+
+		pathFinder = new PathFinder(scaleFactor);
 
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(null);
@@ -132,7 +134,7 @@ public class UIScreen extends JFrame implements GameListener {
 		controlPanel.add(buyPropertyButton);
 		buyPropertyButton.setEnabled(false);
 
-		rollDiceButton = new JButton("Roll Dice");
+		JButton rollDiceButton = new JButton("Roll Dice");
 		rollDiceButton.setBounds(controlPaneXSpace, getButtonY(2), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(rollDiceButton);
 		rollDiceButton.setEnabled(false);
