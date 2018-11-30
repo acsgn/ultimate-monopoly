@@ -1,5 +1,6 @@
 package game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import game.square.Square;
 import game.square.estate.*;
 import network.NetworkFacade;
 
-public class Player {
+public class Player implements Serializable{
 
 	private static final int BEGIN_MONEY = 3200;
 	private static final TrackType BEGIN_TRACK = TrackType.MIDDLE_TRACK;
