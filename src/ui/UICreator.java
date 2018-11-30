@@ -154,8 +154,8 @@ public class UICreator extends JFrame {
 				if (chooserVal == JFileChooser.APPROVE_OPTION) {
 					// Line below will return you a FÝle object with selected
 					// file.
-					message += "LOADGAME/" + chooser.getSelectedFile().getPath();
-					Controller.getInstance().dispatchMessage(message);
+					String fileMessage = message + "LOADGAME/" + chooser.getSelectedFile().getPath();
+					Controller.getInstance().dispatchMessage(fileMessage);
 				}
 
 			}
