@@ -277,6 +277,11 @@ public class Player {
 	public void setGoAnyWhere() {
 		this.goAnyWhere = true;
 	}
+	
+	public void endGame() {
+		message = "REMOVEPIECE/"+playerIndex;
+		publishGameEvent(message);
+	}
 
 	public void publishGameEvent(String message) {
 		Controller.getInstance().publishGameEvent(message);

@@ -258,6 +258,9 @@ public class UIScreen extends JFrame implements GameListener {
 				button.setEnabled(true);
 			}
 			break;
+		case "DELETEPIECE":
+			pieces.remove(toInt(parsed[1]));
+			repaint();
 		default:
 			break;
 		}
