@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
@@ -120,7 +121,7 @@ public class UIScreen extends JFrame implements GameListener {
 				controlPaneButtonHeight - 30);
 		controlPanel.add(propertiesList);
 
-		JButton bailButton = new JButton("Pay Bail");
+		JButton bailButton = new JButton("Save Game");
 		bailButton.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(bailButton);
 		bailButton.setEnabled(false);
@@ -149,6 +150,15 @@ public class UIScreen extends JFrame implements GameListener {
 		add(controlPanel);
 
 		getContentPane().setBackground(Color.BLACK);
+		
+		bailButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String input = JOptionPane.showInputDialog(UIScreen.this, "Please enter name of the file: ", "Save Game", JOptionPane.QUESTION_MESSAGE);
+				message = "UISCREEN/SAVEGAME/"+input;
+				Controller.getInstance().dispatchMessage(message);
+			}
+		});
 
 		// Action Listeners
 		rollDiceButton.addActionListener(new ActionListener() {
