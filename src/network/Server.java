@@ -35,7 +35,8 @@ public class Server implements Runnable {
 			names.add(name);
 		}
 		for (int i = 0; i < players.size(); i++) {
-			sendMessageToOtherPlayers("RECEIVENAME/" + names.get(i), i);
+			for (String name : names)
+				sendMessageToPlayer("RECEIVENAME/" + name, i);
 		}
 		String getColor = "SENDCOLOR";
 		ArrayList<String> colors = new ArrayList<>();
