@@ -1,9 +1,10 @@
 package game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SavedGame {
+public class SavedGame implements Serializable{
 	private ArrayList<Player> players;
 	private Player currentPlayer;
 	private int order;
