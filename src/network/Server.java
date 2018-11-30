@@ -35,9 +35,7 @@ public class Server implements Runnable {
 			names.add(name);
 		}
 		for (int i = 0; i < players.size(); i++) {
-			for (String name : names) {
-				sendMessageToPlayer("RECEIVENAME/" + name, i);
-			}
+			sendMessageToOtherPlayers("RECEIVENAME/" + names.get(i), i);
 		}
 		String getColor = "SENDCOLOR";
 		ArrayList<String> colors = new ArrayList<>();
@@ -65,7 +63,7 @@ public class Server implements Runnable {
 				if (message.equals("ENDTURN"))
 					break;
 				sendMessageToOtherPlayers(message, currentPlayer);
-				if (message.compareTo("CLOSE") == 0) {
+				if (message.split("/")[1].compareTo("ENDGAME") == 0) {
 					players.remove(currentPlayer);
 					currentPlayer = currentPlayer == players.size() + 1 ? 0 : currentPlayer;
 					break;
