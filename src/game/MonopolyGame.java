@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import game.card.ActionCards;
 import game.card.Card;
@@ -17,11 +18,14 @@ public class MonopolyGame implements Runnable {
 	private boolean destroy = false;
 	private volatile ArrayList<Player> players;
 	private volatile Player currentPlayer;
+	private int order;
+	private boolean isNewGame;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
 		currentPlayer = new Player();
 		players.add(currentPlayer);
+		isNewGame = true;
 	}
 
 	public ArrayList<Player> getPlayers() {
@@ -34,8 +38,12 @@ public class MonopolyGame implements Runnable {
 
 	public void executeNetworkMessage(String[] parsed) {
 		if (parsed[0].equals("SENDDICE")) {
-			int[] dice = currentPlayer.rollDice();
-			NetworkFacade.getInstance().sendMessageToOthers((dice[0] + dice[1]) + "");
+			if (isNewGame) {
+				int[] dice = currentPlayer.rollDice();
+				NetworkFacade.getInstance().sendMessageToOthers((dice[0] + dice[1]) + "");
+			} else {
+				NetworkFacade.getInstance().sendMessageToOthers(players.size() - order + "");
+			}
 			return;
 		} else if (parsed[0].equals("SENDNAME")) {
 			NetworkFacade.getInstance().sendMessageToOthers(players.get(0).getName());
@@ -44,10 +52,17 @@ public class MonopolyGame implements Runnable {
 			NetworkFacade.getInstance().sendMessageToOthers(players.get(0).getColor());
 			return;
 		} else if (parsed[0].equals("RECEIVENAME")) {
-			if (!parsed[1].equals(players.get(0).getName())) {
-				Player newPlayer = new Player();
-				newPlayer.setName(parsed[1]);
-				players.add(newPlayer);
+			if (isNewGame) {
+				if (!parsed[1].equals(players.get(0).getName())) {
+
+					Player newPlayer = new Player();
+					newPlayer.setName(parsed[1]);
+					players.add(newPlayer);
+
+				} else {
+					// This is the current player order in playing.
+					order = players.size() - 1;
+				}
 			}
 			return;
 		} else if (parsed[0].equals("ALLDONE")) {
@@ -126,6 +141,9 @@ public class MonopolyGame implements Runnable {
 					notify();
 				}
 				break;
+			case "SAVEGAME":
+				saveGame(parsed[2]);
+				break;
 			}
 		case "UICREATOR":
 			switch (parsed[1]) {
@@ -152,6 +170,7 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "LOADGAME":
 				loadGame(parsed[2]);
+				isNewGame = false;
 				break;
 			}
 		}
@@ -188,12 +207,12 @@ public class MonopolyGame implements Runnable {
 	}
 
 	public void saveGame(String savedGameFileName) {
-		// Create the SavedGame Object. 
-		
-		SavedGame saved = new SavedGame(players,currentPlayer);
+		// Create the SavedGame Object.
+
+		SavedGame saved = new SavedGame(players, currentPlayer, order);
 		try {
 			// create a new file with an ObjectOutputStream
-			FileOutputStream out = new FileOutputStream(savedGameFileName+".txt");
+			FileOutputStream out = new FileOutputStream(savedGameFileName + ".txt");
 			ObjectOutputStream oout = new ObjectOutputStream(out);
 
 			// write something in the file
@@ -201,31 +220,35 @@ public class MonopolyGame implements Runnable {
 
 			// close the stream
 			oout.close();
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
-	public void loadGame(String path){
-		try {
-	         // create an ObjectInputStream for the file we created before
-	         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
 
-	         // read and print what we wrote before
-	         SavedGame saved = (SavedGame)ois.readObject();
-	         players = saved.getPlayers();
-	         for(Player p: players){
-	        	 if(p.getName().equals(saved.getCurreentPlayer())){
-	        		 currentPlayer = p;
-	        		 break;
-	        	 }
-	         }
-	         
-	         
-	      } catch (Exception ex) {
-	         ex.printStackTrace();
-	      }
+	public void loadGame(String path) {
+		try {
+			// create an ObjectInputStream for the file we created before
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+
+			// read and print what we wrote before
+			SavedGame saved = (SavedGame) ois.readObject();
+			players = saved.getPlayers();
+			/*for (Player p : players) {
+				if (p.getName().equals(saved.getCurreentPlayer())) {
+					currentPlayer = p;
+					break;
+				}
+			}*/
+			// Who is the first player to play will be handled by server
+			// (Instead of sending him the original order, we can send it modified
+			// a bit. 
+			currentPlayer = players.get(0);
+			this.order = saved.getOrder();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }
