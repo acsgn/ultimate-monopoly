@@ -17,15 +17,13 @@ public class MonopolyGame implements Runnable {
 	private boolean destroy = false;
 	private volatile ArrayList<Player> players;
 	private volatile Player currentPlayer;
-	private volatile String myName;
+	private volatile String myName = "";
 	private int numOfDiceReceived = 0;
 	private int order;
 	private boolean isNewGame;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
-		currentPlayer = new Player();
-		players.add(currentPlayer);
 		isNewGame = true;
 		NetworkFacade.getInstance().start();
 	}
@@ -41,9 +39,11 @@ public class MonopolyGame implements Runnable {
 	public void executeNetworkMessage(String[] parsed) {
 		if (parsed[0].equals("RECEIVENAME")) {
 			if (isNewGame) {
-				Player newPlayer = new Player();
-				newPlayer.setName(parsed[1]);
-				players.add(newPlayer);
+				if (!parsed[1].equals(myName)) {
+					Player newPlayer = new Player();
+					newPlayer.setName(parsed[1]);
+					players.add(newPlayer);
+				}
 			} else {
 				// This is the current player order in playing.
 				order = players.size() - 1;
@@ -107,7 +107,6 @@ public class MonopolyGame implements Runnable {
 
 	private void updateCurrentPlayer(String name) {
 		for (Player player : players) {
-			System.out.println(player.getName());
 			if (player.getName().equals(name)) {
 				currentPlayer = player;
 				break;
@@ -145,7 +144,10 @@ public class MonopolyGame implements Runnable {
 		case "UICREATOR":
 			switch (parsed[1]) {
 			case "PLAYERNAME":
+				currentPlayer = new Player();
 				currentPlayer.setName(parsed[2]);
+				players.add(currentPlayer);
+				myName = parsed[2];
 				NetworkFacade.getInstance().sendMessageToOthers("RECEIVENAME/" + parsed[2]);
 				break;
 			case "PLAYERCOLOR":
