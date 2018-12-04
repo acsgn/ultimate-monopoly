@@ -76,7 +76,7 @@ public class MonopolyGame implements Runnable {
 		case "RECEIVEDICE":
 			numOfDiceReceived++;
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
-			if (numOfDiceReceived == players.size()) {
+			if (numOfDiceReceived == 2) {
 				players.sort(new Comparator<Player>() {
 					@Override
 					public int compare(Player p1, Player p2) {
