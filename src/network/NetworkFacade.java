@@ -8,7 +8,7 @@ public class NetworkFacade {
 	
 	private MessageSocket mS;
 	private Thread server;
-	private String[] IPAddresses;
+	private String[] IPAddresses = {};
 	private  P2PServer p2p;
 	private boolean isConnected = true;
 	private boolean isInitiated = false;
