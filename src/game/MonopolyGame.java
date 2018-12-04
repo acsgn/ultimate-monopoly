@@ -17,15 +17,14 @@ public class MonopolyGame implements Runnable {
 	private boolean destroy = false;
 	private volatile ArrayList<Player> players;
 	private volatile Player currentPlayer;
-	private volatile Player myPlayer;
+	private volatile String myName;
 	private int numOfDiceReceived = 0;
 	private int order;
 	private boolean isNewGame;
 
 	public MonopolyGame() {
 		players = new ArrayList<>();
-		myPlayer = new Player();
-		currentPlayer = myPlayer;
+		currentPlayer = new Player();
 		players.add(currentPlayer);
 		isNewGame = true;
 		NetworkFacade.getInstance().start();
@@ -84,7 +83,7 @@ public class MonopolyGame implements Runnable {
 						return Integer.compare(p2.getInitialDiceOrder(), p1.getInitialDiceOrder());
 					}
 				});
-				if (players.get(0).equals(myPlayer)) {
+				if (players.get(0).getName().equals(myName)) {
 					currentPlayer = players.get(0);
 					currentPlayer.publishGameEvent("PLAY");
 				}
@@ -146,15 +145,15 @@ public class MonopolyGame implements Runnable {
 		case "UICREATOR":
 			switch (parsed[1]) {
 			case "PLAYERNAME":
-				myPlayer.setName(parsed[2]);
+				currentPlayer.setName(parsed[2]);
 				NetworkFacade.getInstance().sendMessageToOthers("RECEIVENAME/" + parsed[2]);
 				break;
 			case "PLAYERCOLOR":
-				NetworkFacade.getInstance().sendMessageToOthers(myPlayer.getName() + "/RECEIVECOLOR/" + parsed[2]);
-				myPlayer.sendColor();
+				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/RECEIVECOLOR/" + parsed[2]);
+				currentPlayer.sendColor();
 				int[] dice = currentPlayer.rollDice();
 				NetworkFacade.getInstance()
-						.sendMessageToOthers(myPlayer.getName() + "/RECEIVEDICE/" + (dice[0] + dice[1]));
+						.sendMessageToOthers(currentPlayer.getName() + "/RECEIVEDICE/" + (dice[0] + dice[1]));
 				break;
 			case "LOADGAME":
 				loadGame(parsed[2]);
@@ -184,7 +183,7 @@ public class MonopolyGame implements Runnable {
 				parsed = message.split("/");
 			}
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
-			if (currentPlayer.equals(myPlayer))
+			if (currentPlayer.getName().equals(myName))
 				currentPlayer.publishGameEvent("PLAY");
 		}
 	}
