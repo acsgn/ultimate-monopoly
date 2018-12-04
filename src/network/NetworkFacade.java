@@ -5,63 +5,44 @@ public class NetworkFacade {
 	private static NetworkFacade self;
 
 	// To learn your ip InetAddress.getLocalHost().getHostAddress();
-	
+
 	private MessageSocket mS;
-	private Thread server;
-	private String[] IPAddresses = {};
-	private  P2PServer p2p;
-	private boolean isConnected = true;
-	private boolean isInitiated = false;
+	private String[] IPAddresses = { "172.20.98.75" };
+	private P2PServer p2p;
 
 	private NetworkFacade() {
 	}
 
-	public void connect(int numOfPlayers) {
-		if (!isInitiated) {
-			server = new Thread(new Server(numOfPlayers), "Server");
-			server.start();
-			try {
-				mS = new Client("localhost").getMessageSocket();
-			} catch (Exception e) {
-			}
-		}
-	}
-
-	public void connect(String IPAddress) {
-		if (!isInitiated) {
-			try {
-				mS = new Client(IPAddress).getMessageSocket();
-			} catch (Exception e) {
-				isConnected = false;
-			}
-		}
+	public void start() {
+		p2p = new P2PServer();
+		new Thread(p2p, "P2p Server").start();
 	}
 
 	public void sendMessageToOthers(String message) {
-		for(int i= 0; i<IPAddresses.length;i++) {
+		for (int i = 0; i < IPAddresses.length; i++) {
 			try {
 				mS = new Client(IPAddresses[i]).getMessageSocket();
 				mS.sendMessage(message);
+				mS.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public String receiveMessage() throws InterruptedException {
-		wait();
-		return p2p.receiveMessage();
+	public String receiveMessage() {
+		try {
+			wait();
+			return p2p.receiveMessage();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return "NOMESSAGE";
 	}
 
 	public void disconnect() {
-		mS.sendMessage("CLOSE");
-		mS.close();
-		if (server != null)
-			try {
-				server.join();
-			} catch (InterruptedException e) {
-				System.err.println("Server Close Error");
-			}
+		sendMessageToOthers("CLOSE");
+		p2p.destroy();
 	}
 
 	public static synchronized NetworkFacade getInstance() {
@@ -69,10 +50,6 @@ public class NetworkFacade {
 			self = new NetworkFacade();
 		}
 		return self;
-	}
-
-	public boolean isConnected() {
-		return isConnected;
 	}
 
 }

@@ -7,8 +7,9 @@ import java.net.Socket;
 public class P2PServer implements Runnable {
 
 	private static final int DEFAULT_PORT = 302;
-	
+
 	private String message;
+	private boolean destroy = false;
 
 	@Override
 	public void run() {
@@ -16,12 +17,17 @@ public class P2PServer implements Runnable {
 		try {
 			server = new ServerSocket(DEFAULT_PORT);
 			while (true) {
+				synchronized (this) {
+					if (destroy)
+						break;
+				}
 				Socket s = server.accept();
 				MessageSocket mS = new MessageSocket(s);
 				message = mS.receiveMessage();
 				NetworkFacade.getInstance().notify();
 				mS.close();
 			}
+			server.close();
 		} catch (IOException e) {
 			System.err.println("Server Setup Error");
 		}
@@ -30,5 +36,9 @@ public class P2PServer implements Runnable {
 	public String receiveMessage() {
 		return message;
 	}
-	
+
+	public void destroy() {
+		destroy = true;
+	}
+
 }
