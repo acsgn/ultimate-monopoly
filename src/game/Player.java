@@ -24,6 +24,7 @@ public class Player implements Serializable{
 	private String name;
 	private String color;
 	private int playerIndex;
+	private int initialDiceOrder;
 	private int money;
 
 	private TrackType currentTrack;
@@ -287,6 +288,14 @@ public class Player implements Serializable{
 
 	public void publishGameEvent(String message) {
 		Controller.getInstance().publishGameEvent(message);
+	}
+
+	public int getInitialDiceOrder() {
+		return initialDiceOrder;
+	}
+
+	public void setInitialDiceOrder(int initialDiceOrder) {
+		this.initialDiceOrder = initialDiceOrder;
 	}
 
 	public String getColor() {
