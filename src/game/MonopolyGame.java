@@ -18,12 +18,15 @@ public class MonopolyGame implements Runnable {
 	private boolean destroy = false;
 	private volatile ArrayList<Player> players;
 	private volatile Player currentPlayer;
+	private Board board;
 	private int order;
 	private boolean isNewGame;
+	
 
 	public MonopolyGame() {
+		board = new Board();
 		players = new ArrayList<>();
-		currentPlayer = new Player();
+		currentPlayer = new Player(board);
 		players.add(currentPlayer);
 		isNewGame = true;
 	}
@@ -55,7 +58,7 @@ public class MonopolyGame implements Runnable {
 			if (isNewGame) {
 				if (!parsed[1].equals(players.get(0).getName())) {
 
-					Player newPlayer = new Player();
+					Player newPlayer = new Player(board);
 					newPlayer.setName(parsed[1]);
 					players.add(newPlayer);
 

@@ -38,15 +38,18 @@ public class Player implements Serializable{
 	private ArrayList<TransitStation> transitStations;
 	private ArrayList<Utility> utilities;
 
+	private Board board;
+	
 	private String message;
 
-	public Player() {
+	public Player(Board board) {
+		this.board = board;
 		money = BEGIN_MONEY;
 		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
 		playerIndex = playerIndexCounter;
 		playerIndexCounter++;
-		location = Board.getInstance().getSquare(indexOnTrack, currentTrack);
+		location = board.getSquare(indexOnTrack, currentTrack);
 		properties = new ArrayList<>();
 	}
 
@@ -115,8 +118,8 @@ public class Player implements Serializable{
 				newTrack = ((TransitStation) newLocation).getOtherTrack(newTrack);
 				transitUsed = true;
 			} else {
-				newIndex = (newIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
-				newLocation = Board.getInstance().getSquare(newIndex, newTrack);
+				newIndex = (newIndex + 1) % board.getNoOfSquaresOnTrack(newTrack);
+				newLocation = board.getSquare(newIndex, newTrack);
 				if (!isLastMove)
 					newLocation.executeWhenPassed(this);
 				sum--;
@@ -195,7 +198,7 @@ public class Player implements Serializable{
 		publishGameEvent(message);
 		indexOnTrack = index;
 		currentTrack = track;
-		location = Board.getInstance().getSquare(index, track);
+		location = board.getSquare(index, track);
 	}
 
 	public boolean buyBuilding(Building building, Property Property) {

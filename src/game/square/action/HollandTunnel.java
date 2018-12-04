@@ -28,8 +28,8 @@ public class HollandTunnel extends Action {
 	}*/
 
 	private void initialize() {
-		index1 = Board.getInstance().getIndexOfSquare(this, track1);
-		index2 = Board.getInstance().getIndexOfSquare(this, track2);
+		//index1 = Board.getInstance().getIndexOfSquare(this, track1);
+		//index2 = Board.getInstance().getIndexOfSquare(this, track2);
 		notInitialized = false;
 	}
 
