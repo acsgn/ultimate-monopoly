@@ -4,8 +4,12 @@ public class NetworkFacade {
 
 	private static NetworkFacade self;
 
+	// To learn your ip InetAddress.getLocalHost().getHostAddress();
+	
 	private MessageSocket mS;
 	private Thread server;
+	private String[] IPAddresses;
+	private  P2PServer p2p;
 	private boolean isConnected = true;
 	private boolean isInitiated = false;
 
@@ -34,11 +38,19 @@ public class NetworkFacade {
 	}
 
 	public void sendMessageToOthers(String message) {
-		mS.sendMessage(message);
+		for(int i= 0; i<IPAddresses.length;i++) {
+			try {
+				mS = new Client(IPAddresses[i]).getMessageSocket();
+				mS.sendMessage(message);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
-	public String receiveMessage() {
-		return mS.receiveMessage();
+	public String receiveMessage() throws InterruptedException {
+		wait();
+		return p2p.receiveMessage();
 	}
 
 	public void disconnect() {
