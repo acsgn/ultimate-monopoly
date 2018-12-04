@@ -15,7 +15,7 @@ public class NetworkFacade {
 
 	public void start() {
 		p2p = new P2PServer();
-		new Thread(p2p, "P2p Server").start();
+		new Thread(p2p, "P2P Server").start();
 	}
 
 	public void sendMessageToOthers(String message) {
@@ -32,7 +32,9 @@ public class NetworkFacade {
 
 	public String receiveMessage() {
 		try {
-			wait();
+			synchronized (this) {
+				wait();
+			}
 			return p2p.receiveMessage();
 		} catch (InterruptedException e) {
 			e.printStackTrace();

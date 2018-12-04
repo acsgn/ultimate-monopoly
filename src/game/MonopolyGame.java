@@ -28,6 +28,7 @@ public class MonopolyGame implements Runnable {
 		currentPlayer = myPlayer;
 		players.add(currentPlayer);
 		isNewGame = true;
+		NetworkFacade.getInstance().start();
 	}
 
 	public ArrayList<Player> getPlayers() {
