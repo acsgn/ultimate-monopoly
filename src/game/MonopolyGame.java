@@ -45,11 +45,6 @@ public class MonopolyGame implements Runnable {
 				Player newPlayer = new Player();
 				newPlayer.setName(parsed[1]);
 				players.add(newPlayer);
-				if (players.size() == 2) {
-					int[] dice = currentPlayer.rollDice();
-					NetworkFacade.getInstance()
-							.sendMessageToOthers(myPlayer.getName() + "/RECEIVEDICE/" + (dice[0] + dice[1]));
-				}
 			} else {
 				// This is the current player order in playing.
 				order = players.size() - 1;
@@ -82,7 +77,7 @@ public class MonopolyGame implements Runnable {
 		case "RECEIVEDICE":
 			numOfDiceReceived++;
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
-			if (numOfDiceReceived == players.size() - 1) {
+			if (numOfDiceReceived == players.size()) {
 				players.sort(new Comparator<Player>() {
 					@Override
 					public int compare(Player p1, Player p2) {
@@ -151,13 +146,15 @@ public class MonopolyGame implements Runnable {
 		case "UICREATOR":
 			switch (parsed[1]) {
 			case "PLAYERNAME":
-				currentPlayer.setName(parsed[2]);
+				myPlayer.setName(parsed[2]);
 				NetworkFacade.getInstance().sendMessageToOthers("RECEIVENAME/" + parsed[2]);
 				break;
 			case "PLAYERCOLOR":
-				currentPlayer.setColor(parsed[2]);
 				NetworkFacade.getInstance().sendMessageToOthers(myPlayer.getName() + "/RECEIVECOLOR/" + parsed[2]);
-				currentPlayer.sendColor();
+				myPlayer.sendColor();
+				int[] dice = currentPlayer.rollDice();
+				NetworkFacade.getInstance()
+						.sendMessageToOthers(myPlayer.getName() + "/RECEIVEDICE/" + (dice[0] + dice[1]));
 				break;
 			case "LOADGAME":
 				loadGame(parsed[2]);
@@ -181,12 +178,13 @@ public class MonopolyGame implements Runnable {
 			String message = NetworkFacade.getInstance().receiveMessage();
 			String[] parsed = message.split("/");
 			while (!parsed[0].equals("ENDTURN")) {
+				System.out.println(message);
 				executeNetworkMessage(parsed);
 				message = NetworkFacade.getInstance().receiveMessage();
 				parsed = message.split("/");
 			}
-			currentPlayer = players.get((players.indexOf(currentPlayer)+1)%players.size());
-			if (currentPlayer.equals(myPlayer)) 
+			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+			if (currentPlayer.equals(myPlayer))
 				currentPlayer.publishGameEvent("PLAY");
 		}
 	}
