@@ -24,7 +24,9 @@ public class P2PServer implements Runnable {
 				Socket s = server.accept();
 				MessageSocket mS = new MessageSocket(s);
 				message = mS.receiveMessage();
-				NetworkFacade.getInstance().notify();
+				synchronized (NetworkFacade.getInstance()) {
+					NetworkFacade.getInstance().notify();
+				}
 				mS.close();
 			}
 			server.close();
