@@ -1,6 +1,8 @@
 package game.square.estate;
 
-public class TitleDeed {
+import java.io.Serializable;
+
+public class TitleDeed implements Serializable{
 
 	private int rent;
 	private int oneHouseRent;

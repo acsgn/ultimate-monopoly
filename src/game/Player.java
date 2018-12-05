@@ -1,5 +1,6 @@
 package game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import game.square.Square;
 import game.square.estate.*;
 import network.NetworkFacade;
 
-public class Player {
+public class Player implements Serializable{
 
 	private static final int BEGIN_MONEY = 3200;
 	private static final TrackType BEGIN_TRACK = TrackType.MIDDLE_TRACK;
@@ -40,15 +41,18 @@ public class Player {
 	private ArrayList<TransitStation> transitStations;
 	private ArrayList<Utility> utilities;
 
+	private Board board;
+	
 	private String message;
 
-	public Player() {
+	public Player(Board board) {
+		this.board = board;
 		money = BEGIN_MONEY;
 		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
 		playerIndex = playerIndexCounter;
 		playerIndexCounter++;
-		location = Board.getInstance().getSquare(indexOnTrack, currentTrack);
+		location = board.getSquare(indexOnTrack, currentTrack);
 		properties = new ArrayList<>();
 	}
 
@@ -68,7 +72,7 @@ public class Player {
 	}
 
 	public void createPiece() {
-		message = "PIECE/" + color + "/" + BEGIN_TRACK.ordinal() + "/" + BEGIN_INDEX;
+		message = "PIECE/" + color + "/" + currentTrack.ordinal() + "/" + indexOnTrack;
 		publishGameEvent(message);
 	}
 
@@ -117,8 +121,8 @@ public class Player {
 				newTrack = ((TransitStation) newLocation).getOtherTrack(newTrack);
 				transitUsed = true;
 			} else {
-				newIndex = (newIndex + 1) % Board.getInstance().getNoOfSquaresOnTrack(newTrack);
-				newLocation = Board.getInstance().getSquare(newIndex, newTrack);
+				newIndex = (newIndex + 1) % board.getNoOfSquaresOnTrack(newTrack);
+				newLocation = board.getSquare(newIndex, newTrack);
 				if (!isLastMove)
 					newLocation.executeWhenPassed(this);
 				sum--;
@@ -130,7 +134,8 @@ public class Player {
 				break;
 		}
 
-		message = "MOVE/" + playerIndex + "/" + newTrack.ordinal() + "/" + newIndex;
+		message = "MOVE/" + playerIndex + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal()
+				+ "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
@@ -202,7 +207,7 @@ public class Player {
 		publishGameEvent(message);
 		indexOnTrack = index;
 		currentTrack = track;
-		location = Board.getInstance().getSquare(index, track);
+		location = board.getSquare(index, track);
 	}
 
 	public boolean buyBuilding(Building building, Property Property) {
@@ -216,12 +221,12 @@ public class Player {
 	public void pickCard(Card card) {
 		if (card instanceof CommunityChest) {
 			((CommunityChest) card).executeAction(this);
-			message = "ACTION/" + ((CommunityChest) card).getName()+"\n";
+			message = "ACTION/" + ((CommunityChest) card).getName() + "\n";
 			publishGameEvent(message);
 		}
 		if (card instanceof Chance) {
 			((Chance) card).executeAction(this);
-			message = "ACTION/" + ((Chance) card).getName()+"\n";
+			message = "ACTION/" + ((Chance) card).getName() + "\n";
 			publishGameEvent(message);
 		}
 		if (card instanceof RollThree) {
@@ -289,6 +294,11 @@ public class Player {
 
 	public void setGoAnyWhere() {
 		this.goAnyWhere = true;
+	}
+	
+	public void endGame() {
+		message = "REMOVEPIECE/"+playerIndex;
+		publishGameEvent(message);
 	}
 
 	public void publishGameEvent(String message) {

@@ -18,7 +18,6 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.Hashtable;
 
 import game.Controller;
@@ -31,6 +30,7 @@ public class UICreator extends JFrame {
 
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 	private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+	private int chooserVal = 121754780;
 
 	/**
 	 * Create the frame.
@@ -140,7 +140,7 @@ public class UICreator extends JFrame {
 		getContentPane().add(colorBox);
 
 		JFileChooser chooser = new JFileChooser();
-		//We are going to filter file options.
+		// We are going to filter file options.
 
 		JButton loadGameButton = new JButton("Load Game");
 		loadGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -150,11 +150,14 @@ public class UICreator extends JFrame {
 		loadGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int returnVal = chooser.showOpenDialog(UICreator.this);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					// Line below will return you a FÝle object with selected file.
-					// chooser.getSelectedFile();
+				chooserVal = chooser.showOpenDialog(UICreator.this);
+				if (chooserVal == JFileChooser.APPROVE_OPTION) {
+					// Line below will return you a FÝle object with selected
+					// file.
+					String fileMessage = message + "LOADGAME/" + chooser.getSelectedFile().getPath();
+					Controller.getInstance().dispatchMessage(fileMessage);
 				}
+
 			}
 		});
 
@@ -180,19 +183,24 @@ public class UICreator extends JFrame {
 						return;
 					}
 				}
-				String name = playerNameField.getText();
-				if (name.isEmpty()) {
-					JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
-							JOptionPane.ERROR_MESSAGE);
-					return;
+				if (chooserVal != JFileChooser.APPROVE_OPTION ) {
+					String name = playerNameField.getText();
+					if (name.isEmpty()) {
+						JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
+					Controller.getInstance()
+							.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
 				}
 				Controller.getInstance().dispatchMessage(message + networkMessage);
-				Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
-				Controller.getInstance()
-						.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
+
 			}
 
 			private boolean isLegitIP(String IP) {
+				if (IP.equals("localhost"))
+					return true;
 				String[] areas = IP.split("\\.");
 				if (areas.length != 4)
 					return false;
@@ -203,7 +211,7 @@ public class UICreator extends JFrame {
 					} catch (NumberFormatException numberException) {
 						return false;
 					}
-					if (number < 1 || number > 255) {
+					if (number < 0 || number > 255) {
 						return false;
 					}
 				}

@@ -6,6 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
@@ -38,7 +39,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private Color playerColor;
 	private PathFinder pathFinder;
 	private JPanel playerArea;
-	private JButton rollDiceButton;
+	private JBoard board;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -62,7 +63,10 @@ public class UIScreen extends JFrame implements GameListener {
 	private Image boardImage = new ImageIcon(boardImagePath).getImage().getScaledInstance(screenHeight, -1,
 			Image.SCALE_SMOOTH);
 
-	private int pieceSize = (int) (screenHeight * 80 / 3000.0);
+	private double scaleFactor = ((double) screenHeight) / new ImageIcon(boardImagePath).getIconHeight();
+
+	private final int unscaledPieceSize = 80;
+	private int pieceSize = (int) (scaleFactor * unscaledPieceSize);
 
 	/**
 	 * Create the panel.
@@ -76,15 +80,15 @@ public class UIScreen extends JFrame implements GameListener {
 		setUndecorated(true);
 		setLayout(null);
 
-		pathFinder = new PathFinder(screenHeight / 3000.0);
-
-		JBoard board = new JBoard();
+		board = new JBoard();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
 		add(board);
 
 		animator = new Animator(board);
 		new Thread(animator, "Animator").start();
+
+		pathFinder = new PathFinder(scaleFactor);
 
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(null);
@@ -117,7 +121,7 @@ public class UIScreen extends JFrame implements GameListener {
 				controlPaneButtonHeight - 30);
 		controlPanel.add(propertiesList);
 
-		JButton bailButton = new JButton("Pay Bail");
+		JButton bailButton = new JButton("Save Game");
 		bailButton.setBounds(controlPaneXSpace, getButtonY(5), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(bailButton);
 		bailButton.setEnabled(false);
@@ -132,7 +136,7 @@ public class UIScreen extends JFrame implements GameListener {
 		controlPanel.add(buyPropertyButton);
 		buyPropertyButton.setEnabled(false);
 
-		rollDiceButton = new JButton("Roll Dice");
+		JButton rollDiceButton = new JButton("Roll Dice");
 		rollDiceButton.setBounds(controlPaneXSpace, getButtonY(2), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(rollDiceButton);
 		rollDiceButton.setEnabled(false);
@@ -146,6 +150,15 @@ public class UIScreen extends JFrame implements GameListener {
 		add(controlPanel);
 
 		getContentPane().setBackground(Color.BLACK);
+		
+		bailButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String input = JOptionPane.showInputDialog(UIScreen.this, "Please enter name of the file: ", "Save Game", JOptionPane.QUESTION_MESSAGE);
+				message = "UISCREEN/SAVEGAME/"+input;
+				Controller.getInstance().dispatchMessage(message);
+			}
+		});
 
 		// Action Listeners
 		rollDiceButton.addActionListener(new ActionListener() {
@@ -188,8 +201,8 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				message = "UISCREEN/ENDGAME";
+				animator.destruct();
 				synchronized (animator) {
-					animator.destruct();
 					animator.notify();
 				}
 				controller.dispatchMessage(message);
@@ -224,15 +237,13 @@ public class UIScreen extends JFrame implements GameListener {
 			playerColor = colorTable.get(parsed[1]);
 			playerArea.setBackground(playerColor);
 			break;
-		case "MOVE2":
-			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(toInt(parsed[1])).path = path;
-			synchronized (animator) {
-				animator.startAnimator();
-				animator.notify();
-			}
-			break;
 		case "MOVE":
+			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
+			pieces.get(toInt(parsed[1])).path = path;
+			board.indexOfPiece = toInt(parsed[1]);
+			animator.startAnimator();
+			break;
+		case "MOVE2":
 			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 			pieces.get(toInt(parsed[1])).lastPoint = point;
 			repaint();
@@ -258,6 +269,9 @@ public class UIScreen extends JFrame implements GameListener {
 				button.setEnabled(true);
 			}
 			break;
+		case "DELETEPIECE":
+			pieces.remove(toInt(parsed[1]));
+			repaint();
 		default:
 			break;
 		}
@@ -275,6 +289,11 @@ public class UIScreen extends JFrame implements GameListener {
 		public Piece() {
 		}
 
+		public void paintOneTime(Graphics g) {
+			g.setColor(color);
+			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
+		}
+
 		public void paint(Graphics g) {
 			g.setColor(color);
 			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
@@ -289,11 +308,16 @@ public class UIScreen extends JFrame implements GameListener {
 	private class JBoard extends JLabel {
 		private static final long serialVersionUID = 1L;
 
+		private int indexOfPiece;
+
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
-			for (Piece piece : pieces) {
-				piece.paint(g);
+			for (int i = 0; i < pieces.size(); i++) {
+				if (i == indexOfPiece)
+					pieces.get(i).paint(g);
+				else
+					pieces.get(i).paintOneTime(g);
 			}
 		}
 	}

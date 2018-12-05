@@ -6,8 +6,6 @@ import game.square.estate.*;
 
 public class Board {
 
-	private static Board board;
-
 	private Track outerTrack;
 	private Track middleTrack;
 	private Track innerTrack;
@@ -23,15 +21,15 @@ public class Board {
 	private CommunityChest communityChest;
 	private FreeParking freeParking;
 
-	private Board() {
+	public Board() {
 		outerTrack = new Track(TrackType.OUTER_TRACK);
 		middleTrack = new Track(TrackType.MIDDLE_TRACK);
 		innerTrack = new Track(TrackType.INNER_TRACK);
 
-		firstTS = new TransitStation("Reading Railroad", middleTrack.getTrackType(), outerTrack.getTrackType());
-		secondTS = new TransitStation("Pennsylvania Railroad", middleTrack.getTrackType(), innerTrack.getTrackType());
-		thirdTS = new TransitStation("B & O Railroad", middleTrack.getTrackType(), outerTrack.getTrackType());
-		fourthTS = new TransitStation("Short Line", middleTrack.getTrackType(), innerTrack.getTrackType());
+		firstTS = new TransitStation("Reading Railroad", middleTrack.getTrackType(), outerTrack.getTrackType(), 5, 7);
+		secondTS = new TransitStation("Pennsylvania Railroad", middleTrack.getTrackType(), innerTrack.getTrackType(),15,9);
+		thirdTS = new TransitStation("B & O Railroad", middleTrack.getTrackType(), outerTrack.getTrackType(),25,35);
+		fourthTS = new TransitStation("Short Line", middleTrack.getTrackType(), innerTrack.getTrackType(),35,27);
 
 		hollandTunnel = new HollandTunnel();
 		
@@ -42,13 +40,6 @@ public class Board {
 		constructOuterTrack();
 		constructMiddleTrack();
 		constructInnerTrack();
-	}
-
-	public static synchronized Board getInstance() {
-		if (board == null) {
-			board = new Board();
-		}
-		return board;
 	}
 
 	public Square getSquare(int index, TrackType type) {
