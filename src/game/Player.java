@@ -8,6 +8,7 @@ import game.building.Building;
 import game.card.Card;
 import game.card.Chance;
 import game.card.CommunityChest;
+import game.card.RollThree;
 import game.dice.SingletonDice;
 import game.square.Square;
 import game.square.estate.*;
@@ -150,6 +151,11 @@ public class Player implements Serializable{
 	// get roll3
 	public Card getRoll3() {
 		return roll3card;
+	}
+	
+	// get current track
+	public TrackType getCurrentTrack() {
+		return currentTrack;
 	}
 	
 	public int getPosition() {
