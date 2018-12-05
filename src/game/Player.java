@@ -24,6 +24,9 @@ public class Player {
 	private String color;
 	private int playerIndex;
 	private int money;
+	
+	// roll 3 field
+	private Card roll3card;
 
 	private TrackType currentTrack;
 	private int indexOnTrack;
@@ -138,6 +141,12 @@ public class Player {
 		return location;
 	}
 
+	
+	// get roll3
+	public Card getRoll3() {
+		return roll3card;
+	}
+	
 	public int getPosition() {
 		return indexOnTrack;
 	}
@@ -214,6 +223,10 @@ public class Player {
 			((Chance) card).executeAction(this);
 			message = "ACTION/" + ((Chance) card).getName()+"\n";
 			publishGameEvent(message);
+		}
+		if (card instanceof RollThree) {
+			((RollThree) card).executeAction(this);
+			message = "ACTION/ Roll Three\n";
 		}
 	}
 
