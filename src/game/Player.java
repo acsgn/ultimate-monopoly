@@ -46,10 +46,12 @@ public class Player implements Serializable{
 	}
 	
 	public void addHotel() {
+		
 		totalHotels++;
 	}
 	
 	public int getTotalHouses() {
+		//total num of houses
 		return totalHouses;
 	}
 
@@ -58,6 +60,7 @@ public class Player implements Serializable{
 	}
 
 	public int getTotalHotels() {
+		//total num of hotels
 		return totalHotels;
 	}
 
@@ -66,6 +69,7 @@ public class Player implements Serializable{
 	}
 
 	public int getTotalSkyscrapers() {
+		//total num of sky
 		return totalSkyscrapers;
 	}
 
@@ -73,7 +77,8 @@ public class Player implements Serializable{
 		this.totalSkyscrapers = totalSkyscrapers;
 	}
 
-	public void addHSkyscaper() {
+	public void addSkyscaper() {
+		//added as sky is bought
 		totalSkyscrapers++;
 	}
 
