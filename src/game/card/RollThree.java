@@ -12,6 +12,12 @@ public class RollThree extends Card {
 	private int die3;
 	
 	
+	public RollThree(int die1, int die2, int die3) {
+		this.die1 = die1;
+		this.die2 = die2;
+		this.die3 = die3;
+	}
+	
 	@Override
 	public void executeAction(Player player) {
 		
