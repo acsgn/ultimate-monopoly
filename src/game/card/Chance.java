@@ -16,7 +16,7 @@ public class Chance extends Card {
 	@Override
 	public void executeAction(Player player) {
 		if(playImmediately.equals(false)) {
-			
+			player.addCard(this);
 		}
 		if(name.equals("PARTY TIME")){
 			player.reduceMoney(25);

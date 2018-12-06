@@ -28,21 +28,19 @@ public class Player implements Serializable{
 	private int playerIndex;
 	private int money;
 	
-	private ArrayList<ActionCards> ChanceCards;
+	private ArrayList<Chance> ChanceCards;
 
-	public void addCard(ActionCards card) {
-		ChanceCards.add(card);
+	public void addCard(Chance chance) {
+		ChanceCards.add(chance);
 	}
 
-	public ArrayList<ActionCards> getChanceCards() {
+	public ArrayList<Chance> getChanceCards() {
 		return ChanceCards;
 	}
 
-	public void setChanceCards(ArrayList<ActionCards> chanceCards) {
+	public void setChanceCards(ArrayList<Chance> chanceCards) {
 		ChanceCards = chanceCards;
 	}
-
-
 
 	// roll 3 field
 	private Card roll3card;
