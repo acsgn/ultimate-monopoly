@@ -2,6 +2,7 @@ package game.card;
 
 import game.Player;
 import game.TrackType;
+import game.square.Square;
 
 public class Chance extends Card {
 
@@ -66,7 +67,9 @@ public class Chance extends Card {
 	
 		if(name.equals("Forward Thinker")) {
 			//Advance forward 3 spaces.
-			
+			TrackType track = player.getCurrentTrack();
+			int index = player.getPosition();
+			player.goTo(track, (index+3));
 		}
 		
 		// ref: cards "Changing Lanes", the alteration with 'below'
