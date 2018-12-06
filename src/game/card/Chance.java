@@ -19,14 +19,42 @@ public class Chance extends Card {
 		
 		if(playImmediately.equals(false)) {
 			player.addCard(this);
+		} else {
+		
+		if (name.equals("Go to Jail!")) {
+			player.setInJail();
+			player.goTo(TrackType.MIDDLE_TRACK, 10);
 		}
 		
-		else if(name.equals("PARTY TIME")){
-			player.reduceMoney(25);
+		if (name.equals("Advance to Saint Charles Place")) {
+			player.setInJail();
+			player.goTo(TrackType.MIDDLE_TRACK, 11);
+		}
+		
+		
+		if (name.equals("Make General Repairs to all your properties")) {
+			int repairsHouse = 25 * (player.getTotalHouses() + player.getTotalTransitStations());
+			int repairsHotel = 100 * (player.getTotalHotels() + player.getTotalSkyscrapers());
+			int repairs = repairsHouse + repairsHotel;
+			player.reduceMoney(repairs);
+		}
+		
+		if(name.equals("Holiday Bonus!")) {
+			player.increaseMoney(100);
+		}
+		
+		if(name.equals("Buyer's Market")) {
+			//Move to any Unowned Outer Track property 
+			//Buy it from the Bank for 1/2 Price.
+			
+			//player.goTo(track, index);
+			//price  = 
+			player.buySquare();
+			//player.increaseMoney();
 		}
 		
 		// ref: cards "Changing Lanes", the alteration with 'below'
-		else if (name.equalsIgnoreCase("Changing Lanes - Below")) {
+		 if (name.equalsIgnoreCase("Changing Lanes - Below")) {
 
 			// Player does not move if they are already on the outer track.
 			if (player.getCurrentTrack() == TrackType.INNER_TRACK) {
@@ -99,6 +127,7 @@ public class Chance extends Card {
 				player.increaseMoney(300);
 			}
 		}
+	}
 	}
 
 	@Override

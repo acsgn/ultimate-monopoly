@@ -29,6 +29,52 @@ public class Player implements Serializable{
 	private int money;
 	
 	private ArrayList<Chance> ChanceCards;
+	
+	private int totalHouses = 0;
+	private int totalHotels = 0;
+	private int totalSkyscrapers = 0;
+	
+	public void addHouse() {
+		totalHouses++;
+	}
+	
+	public int getTotalTransitStations() {
+		int size = transitStations.size();
+		return size;
+		
+	}
+	
+	public void addHotel() {
+		totalHotels++;
+	}
+	
+	public int getTotalHouses() {
+		return totalHouses;
+	}
+
+	public void setTotalHouses(int totalHouses) {
+		this.totalHouses = totalHouses;
+	}
+
+	public int getTotalHotels() {
+		return totalHotels;
+	}
+
+	public void setTotalHotels(int totalHotels) {
+		this.totalHotels = totalHotels;
+	}
+
+	public int getTotalSkyscrapers() {
+		return totalSkyscrapers;
+	}
+
+	public void setTotalSkyscrapers(int totalSkyscrapers) {
+		this.totalSkyscrapers = totalSkyscrapers;
+	}
+
+	public void addHSkyscaper() {
+		totalSkyscrapers++;
+	}
 
 	public void addCard(Chance chance) {
 		ChanceCards.add(chance);
