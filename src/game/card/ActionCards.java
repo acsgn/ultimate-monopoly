@@ -24,7 +24,30 @@ public class ActionCards {
 	private void constructCommunityChestCards(){
 		communityChest = new ArrayList<>();
 		CommunityChest incomeTaxrefundCard = new CommunityChest("Income Tax Refund");
+		CommunityChest happyBirthday = new CommunityChest("Happy Birthday");
+		CommunityChest gameNight = new CommunityChest("Game Night");
+		CommunityChest aMovingExperience = new CommunityChest("A Moving Experience");
+		CommunityChest houseCondemned = new CommunityChest("House Condemned");
+		CommunityChest electedDistricAttorney = new CommunityChest("Elected	District Attorney");
+		CommunityChest dealBuster = new CommunityChest("Deal Buster");
+		CommunityChest beKindRewind = new CommunityChest("Be Kind, Rewind");
+		CommunityChest payHospitalBills = new CommunityChest("Pay Hospital Bills");
+		CommunityChest tornadoHits = new CommunityChest("Tornado Hits!");
+		CommunityChest theInsidersEdge = new CommunityChest("The Insider's Edge");
+		CommunityChest shareInTheirGoodFortune = new CommunityChest("Share in their Good Fortune");
+		
 		communityChest.add(incomeTaxrefundCard);
+		communityChest.add(happyBirthday);
+		communityChest.add(gameNight);
+		communityChest.add(aMovingExperience);
+		communityChest.add(houseCondemned);
+		communityChest.add(electedDistricAttorney);
+		communityChest.add(dealBuster);
+		communityChest.add(beKindRewind);
+		communityChest.add(payHospitalBills);
+		communityChest.add(tornadoHits);
+		communityChest.add(theInsidersEdge);
+		communityChest.add(shareInTheirGoodFortune);
 	}
 	private void constructChanceCards(){
 		chance = new ArrayList<>();
