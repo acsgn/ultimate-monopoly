@@ -20,6 +20,41 @@ public class ActionCards {
 		}
 		return actionCards;
 	}
+	private void constructRollThreeCards(){
+		rollThree = new ArrayList<>();
+		//some cards are implemented twice, it is correct
+		RollThree card1 = new RollThree(1,2,3);
+		RollThree card2 = new RollThree(1,2,4);
+		RollThree card3 = new RollThree(1,2,5);
+		RollThree card4 = new RollThree(1,2,6);
+		RollThree card5 = new RollThree(1,3,4);
+		RollThree card6 = new RollThree(1,3,5);
+		RollThree card7 = new RollThree(1,3,6);
+		RollThree card8 = new RollThree(1,4,5);
+		RollThree card9 = new RollThree(1,4,6);
+		RollThree card10 = new RollThree(1,5,6);
+		RollThree card11 = new RollThree(2,3,4);
+		RollThree card12 = new RollThree(2,4,5);
+		RollThree card13 = new RollThree(2,4,6);
+		RollThree card14 = new RollThree(2,5,6);
+		RollThree card15 = new RollThree(3,4,5);
+		RollThree card16 = new RollThree(3,4,6);
+		RollThree card17 = new RollThree(3,5,6);
+		RollThree card18 = new RollThree(4,5,6);
+		RollThree card19 = new RollThree(2,4,6);
+		RollThree card20 = new RollThree(2,5,6);
+		RollThree card21 = new RollThree(3,4,5);
+		RollThree card22 = new RollThree(3,4,6);
+		RollThree card23 = new RollThree(3,5,6);
+		RollThree card24 = new RollThree(4,5,6);
+
+		rollThree.add(card1);rollThree.add(card2);rollThree.add(card3);rollThree.add(card4);
+		rollThree.add(card5);rollThree.add(card6);rollThree.add(card7);rollThree.add(card8);
+		rollThree.add(card9);rollThree.add(card10);rollThree.add(card11);rollThree.add(card12);
+		rollThree.add(card13);rollThree.add(card14);rollThree.add(card15);rollThree.add(card16);
+		rollThree.add(card17);rollThree.add(card18);rollThree.add(card19);rollThree.add(card20);
+		rollThree.add(card21);rollThree.add(card22);rollThree.add(card23);rollThree.add(card24);
+	}
 	
 	private void constructCommunityChestCards(){
 		communityChest = new ArrayList<>();
