@@ -30,6 +30,7 @@ public class Player implements Serializable{
 
 	private ArrayList<Chance> ChanceCards;
 	
+	//needed for chance cards
 	private int totalHouses = 0;
 	private int totalHotels = 0;
 	private int totalSkyscrapers = 0;
