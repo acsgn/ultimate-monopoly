@@ -54,4 +54,9 @@ public abstract class Estate extends Square {
 	public SquareType getType() {
 		return type;
 	}
+	
+	@Override
+	public boolean isOwned() {
+		return (owner != null);
+	}
 }
