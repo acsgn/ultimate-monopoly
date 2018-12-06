@@ -15,12 +15,74 @@ public class Chance extends Card {
 		this.name = name;
 		this.playImmediately = playImmediately;
 	}
+	
 	@Override
 	public void executeAction(Player player) {
 
 		if(playImmediately.equals(false)) {
 			player.addCard(this);
 		} else {
+			
+		}
+		
+		if (name.equals("Go to Jail!")) {
+			player.setInJail();
+			player.goTo(TrackType.MIDDLE_TRACK, 10);
+		}
+		
+		if (name.equals("Advance to Saint Charles Place")) {
+			player.setInJail();
+			player.goTo(TrackType.MIDDLE_TRACK, 11);
+		}
+		
+		
+		if (name.equals("Make General Repairs to all your properties")) {
+			int repairsHouse = 25 * (player.getTotalHouses() + player.getTotalTransitStations());
+			int repairsHotel = 100 * (player.getTotalHotels() + player.getTotalSkyscrapers());
+			int repairs = repairsHouse + repairsHotel;
+			player.reduceMoney(repairs);
+		}
+		
+		if(name.equals("Holiday Bonus!")) {
+			player.increaseMoney(100);
+		}
+		
+		if(name.equals("Buyer's Market")) {
+			//Move to any Unowned Outer Track property 
+			//Buy it from the Bank for 1/2 Price.
+			
+			//player.goTo(track, index);
+			//price  = 
+			//player.buySquare();
+			//player.increaseMoney();
+		}
+		
+		if(name.equals("Foreclosed Property Sale!")) {
+			//Foreclose on any opponent's mortgaged property. 
+			//Pay the mortgage value to the bank to claim the property.
+		}
+		
+		if(name.equals("See you in Court")) {
+			//Sue any player for unfair business practices. 
+			//Take $250 from any player of your choice.
+		}
+		
+	
+		if(name.equals("Forward Thinker")) {
+			//Advance forward 3 spaces.
+			TrackType track = player.getCurrentTrack();
+			int index = player.getPosition();
+			player.goTo(track, (index+3));
+		}
+		
+		if(name.equals("Property Taxes")) {
+			player.reduceMoney(25 * player.getProperties().size());
+		}
+		
+		
+		
+		// ref: cards "Changing Lanes", the alteration with 'below'
+		 if (name.equalsIgnoreCase("Changing Lanes - Below")) {
 
 			if (name.equals("Go to Jail!")) {
 				player.setInJail();
