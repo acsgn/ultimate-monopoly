@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.building.Building;
+import game.card.ActionCards;
 import game.card.Card;
 import game.card.Chance;
 import game.card.CommunityChest;
@@ -27,6 +28,22 @@ public class Player implements Serializable{
 	private int playerIndex;
 	private int money;
 	
+	private ArrayList<ActionCards> ChanceCards;
+
+	public void addCard(ActionCards card) {
+		ChanceCards.add(card);
+	}
+
+	public ArrayList<ActionCards> getChanceCards() {
+		return ChanceCards;
+	}
+
+	public void setChanceCards(ArrayList<ActionCards> chanceCards) {
+		ChanceCards = chanceCards;
+	}
+
+
+
 	// roll 3 field
 	private Card roll3card;
 

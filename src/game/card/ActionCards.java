@@ -48,29 +48,29 @@ public class ActionCards {
 	private void constructChanceCards(){
 		chance = new ArrayList<>();
 		
-		Chance advanceToThePayCorner = new Chance("Advance to the Pay Corner");
-		Chance advanceToTheNearestRailroad = new Chance("Advance to the Nearest Railroad");
-		Chance getOutOfJailFree = new Chance("Get out of Jail Free");
-		Chance advanceToSaintCharlesPlace = new Chance("Advance to Saint Charles Place");
-		Chance goToJail = new Chance("Go to Jail!");
-		Chance makeGeneralRepairsToAllYourProperties = new Chance("Make General Repairs to all your properties");
-		Chance holidayBonus = new Chance("Holiday Bonus!");
-		Chance buyersmarket = new Chance("Buyer's Market");
-		Chance ForeclosedPropertySale = new Chance("Foreclosed Property Sale!");
-		Chance SeeYouInCourt = new Chance("See you in Court");
+		Chance advanceToThePayCorner = new Chance("Advance to the Pay Corner", true);
+		Chance advanceToTheNearestRailroad = new Chance("Advance to the Nearest Railroad", true);
+		Chance getOutOfJailFree = new Chance("Get out of Jail Free", false);
+		Chance advanceToSaintCharlesPlace = new Chance("Advance to Saint Charles Place", true);
+		Chance goToJail = new Chance("Go to Jail!", true);
+		Chance makeGeneralRepairsToAllYourProperties = new Chance("Make General Repairs to all your properties", true);
+		Chance holidayBonus = new Chance("Holiday Bonus!", true);
+		Chance buyersmarket = new Chance("Buyer's Market", true);
+		Chance ForeclosedPropertySale = new Chance("Foreclosed Property Sale!", true);
+		Chance SeeYouInCourt = new Chance("See you in Court", true);
 
-		Chance forwardThinker = new Chance("Forward Thinker");
-		Chance propertyTaxes = new Chance("Property Taxes");
-		Chance getRollin = new Chance("Get Rollin'");
-		Chance hurricaneMakesLandfall = new Chance("Hurricane makes landfall!");
-		Chance rideTheSubway = new Chance("Ride the Subway");
-		Chance socialMediaFail = new Chance("Social Media Fail!");
-		Chance payBack = new Chance("Pay Back!");
-		Chance mardiGras = new Chance("Mardi Gras!");
-		Chance GPSisNotWorking = new Chance("GPS is not working");
-		Chance zeroDollarsDown = new Chance("zeroDollarsDown!");
-		Chance changingLanesAbove = new Chance("Changin Lanes Above");
-		Chance changingLanesBelow = new Chance("Changin Lanes Below");
+		Chance forwardThinker = new Chance("Forward Thinker", true);
+		Chance propertyTaxes = new Chance("Property Taxes", true);
+		Chance getRollin = new Chance("Get Rollin'", true);
+		Chance hurricaneMakesLandfall = new Chance("Hurricane makes landfall!", true);
+		Chance rideTheSubway = new Chance("Ride the Subway", true);
+		Chance socialMediaFail = new Chance("Social Media Fail!", true);
+		Chance payBack = new Chance("Pay Back!", true);
+		Chance mardiGras = new Chance("Mardi Gras!", true);
+		Chance GPSisNotWorking = new Chance("GPS is not working", true);
+		Chance zeroDollarsDown = new Chance("zeroDollarsDown!", false);
+		Chance changingLanesAbove = new Chance("Changin Lanes Above", true);
+		Chance changingLanesBelow = new Chance("Changin Lanes Below", true);
 		
 		chance.add(advanceToThePayCorner);
 		chance.add(advanceToTheNearestRailroad);
