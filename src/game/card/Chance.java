@@ -72,6 +72,12 @@ public class Chance extends Card {
 			player.goTo(track, (index+3));
 		}
 		
+		if(name.equals("Property Taxes")) {
+			player.reduceMoney(25 * player.getProperties().size());
+		}
+		
+		
+		
 		// ref: cards "Changing Lanes", the alteration with 'below'
 		 if (name.equalsIgnoreCase("Changing Lanes - Below")) {
 
