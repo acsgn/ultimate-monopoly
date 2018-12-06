@@ -170,6 +170,11 @@ public class Player implements Serializable{
 		return roll3card;
 	}
 	
+	// get current track
+	public TrackType getCurrentTrack() {
+		return currentTrack;
+	}
+	
 	public int getPosition() {
 		return indexOnTrack;
 	}
