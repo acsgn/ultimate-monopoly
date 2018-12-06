@@ -11,5 +11,10 @@ public abstract class Action extends Square {
 	public SquareType getType() {
 		return type;
 	}
+	
+	@Override
+	public boolean isOwned() {
+		return false;
+	}
 
 }

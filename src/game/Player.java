@@ -27,7 +27,7 @@ public class Player implements Serializable{
 	private String color;
 	private int playerIndex;
 	private int money;
-	
+
 	private ArrayList<Chance> ChanceCards;
 	
 	private int totalHouses = 0;
@@ -104,7 +104,7 @@ public class Player implements Serializable{
 	private ArrayList<Utility> utilities;
 
 	private Board board;
-	
+
 	private String message;
 
 	public Player(Board board) {
@@ -153,7 +153,7 @@ public class Player implements Serializable{
 		publishGameEvent(message);
 		move(diceRolls);
 		NetworkFacade.getInstance()
-				.sendMessageToOthers(this.name + "/MOVE/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
+		.sendMessageToOthers(this.name + "/MOVE/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 		updateState();
 		location.executeWhenLanded(this);
 	}
@@ -172,32 +172,42 @@ public class Player implements Serializable{
 		Square newLocation = location;
 		TrackType newTrack = currentTrack;
 		int newIndex = indexOnTrack;
+		// whether to add or subtract 1
+		int i = 1;
+		if (sum < 0) {
+			i = -1;
+		}
 
 		boolean isEven = sum % 2 == 0;
 		boolean transitUsed = false;
 		boolean isLastMove = false;
 
+		// TODO I have attempted adjustments to allow moving backward. Must test for bugs.
 		while (true) {
 			if (!transitUsed && isEven && newLocation instanceof TransitStation) {
 				newIndex = ((TransitStation) newLocation).getOtherIndex(newTrack);
 				newTrack = ((TransitStation) newLocation).getOtherTrack(newTrack);
 				transitUsed = true;
 			} else {
-				newIndex = (newIndex + 1) % board.getNoOfSquaresOnTrack(newTrack);
+				newIndex = (newIndex + i) % board.getNoOfSquaresOnTrack(newTrack);
 				newLocation = board.getSquare(newIndex, newTrack);
 				if (!isLastMove)
 					newLocation.executeWhenPassed(this);
-				sum--;
+
+				if (sum > 0) {
+					sum--;
+				} else if (sum < 0) { sum++; }
+
 				transitUsed = false;
 			}
-			if (sum == 1)
+			if (sum == 1 || sum == -1)
 				isLastMove = true;
 			if (sum == 0)
 				break;
 		}
 
 		message = "MOVE/" + playerIndex + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal()
-				+ "/" + newIndex;
+		+ "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
@@ -208,17 +218,17 @@ public class Player implements Serializable{
 		return location;
 	}
 
-	
+
 	// get roll3
 	public Card getRoll3() {
 		return roll3card;
 	}
-	
+
 	// get current track
 	public TrackType getCurrentTrack() {
 		return currentTrack;
 	}
-	
+
 	public int getPosition() {
 		return indexOnTrack;
 	}
@@ -362,7 +372,7 @@ public class Player implements Serializable{
 	public void setGoAnyWhere() {
 		this.goAnyWhere = true;
 	}
-	
+
 	public void endGame() {
 		message = "REMOVEPIECE/"+playerIndex;
 		publishGameEvent(message);
