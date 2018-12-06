@@ -49,7 +49,7 @@ public class Chance extends Card {
 			
 			//player.goTo(track, index);
 			//price  = 
-			player.buySquare();
+			//player.buySquare();
 			//player.increaseMoney();
 		}
 		
