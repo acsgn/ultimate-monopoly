@@ -12,6 +12,7 @@ public class Property extends Estate {
 	private int rent;
 	private ArrayList<Building> buildings;
 	private TitleDeed titleDeed;
+	private PropertyColor color;
 	
 	public Property(String name, int price, TitleDeed titleDeed) {
 		super(name, price, type);
