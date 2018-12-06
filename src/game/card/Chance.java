@@ -53,6 +53,22 @@ public class Chance extends Card {
 			//player.increaseMoney();
 		}
 		
+		if(name.equals("Foreclosed Property Sale!")) {
+			//Foreclose on any opponent's mortgaged property. 
+			//Pay the mortgage value to the bank to claim the property.
+		}
+		
+		if(name.equals("See you in Court")) {
+			//Sue any player for unfair business practices. 
+			//Take $250 from any player of your choice.
+		}
+		
+	
+		if(name.equals("Forward Thinker")) {
+			//Advance forward 3 spaces.
+			
+		}
+		
 		// ref: cards "Changing Lanes", the alteration with 'below'
 		 if (name.equalsIgnoreCase("Changing Lanes - Below")) {
 
