@@ -38,6 +38,7 @@ public class CommunityChest extends Card {
 			Pool.getInstance().payToPool(50);
 			player.reduceMoney(50);
 		} */
+		
 		// ref: card "House Condemned"
 		if (name.equalsIgnoreCase("House Condemned")) {
 
@@ -58,36 +59,79 @@ public class CommunityChest extends Card {
 			}
 
 		}
+		
 		// ref: card "Pay Hospital Bills"
 		else if (name.equalsIgnoreCase("Pay Hospital Bills")) {
 			Pool.getInstance().payToPool(100);
 			player.reduceMoney(100);
 		}
+		
+		// ref: card "Be Kind, Rewind"
+		else if (name.equalsIgnoreCase("Be Kind, Rewind")) {
+			
+			int[] dice = player.rollDice();
+			dice[0] = -dice[0];
+			dice[1] = -dice[1];
+			
+			player.move(dice);
+			
+			// Repeated payRent if the square is owned, because double the 
+			// rent should be paid.
+			if (player.getLocation().isOwned()) {
+				player.payRent(player.getLocation());
+			}
+			
+		}
+		
+		// ref: card "The Insider's Edge
+		else if (name.equalsIgnoreCase("The Insider's Edge")) {
+			
+			// This card does nothing if player is in the middle track.
+			if (player.getCurrentTrack().equals(TrackType.INNER_TRACK)) {
+				player.increaseMoney(250);
+			} else if (player.getCurrentTrack().equals(TrackType.OUTER_TRACK)) {
+				Pool.getInstance().payToPool(50);
+				player.reduceMoney(50);
+			}
+			
+		}
+		
+		// ref: card "Tornado Hits!"
+		else if (name.equalsIgnoreCase("Tornado Hits!")) {
+			
+			// TODO Send message to the player to choose a color among the list
+			//		of properties they own.
+			// TODO Implement colors to each property to implement this card.
+			
+		}
+		
+		// ref: card "A Moving Experience"
+		else if (name.equalsIgnoreCase("A Moving Experience")) {
+
+			// TODO To implement this, sending message to the player to choose a travel
+			//		square to move into is necessary.
+		}
+		
+		// ref: card "Happy Birthday!"
+		else if (name.equalsIgnoreCase("Happy Birthday!")) {
+			
+			// TODO Get player count, add (playerCount-1)*50 to the current player's
+			//		account, and reduce 50 from each of the accounts of other players.
+			
+		}
+		
+		// ref: card "Game Night!"
+		else if (name.equalsIgnoreCase("Game Night!")) {
+			
+			// TODO Send players a message to choose someone from rest of the players,
+			//		have them both roll dice, give 200 to the player of the higher roll
+			//		from the bank.
+			
+		}
 
 
 
 
-
-		/* list of Community Chest cards not implemented:
-		 * Happy Birthday!
-		 * Game Night!
-		 * A Moving Experience
-		 * Special Online Pricing
-		 * Entrepreneur of the Year!
-		 * Renovation Success
-		 * You're Getting Married
-		 * Hostile Takeover
-		 * Discount Travel
-		 * Bargain Business!
-		 * Vehicle Impounded!
-		 * Reverse Rent!
-		 * The Rent is Too Darn High!
-		 * Always Tip Your Driver
-		 * Be Kind, Rewind
-		 * Assessed for Street Repairs
-		 * Get out of Jail Free!
-		 * ... (not a complete list)
-		 */
 	}
 
 	@Override
