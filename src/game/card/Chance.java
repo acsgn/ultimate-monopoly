@@ -16,12 +16,15 @@ public class Chance extends Card {
 	}
 	@Override
 	public void executeAction(Player player) {
+		
 		if(playImmediately.equals(false)) {
 			player.addCard(this);
 		}
+		
 		else if(name.equals("PARTY TIME")){
 			player.reduceMoney(25);
 		}
+		
 		// ref: cards "Changing Lanes", the alteration with 'below'
 		else if (name.equalsIgnoreCase("Changing Lanes - Below")) {
 
@@ -47,6 +50,7 @@ public class Chance extends Card {
 			}
 
 		}
+		
 		// ref: cards "Changing Lanes", the alteration with 'above'
 		else if (name.equalsIgnoreCase("Changing Lanes - Above")) {
 
@@ -75,6 +79,24 @@ public class Chance extends Card {
 					player.goTo(TrackType.MIDDLE_TRACK, 32);
 				}
 
+			}
+		}
+		
+		// ref: card "Advance to this Track's Pay Corner"
+		// !!! Name of this particular card has been shortened in the code.
+		else if (name.equalsIgnoreCase("Advance to Pay")) {
+			// TODO This code treats the cases as if going to pay corners does NOT
+			// 	    automatically pay the player. In case it does, delete the increase
+			//      money commands. I shall review the pay corner code tomorrow.
+			if (player.getCurrentTrack().equals(TrackType.OUTER_TRACK)) {
+				player.goTo(TrackType.OUTER_TRACK, 0);
+				player.increaseMoney(400);
+			} else if (player.getCurrentTrack().equals(TrackType.MIDDLE_TRACK)) {
+				player.goTo(TrackType.MIDDLE_TRACK, 0);
+				player.increaseMoney(200);
+			} else if (player.getCurrentTrack().equals(TrackType.INNER_TRACK)) {
+				player.goTo(TrackType.INNER_TRACK, 0);
+				player.increaseMoney(300);
 			}
 		}
 	}
