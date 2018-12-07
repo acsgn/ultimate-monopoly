@@ -151,12 +151,12 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance().sendMessageToOthers("RECEIVENAME/" + parsed[2]);
 				break;
 			case "PLAYERCOLOR":
-				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/RECEIVECOLOR/" + parsed[2]);
+				NetworkFacade.getInstance().sendMessageToOthers(myName + "/RECEIVECOLOR/" + parsed[2]);
 				currentPlayer.sendColor();
 				SingletonDice.getInstance().rollDice();
 				int[] dice = SingletonDice.getInstance().getFaceValues();
 				NetworkFacade.getInstance()
-						.sendMessageToOthers(currentPlayer.getName() + "/RECEIVEDICE/" + (dice[0] + dice[1]));
+						.sendMessageToOthers(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
 				break;
 			case "LOADGAME":
 				loadGame(parsed[2]);
