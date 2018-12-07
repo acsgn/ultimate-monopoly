@@ -18,13 +18,6 @@ public class DiscoveryClient {
 			c = new DatagramSocket();
 			c.setBroadcast(true);
 			byte[] sendData = "DISCOVER_FUIFSERVER_REQUEST".getBytes();
-			try {
-				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
-						InetAddress.getByName("255.255.255.255"), 8888);
-				c.send(sendPacket);
-				System.out.println(">>> Request packet sent to: 255.255.255.255 (DEFAULT)");
-			} catch (Exception e) {
-			}
 			// Broadcast the message over all the network interfaces
 
 			ArrayList<InetAddress> broadcastList = new ArrayList<>();
