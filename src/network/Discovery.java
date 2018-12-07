@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Objects;
@@ -16,6 +17,10 @@ public class Discovery implements Runnable {
 
 	public Discovery() {
 		IPAddresses = new ArrayList<>();
+		try {
+			IPAddresses.add(InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+		}
 	}
 
 	@Override
@@ -34,7 +39,7 @@ public class Discovery implements Runnable {
 				socket.receive(packet);
 				String message = new String(packet.getData()).trim();
 				if (message.equals("ULTIMATE_MONOPOLY_REQUEST")) {
-					String response = InetAddress.getLocalHost().getHostAddress();
+					String response = "";
 					for (String ip : IPAddresses)
 						response += ip;
 					System.out.println(response);
@@ -55,15 +60,14 @@ public class Discovery implements Runnable {
 		try {
 			c = new DatagramSocket();
 			c.setBroadcast(true);
-			byte[] sendData = "DISCOVER_FUIFSERVER_REQUEST".getBytes();
+			byte[] sendData = "ULTIMATE_MONOPOLY_REQUEST".getBytes();
 
 			ArrayList<InetAddress> broadcastList = new ArrayList<>();
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()) {
 				NetworkInterface networkInterface = interfaces.nextElement();
-				if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+				if (networkInterface.isLoopback() || !networkInterface.isUp())
 					continue;
-				}
 				networkInterface.getInterfaceAddresses().stream().map(a -> a.getBroadcast()).filter(Objects::nonNull)
 						.forEach(broadcastList::add);
 			}
@@ -76,12 +80,12 @@ public class Discovery implements Runnable {
 				}
 			}
 
-			byte[] recvBuf = new byte[15000];
+			byte[] recvBuf = new byte[2048];
 			DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
 			c.receive(receivePacket);
 			String message = new String(receivePacket.getData()).trim();
 			for (String ip : message.split("/")) {
-				if (!IPAddresses.contains(ip)) 
+				if (!IPAddresses.contains(ip))
 					IPAddresses.add(ip);
 			}
 			c.close();
