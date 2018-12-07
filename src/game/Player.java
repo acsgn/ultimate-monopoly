@@ -50,6 +50,19 @@ public class Player implements Serializable{
 		totalHotels++;
 	}
 	
+	public void buyHouse()
+	{
+		addHouse();
+	}
+	
+	public void buyHotel(){
+		addHotel();
+	}
+	
+	public void buySkyscraper(){
+		addSkyscaper();
+	}
+	
 	public int getTotalHouses() {
 		//total num of houses
 		return totalHouses;
