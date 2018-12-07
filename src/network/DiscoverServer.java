@@ -10,7 +10,7 @@ public class DiscoverServer {
 	public static void main(String[] args) {
 		DatagramSocket socket;
 		try {
-			socket = new DatagramSocket(8888, InetAddress.getByName("0.0.0.0"));
+			socket = new DatagramSocket(8888);
 			socket.setBroadcast(true);
 			while (true) {
 				System.out.println(">>>Ready to receive broadcast packets!");
