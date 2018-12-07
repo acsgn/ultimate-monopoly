@@ -84,10 +84,8 @@ public class MonopolyGame implements Runnable {
 						return Integer.compare(p2.getInitialDiceOrder(), p1.getInitialDiceOrder());
 					}
 				});
-				if (players.get(0).getName().equals(myName)) {
-					currentPlayer = players.get(0);
+				if (players.get(0).getName().equals(myName))
 					currentPlayer.publishGameEvent("PLAY");
-				}
 				UIFacade.getInstance().connectionDone();
 			}
 			break;
@@ -155,8 +153,7 @@ public class MonopolyGame implements Runnable {
 				currentPlayer.sendColor();
 				SingletonDice.getInstance().rollDice();
 				int[] dice = SingletonDice.getInstance().getFaceValues();
-				NetworkFacade.getInstance()
-						.sendMessageToOthers(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
+				NetworkFacade.getInstance().sendMessageToOthers(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
 				break;
 			case "LOADGAME":
 				loadGame(parsed[2]);
