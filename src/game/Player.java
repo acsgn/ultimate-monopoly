@@ -71,9 +71,9 @@ public class Player implements Serializable{
 		publishGameEvent(message);
 	}
 
-	public void play() {
-		int[] diceRolls = rollDice();
+	public void play(int[] diceRolls) {
 		message = "ACTION/";
+		message += name+" rolled:";
 		message += "Regular Die 1: " + diceRolls[0] + "\n";
 		message += "Regular Die 2: " + diceRolls[1] + "\n";
 		if (diceRolls[2] == 4) {
@@ -85,8 +85,6 @@ public class Player implements Serializable{
 		}
 		publishGameEvent(message);
 		move(diceRolls);
-		NetworkFacade.getInstance()
-				.sendMessageToOthers(this.name + "/MOVE/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 		updateState();
 		location.executeWhenLanded(this);
 	}
@@ -273,7 +271,6 @@ public class Player implements Serializable{
 			message += i + "- " + property.getName() + "/";
 			i++;
 		}
-		publishGameEvent(message);
 		NetworkFacade.getInstance().sendMessageToOthers(name + "/UPDATESTATE/" + message);
 	}
 

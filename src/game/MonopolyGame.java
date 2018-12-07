@@ -8,8 +8,11 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Single;
+
 import game.card.ActionCards;
 import game.card.Card;
+import game.dice.SingletonDice;
 import network.NetworkFacade;
 import ui.UIFacade;
 
@@ -39,11 +42,9 @@ public class MonopolyGame implements Runnable {
 	public void executeNetworkMessage(String[] parsed) {
 		if (parsed[0].equals("RECEIVENAME")) {
 			if (isNewGame) {
-				if (!parsed[1].equals(myName)) {
-					Player newPlayer = new Player();
-					newPlayer.setName(parsed[1]);
-					players.add(newPlayer);
-				}
+				Player newPlayer = new Player();
+				newPlayer.setName(parsed[1]);
+				players.add(newPlayer);
 			} else {
 				// This is the current player order in playing.
 				order = players.size() - 1;
@@ -52,12 +53,12 @@ public class MonopolyGame implements Runnable {
 		}
 		updateCurrentPlayer(parsed[0]);
 		switch (parsed[1]) {
-		case "MOVE":
+		case "PLAY":
 			int[] diceRolls = new int[3];
 			diceRolls[0] = toInt(parsed[2]);
 			diceRolls[1] = toInt(parsed[3]);
 			diceRolls[2] = toInt(parsed[4]);
-			currentPlayer.move(diceRolls);
+			currentPlayer.play(diceRolls);
 			break;
 		case "BUYESTATE":
 			currentPlayer.buySquare();
@@ -76,7 +77,7 @@ public class MonopolyGame implements Runnable {
 		case "RECEIVEDICE":
 			numOfDiceReceived++;
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
-			if (numOfDiceReceived == 2) {
+			if (numOfDiceReceived == 3) {
 				players.sort(new Comparator<Player>() {
 					@Override
 					public int compare(Player p1, Player p2) {
@@ -124,14 +125,16 @@ public class MonopolyGame implements Runnable {
 					player.createPiece();
 				break;
 			case "ROLLDICE":
-				currentPlayer.play();
+				SingletonDice.getInstance().rollDice();
+				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
+				NetworkFacade.getInstance().sendMessageToOthers(
+						currentPlayer.getName() + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				break;
 			case "ENDGAME":
 				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/ENDGAME");
 				destroy = true;
 				break;
 			case "BUYPROPERTY":
-				currentPlayer.buySquare();
 				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/BUYESTATE");
 				break;
 			case "ENDTURN":
@@ -144,16 +147,14 @@ public class MonopolyGame implements Runnable {
 		case "UICREATOR":
 			switch (parsed[1]) {
 			case "PLAYERNAME":
-				currentPlayer = new Player();
-				currentPlayer.setName(parsed[2]);
-				players.add(currentPlayer);
 				myName = parsed[2];
 				NetworkFacade.getInstance().sendMessageToOthers("RECEIVENAME/" + parsed[2]);
 				break;
 			case "PLAYERCOLOR":
 				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/RECEIVECOLOR/" + parsed[2]);
 				currentPlayer.sendColor();
-				int[] dice = currentPlayer.rollDice();
+				SingletonDice.getInstance().rollDice();
+				int[] dice = SingletonDice.getInstance().getFaceValues();
 				NetworkFacade.getInstance()
 						.sendMessageToOthers(currentPlayer.getName() + "/RECEIVEDICE/" + (dice[0] + dice[1]));
 				break;
