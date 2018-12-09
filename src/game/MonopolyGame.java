@@ -11,7 +11,6 @@ import game.card.ActionCards;
 import game.card.Card;
 import game.dice.SingletonDice;
 import network.NetworkFacade;
-import ui.UIFacade;
 
 public class MonopolyGame implements Runnable {
 
@@ -95,7 +94,7 @@ public class MonopolyGame implements Runnable {
 				});
 				if (players.get(0).getName().equals(myName))
 					Controller.getInstance().publishGameEvent("PLAY");
-				UIFacade.getInstance().connectionDone();
+				Controller.getInstance().publishGameEvent("START");
 			}
 			break;
 		case "ENDGAME":

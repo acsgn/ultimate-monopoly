@@ -181,11 +181,10 @@ public class UICreator extends JFrame implements GameListener {
 		case "PLAYERCOUNT":
 			IPTextField.setText(parsed[1]);
 			break;
+		case "START":
+			dispose();
+			break;
 		}
-	}
-
-	public void close() {
-		dispose();
 	}
 
 	private Hashtable<Integer, JLabel> createLabelTable() {

@@ -1,7 +1,6 @@
 package game;
 
 import ui.UICreator;
-import ui.UIFacade;
 import ui.UIScreen;
 
 public class Main {
@@ -16,7 +15,6 @@ public class Main {
 		Controller.getInstance().addGamelistener(screen);
 		UICreator gameCreator = new UICreator();
 		Controller.getInstance().addGamelistener(gameCreator);
-		UIFacade.getInstance().initalize(gameCreator, screen);
 		gameCreator.setVisible(true);
 	}
 

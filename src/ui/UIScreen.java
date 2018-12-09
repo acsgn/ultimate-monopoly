@@ -222,15 +222,14 @@ public class UIScreen extends JFrame implements GameListener {
 		return controlPaneHeight - (i * controlPaneButtonHeight + i * controlPaneYSpace);
 	}
 
-	public void start() {
-		controller.dispatchMessage("UISCREEN/START");
-		setVisible(true);
-	}
-
 	@Override
 	public void onGameEvent(String message) {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
+		case "START":
+			controller.dispatchMessage("UISCREEN/START");
+			setVisible(true);
+			break;
 		case "ACTION":
 			infoText.insert(parsed[1], 0);
 			break;
