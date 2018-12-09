@@ -71,6 +71,12 @@ public class MonopolyGame implements Runnable {
 		} else if (parsed[0].equals("ALLDONE")) {
 			UIFacade.getInstance().connectionDone();
 			return;
+		} else if (parsed[0].equals("PAUSE")) {
+			pause();
+			return;
+		}	else if (parsed[0].equals("RESUME")) {
+			resume();
+			return;
 		}
 		updateCurrentPlayer(parsed[0]);
 		switch (parsed[1]) {
@@ -128,6 +134,13 @@ public class MonopolyGame implements Runnable {
 			case "START":
 				for (Player player : players)
 					player.createPiece();
+				break;
+			case "PAUSE":
+				pause();
+				NetworkFacade.getInstance().sendMessageToOthers("PAUSE");
+				break;
+			case "RESUME":
+				NetworkFacade.getInstance().sendMessageToOthers("RESUME");
 				break;
 			case "ROLLDICE":
 				currentPlayer.play();
@@ -188,6 +201,14 @@ public class MonopolyGame implements Runnable {
 
 	private int toInt(String string) {
 		return Integer.parseInt(string);
+	}
+	
+	private void resume() {
+		Controller.getInstance().publishGameEvent("RESUME");
+	}
+	
+	private void pause() {
+		Controller.getInstance().publishGameEvent("PAUSE");
 	}
 
 	@Override
