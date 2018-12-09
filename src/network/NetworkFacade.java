@@ -1,45 +1,50 @@
 package network;
 
+import java.util.ArrayList;
+
 public class NetworkFacade {
 
 	private static NetworkFacade self;
 
-	// To learn your ip InetAddress.getLocalHost().getHostAddress();
-
-	private MessageSocket mS;
-	private String[] IPAddresses = { "172.20.98.75" };
+	private ArrayList<String> IPAddresses;
+	private Discovery discovery;
 	private P2PServer p2p;
+	private boolean isDiscovering = true;
 
 	private NetworkFacade() {
 	}
 
-	public void start() {
+	public void startNetwork() {
+		discovery = new Discovery();
+		new Thread(discovery, "Discovery").start();
+		discovery.broadcast();
 		p2p = new P2PServer();
 		new Thread(p2p, "P2P Server").start();
 	}
+	
+	public void startGame() {
+		discovery.destroy();
+		IPAddresses = discovery.getIPAddresses();
+		isDiscovering = false;
+	}
 
 	public void sendMessageToOthers(String message) {
-		for (int i = 0; i < IPAddresses.length; i++) {
+		for (String IP : IPAddresses) {
 			try {
-				mS = new Client(IPAddresses[i]).getMessageSocket();
+				MessageSocket mS = new P2PClient(IP).getMessageSocket();
 				mS.sendMessage(message);
 				mS.close();
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 	}
 
 	public String receiveMessage() {
-		try {
-			synchronized (this) {
-				wait();
-			}
+		if(isDiscovering && discovery != null)
+			return discovery.getNumberOfPlayers();
+		else if(!isDiscovering && p2p != null)			
 			return p2p.receiveMessage();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return "NOMESSAGE";
+		else return "";
 	}
 
 	public void disconnect() {

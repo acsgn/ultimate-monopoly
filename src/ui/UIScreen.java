@@ -150,12 +150,13 @@ public class UIScreen extends JFrame implements GameListener {
 		add(controlPanel);
 
 		getContentPane().setBackground(Color.BLACK);
-		
+
 		bailButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String input = JOptionPane.showInputDialog(UIScreen.this, "Please enter name of the file: ", "Save Game", JOptionPane.QUESTION_MESSAGE);
-				message = "UISCREEN/SAVEGAME/"+input;
+				String input = JOptionPane.showInputDialog(UIScreen.this, "Please enter name of the file: ",
+						"Save Game", JOptionPane.QUESTION_MESSAGE);
+				message = "UISCREEN/SAVEGAME/" + input;
 				Controller.getInstance().dispatchMessage(message);
 			}
 		});
@@ -240,15 +241,10 @@ public class UIScreen extends JFrame implements GameListener {
 		case "MOVE":
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
 			pieces.get(toInt(parsed[1])).path = path;
-			board.indexOfPiece = toInt(parsed[1]);
+			pieces.get(toInt(parsed[1])).isActive = true;
 			animator.startAnimator();
 			break;
-		case "MOVE2":
-			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(toInt(parsed[1])).lastPoint = point;
-			repaint();
-			break;
-		case "PIECE":
+		case "JUMP":
 			Piece piece = new Piece();
 			piece.color = colorTable.get(parsed[1]);
 			int trackID = toInt(parsed[2]);
@@ -285,22 +281,22 @@ public class UIScreen extends JFrame implements GameListener {
 		private Path path;
 		private Point lastPoint;
 		private Color color;
+		private boolean isActive = false;
 
 		public Piece() {
-		}
-
-		public void paintOneTime(Graphics g) {
-			g.setColor(color);
-			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 		}
 
 		public void paint(Graphics g) {
 			g.setColor(color);
 			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
-			if (path != null && path.hasMoreSteps()) {
-				lastPoint = path.nextPosition();
-			} else
-				animator.stopAnimator();
+			if (isActive) {
+				if (path != null && path.hasMoreSteps())
+					lastPoint = path.nextPosition();
+				else {
+					animator.stopAnimator();
+					isActive = false;
+				}
+			}
 		}
 
 	}
@@ -308,16 +304,11 @@ public class UIScreen extends JFrame implements GameListener {
 	private class JBoard extends JLabel {
 		private static final long serialVersionUID = 1L;
 
-		private int indexOfPiece;
-
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
-			for (int i = 0; i < pieces.size(); i++) {
-				if (i == indexOfPiece)
-					pieces.get(i).paint(g);
-				else
-					pieces.get(i).paintOneTime(g);
+			for (Piece piece: pieces) {
+				piece.paint(g);
 			}
 		}
 	}

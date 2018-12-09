@@ -15,8 +15,8 @@ public class Main {
 		UIScreen screen = new UIScreen();
 		Controller.getInstance().addGamelistener(screen);
 		UICreator gameCreator = new UICreator();
+		Controller.getInstance().addGamelistener(gameCreator);
 		UIFacade.getInstance().initalize(gameCreator, screen);
-		new Thread(game,"Game").start();
 		gameCreator.setVisible(true);
 	}
 

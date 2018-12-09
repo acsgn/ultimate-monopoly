@@ -9,10 +9,6 @@ public class UIFacade {
 	
 	private UIFacade() {
 	}
-	
-	public void connectionError() {
-		uiC.serverNotFound();
-	}
 
 	public void connectionDone() {
 		uiC.close();

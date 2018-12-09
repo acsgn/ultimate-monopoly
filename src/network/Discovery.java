@@ -4,51 +4,52 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Objects;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Discovery implements Runnable {
 
-	private boolean stop = false;
-	private ArrayList<String> IPAddresses;
+	private static final int DISCOVERY_PORT = 3021;
+	private boolean destroy = false;
+	private ConcurrentLinkedQueue<String> IPAddresses;
 
 	public Discovery() {
-		IPAddresses = new ArrayList<>();
-		try {
-			IPAddresses.add(InetAddress.getLocalHost().getHostAddress());
-		} catch (UnknownHostException e) {
-		}
+		IPAddresses = new ConcurrentLinkedQueue<>();
 	}
 
 	@Override
 	public void run() {
 		DatagramSocket socket;
 		try {
-			socket = new DatagramSocket(302, InetAddress.getByName("0.0.0.0"));
+			socket = new DatagramSocket(DISCOVERY_PORT);
 			socket.setBroadcast(true);
 			while (true) {
 				synchronized (this) {
-					if (stop)
+					if (destroy)
 						break;
 				}
 				byte[] recvBuf = new byte[2048];
 				DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
 				socket.receive(packet);
 				String message = new String(packet.getData()).trim();
-				if (message.equals("ULTIMATE_MONOPOLY_REQUEST")) {
+				if (message.equals("ULTIMATE_MONOPOLY")) {
 					String response = "";
 					for (String ip : IPAddresses)
-						response += ip;
-					System.out.println(response);
+						response += ip + "/";
 					byte[] sendData = response.getBytes();
 					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(),
 							packet.getPort());
 					socket.send(sendPacket);
-					IPAddresses.add(sendPacket.getAddress().getHostAddress());
-					broadcast();
+					String IP = sendPacket.getAddress().getHostAddress();
+					if (!IPAddresses.contains(IP)) {
+						IPAddresses.add(IP);
+					}
+					synchronized (this) {
+						notify();
+					}
 				}
 			}
 		} catch (IOException ex) {
@@ -60,21 +61,27 @@ public class Discovery implements Runnable {
 		try {
 			c = new DatagramSocket();
 			c.setBroadcast(true);
-			byte[] sendData = "ULTIMATE_MONOPOLY_REQUEST".getBytes();
+			byte[] sendData = "ULTIMATE_MONOPOLY".getBytes();
 
 			ArrayList<InetAddress> broadcastList = new ArrayList<>();
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()) {
 				NetworkInterface networkInterface = interfaces.nextElement();
-				if (networkInterface.isLoopback() || !networkInterface.isUp())
+				if (networkInterface.isLoopback() || !networkInterface.isUp() || !networkInterface.getName().contains("wlan"))
 					continue;
-				networkInterface.getInterfaceAddresses().stream().map(a -> a.getBroadcast()).filter(Objects::nonNull)
-						.forEach(broadcastList::add);
+				for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+					InetAddress broadcast = interfaceAddress.getBroadcast();
+					if (broadcast == null)
+						continue;
+					broadcastList.add(broadcast);
+				}
 			}
 
 			for (InetAddress broadcast : broadcastList) {
 				try {
-					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 8888);
+					System.out.println(broadcast);
+					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast,
+							DISCOVERY_PORT);
 					c.send(sendPacket);
 				} catch (Exception e) {
 				}
@@ -85,8 +92,11 @@ public class Discovery implements Runnable {
 			c.receive(receivePacket);
 			String message = new String(receivePacket.getData()).trim();
 			for (String ip : message.split("/")) {
-				if (!IPAddresses.contains(ip))
+				if (!ip.equals("") && !IPAddresses.contains(ip))
 					IPAddresses.add(ip);
+			}
+			synchronized (this) {
+				notify();
 			}
 			c.close();
 
@@ -94,12 +104,28 @@ public class Discovery implements Runnable {
 		}
 	}
 
-	public void destroy() {
-		stop = true;
+	public String getNumberOfPlayers() {
+		try {
+			synchronized (this) {
+				wait();
+			}
+		} catch (InterruptedException e) {
+		}
+		System.out.println("PLAYERCOUNT/" + IPAddresses.size());
+		return "PLAYERCOUNT/" + IPAddresses.size();
 	}
 
 	public ArrayList<String> getIPAddresses() {
-		return IPAddresses;
+		ArrayList<String> IPs = new ArrayList<>();
+		for (String IP : IPAddresses) {
+			IPs.add(IP);
+			System.out.println(IP);
+		}
+		return IPs;
+	}
+
+	public void destroy() {
+		destroy = true;
 	}
 
 }

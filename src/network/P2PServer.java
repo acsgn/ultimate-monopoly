@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class P2PServer implements Runnable {
 
-	private static final int DEFAULT_PORT = 302;
+	private static final int P2P_PORT = 3022;
 
 	private String message;
 	private boolean destroy = false;
@@ -15,7 +15,7 @@ public class P2PServer implements Runnable {
 	public void run() {
 		ServerSocket server;
 		try {
-			server = new ServerSocket(DEFAULT_PORT);
+			server = new ServerSocket(P2P_PORT);
 			while (true) {
 				synchronized (this) {
 					if (destroy)
@@ -24,9 +24,7 @@ public class P2PServer implements Runnable {
 				Socket s = server.accept();
 				MessageSocket mS = new MessageSocket(s);
 				message = mS.receiveMessage();
-				synchronized (NetworkFacade.getInstance()) {
-					NetworkFacade.getInstance().notify();
-				}
+				notify();
 				mS.close();
 			}
 			server.close();
@@ -36,6 +34,10 @@ public class P2PServer implements Runnable {
 	}
 
 	public String receiveMessage() {
+		try {
+			wait();
+		} catch (InterruptedException e) {
+		}
 		return message;
 	}
 
