@@ -24,7 +24,9 @@ public class P2PServer implements Runnable {
 				Socket s = server.accept();
 				MessageSocket mS = new MessageSocket(s);
 				message = mS.receiveMessage();
-				notify();
+				synchronized (this) {
+					notify();
+				}
 				mS.close();
 			}
 			server.close();

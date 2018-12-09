@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -18,6 +19,10 @@ public class Discovery implements Runnable {
 
 	public Discovery() {
 		IPAddresses = new ConcurrentLinkedQueue<>();
+		try {
+			IPAddresses.add(InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+		}
 	}
 
 	@Override
