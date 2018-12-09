@@ -18,7 +18,7 @@ public class MonopolyGame implements Runnable {
 	private Player currentPlayer;
 	
 	private String myName;
-	private int numOfPlayers = 0;
+	private volatile int numOfPlayers = 0;
 	private int numOfDiceReceived = 0;
 	private int order;
 	private boolean isNewGame;
