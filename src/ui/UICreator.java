@@ -96,7 +96,7 @@ public class UICreator extends JFrame implements GameListener {
 		IPLabel.setBounds(35, 10, 130, 20);
 		IPPanel.add(IPLabel);
 
-		IPTextField = new JTextField();
+		IPTextField = new JTextField("1");
 		IPTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		IPTextField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		IPTextField.setBounds(0, 35, 200, 30);

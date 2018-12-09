@@ -17,7 +17,6 @@ public class NetworkFacade {
 	public void startNetwork() {
 		discovery = new Discovery();
 		new Thread(discovery, "Discovery").start();
-		discovery.broadcast();
 		p2p = new P2PServer();
 		new Thread(p2p, "P2P Server").start();
 	}
