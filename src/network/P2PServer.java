@@ -37,7 +37,9 @@ public class P2PServer implements Runnable {
 
 	public String receiveMessage() {
 		try {
-			wait();
+			synchronized (this) {
+				wait();
+			}
 		} catch (InterruptedException e) {
 		}
 		return message;
