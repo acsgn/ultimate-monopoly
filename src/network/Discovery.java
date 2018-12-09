@@ -14,7 +14,7 @@ public class Discovery implements Runnable {
 
 	private static final int DISCOVERY_PORT = 3021;
 	private boolean destroy = false;
-	private ArrayList<String> IPAddresses;
+	private volatile ArrayList<String> IPAddresses;
 
 	public Discovery() {
 		IPAddresses = new ArrayList<>();
