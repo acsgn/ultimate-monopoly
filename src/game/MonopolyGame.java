@@ -180,6 +180,7 @@ public class MonopolyGame implements Runnable {
 			}
 			String message = NetworkFacade.getInstance().receiveMessage();
 			while (!message.equals("ENDTURN")) {
+				System.out.println(message);
 				executeNetworkMessage(message);
 				message = NetworkFacade.getInstance().receiveMessage();
 			}

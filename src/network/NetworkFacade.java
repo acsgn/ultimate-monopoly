@@ -9,6 +9,7 @@ public class NetworkFacade {
 	private String message;
 
 	private ArrayList<String> IPAddresses;
+	private Thread discoveryThread;
 	private Discovery discovery;
 	private P2PServer p2p;
 	private boolean isDiscovering = true;
@@ -18,13 +19,15 @@ public class NetworkFacade {
 
 	public void startNetwork() {
 		discovery = new Discovery();
-		new Thread(discovery, "Discovery").start();
+		discoveryThread = new Thread(discovery, "Discovery");
+		discoveryThread.start();
 		p2p = new P2PServer();
 		new Thread(p2p, "P2P Server").start();
 	}
 
 	public void startGame() {
 		discovery.destroy();
+		discoveryThread.interrupt();
 		IPAddresses = discovery.getIPAddresses();
 		isDiscovering = false;
 	}
@@ -41,36 +44,9 @@ public class NetworkFacade {
 	}
 
 	public String receiveMessage() {
-		long time = System.currentTimeMillis();
-
 		if (isDiscovering && discovery != null) {
-
-			Thread tmp = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					String tmp = null;
-					tmp = discovery.getNumberOfPlayers();
-					while (tmp == null)
-						tmp = discovery.getNumberOfPlayers();
-
-					message = tmp;
-				}
-			}, "Temporary");
-			tmp.start();
-
-			while (true) {
-				if (!tmp.isAlive())
-					break;
-				else if (System.currentTimeMillis() - time >= 2000) {
-					System.out.println("Cannot get a response in 2 seconds");
-					tmp.interrupt();
-					break;
-				}
-			}
-			if (message != null)
-				return message;
-			return "";
-		}else if(!isDiscovering && p2p != null) {
+			return discovery.getNumberOfPlayers();
+		} else if (!isDiscovering && p2p != null) {
 			return p2p.receiveMessage();
 		}
 		return "";
