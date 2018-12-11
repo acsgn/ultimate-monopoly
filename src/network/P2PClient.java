@@ -1,15 +1,19 @@
 package network;
 
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class P2PClient {
 
-	private static final int P2P_PORT = 3022;
+	private final int P2P_PORT = 3022;
+	private final int timeout = 5000;
 
 	private Socket s;
 
 	public P2PClient(String IPAddress) throws Exception {
-		s = new Socket(IPAddress, P2P_PORT); 
+		s = new Socket();
+		InetSocketAddress sA = new InetSocketAddress(IPAddress, P2P_PORT);
+		s.connect(sA, timeout);
 	}
 
 	protected MessageSocket getMessageSocket() {

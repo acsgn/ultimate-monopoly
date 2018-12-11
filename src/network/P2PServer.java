@@ -3,31 +3,37 @@ package network;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class P2PServer implements Runnable {
 
 	private static final int P2P_PORT = 3022;
 
-	private String message;
-	private boolean destroy = false;
+	private ArrayList<String> messages;
+
+	public P2PServer() {
+		messages = new ArrayList<String>();
+	}
 
 	@Override
 	public void run() {
 		ServerSocket server;
+		boolean destroy = false;
 		try {
 			server = new ServerSocket(P2P_PORT);
 			while (true) {
-				synchronized (this) {
-					if (destroy)
-						break;
-				}
 				Socket s = server.accept();
 				MessageSocket mS = new MessageSocket(s);
-				message = mS.receiveMessage();
+				String message = mS.receiveMessage();
+				if(message.equals("CLOSE"))
+					destroy = true;
+				messages.add(message);
 				synchronized (this) {
 					notify();
 				}
 				mS.close();
+				if(destroy)
+					break;
 			}
 			server.close();
 		} catch (IOException e) {
@@ -36,17 +42,14 @@ public class P2PServer implements Runnable {
 	}
 
 	public String receiveMessage() {
-		try {
-			synchronized (this) {
-				wait();
+		if (messages.isEmpty())
+			try {
+				synchronized (this) {
+					wait();
+				}
+			} catch (InterruptedException e) {
 			}
-		} catch (InterruptedException e) {
-		}
-		return message;
-	}
-
-	public void destroy() {
-		destroy = true;
+		return messages.remove(0);
 	}
 
 }

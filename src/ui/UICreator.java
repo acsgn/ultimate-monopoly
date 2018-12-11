@@ -155,20 +155,24 @@ public class UICreator extends JFrame implements GameListener {
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (chooserVal != JFileChooser.APPROVE_OPTION) {
-					String name = playerNameField.getText();
-					if (name.isEmpty()) {
-						JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						return;
+				if (Integer.parseInt(IPTextField.getText()) > 0) {
+					if (chooserVal != JFileChooser.APPROVE_OPTION) {
+						String name = playerNameField.getText();
+						if (name.isEmpty()) {
+							JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						Controller.getInstance().dispatchMessage(message + "START");
+						Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
+						Controller.getInstance()
+								.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
+						Controller.getInstance().dispatchMessage(message + "DICE");
 					}
-					Controller.getInstance().dispatchMessage(message + "START");
-					Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
-					Controller.getInstance()
-							.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
-					Controller.getInstance().dispatchMessage(message + "DICE");
-				}
-
+					// Should handle load game in here
+				} else
+					JOptionPane.showMessageDialog(UICreator.this, "You need at least 2 players to play!", "Error",
+							JOptionPane.ERROR_MESSAGE);
 			}
 		});
 

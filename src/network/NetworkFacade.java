@@ -6,55 +6,77 @@ public class NetworkFacade {
 
 	private static NetworkFacade self;
 
-	private String message;
-
 	private ArrayList<String> IPAddresses;
-	private Thread discoveryThread;
 	private Discovery discovery;
 	private P2PServer p2p;
 	private boolean isDiscovering = true;
+	private volatile boolean isChecking = false;
+	private String disconnectedMesssage = "DISCONNECTED";
+	private String connectivityCheckMessage = "CONNECTIVITYCHECK";
+	private String playerCountMessage = "PLAYERCOUNT/";
 
 	private NetworkFacade() {
 	}
 
 	public void startNetwork() {
 		discovery = new Discovery();
-		discoveryThread = new Thread(discovery, "Discovery");
-		discoveryThread.start();
+		new Thread(discovery, "Discovery").start();
 		p2p = new P2PServer();
 		new Thread(p2p, "P2P Server").start();
 	}
 
 	public void startGame() {
-		discovery.destroy();
-		discoveryThread.interrupt();
-		IPAddresses = discovery.getIPAddresses();
 		isDiscovering = false;
+		discovery.destroy();
+		IPAddresses = discovery.getIPAddresses();
 	}
 
-	public void sendMessageToOthers(String message) {
+	public void sendMessage(String message) {
+		ArrayList<String> closedIPs = new ArrayList<String>();
 		for (String IP : IPAddresses) {
 			try {
-				MessageSocket mS = new P2PClient(IP).getMessageSocket();
+				P2PClient c = new P2PClient(IP);
+				MessageSocket mS = c.getMessageSocket();
 				mS.sendMessage(message);
 				mS.close();
 			} catch (Exception e) {
+				closedIPs.add(IP);
 			}
 		}
+		if (!closedIPs.isEmpty()) {
+			IPAddresses.removeAll(closedIPs);
+			if (IPAddresses.size() == 1)
+				sendMessage(disconnectedMesssage);
+			else if (!isChecking) {
+				sendMessage(playerCountMessage + IPAddresses.size());
+				if (!isChecking) { // to prevent recursive recalls to send connectivity message
+					sendMessage(connectivityCheckMessage);
+					isChecking = true;
+				}
+			}
+		}
+		isChecking = false;
 	}
 
 	public String receiveMessage() {
-		if (isDiscovering && discovery != null) {
+		if (isDiscovering) {
 			return discovery.getNumberOfPlayers();
-		} else if (!isDiscovering && p2p != null) {
-			return p2p.receiveMessage();
+		} else {
+			String message = p2p.receiveMessage();
+			if (message.equals(connectivityCheckMessage))
+				isChecking = true;
+			return message;
 		}
-		return "";
 	}
 
-	public void disconnect() {
-		sendMessageToOthers("CLOSE");
-		p2p.destroy();
+	public void endGame() {
+		try {
+			P2PClient c = new P2PClient(IPAddresses.get(0));
+			MessageSocket mS = c.getMessageSocket();
+			mS.sendMessage("CLOSE");
+			mS.close();
+		} catch (Exception e) {
+		}
 	}
 
 	public static synchronized NetworkFacade getInstance() {
