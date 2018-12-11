@@ -1,8 +1,6 @@
 package game.square.estate;
 
-import game.Board;
 import game.TrackType;
-import game.strategy.RentStrategyFactory;
 
 public class TransitStation extends Estate {
 
@@ -22,7 +20,7 @@ public class TransitStation extends Estate {
 		super(name, TRANSIT_STATION_PRICE, type);
 		this.track1 = track1;
 		this.track2 = track2;
-		this.index1= index1;
+		this.index1 = index1;
 		this.index2 = index2;
 	}
 
@@ -32,12 +30,23 @@ public class TransitStation extends Estate {
 		return rent;
 	}
 
+	public void buildDepot() {
+		trainDepot++;
+	}
+
+	public boolean sellDepot() {
+		if (trainDepot > 0) {
+			trainDepot--;
+			return true;
+		}
+		return false;
+	}
+
 	public TrackType getOtherTrack(TrackType track) {
 		return track == track1 ? track2 : track1;
 	}
 
 	public int getOtherIndex(TrackType track) {
-
 		return track == track1 ? index2 : index1;
 	}
 

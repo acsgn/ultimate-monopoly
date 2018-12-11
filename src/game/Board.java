@@ -14,9 +14,9 @@ public class Board {
 	private TransitStation secondTS;
 	private TransitStation thirdTS;
 	private TransitStation fourthTS;
-	
+
 	private HollandTunnel hollandTunnel;
-	
+
 	private Chance chance;
 	private CommunityChest communityChest;
 	private FreeParking freeParking;
@@ -26,13 +26,13 @@ public class Board {
 		middleTrack = new Track(TrackType.MIDDLE_TRACK);
 		innerTrack = new Track(TrackType.INNER_TRACK);
 
-		firstTS = new TransitStation("Reading Railroad", middleTrack.getTrackType(), outerTrack.getTrackType(), 5, 7);
-		secondTS = new TransitStation("Pennsylvania Railroad", middleTrack.getTrackType(), innerTrack.getTrackType(),15,9);
-		thirdTS = new TransitStation("B & O Railroad", middleTrack.getTrackType(), outerTrack.getTrackType(),25,35);
-		fourthTS = new TransitStation("Short Line", middleTrack.getTrackType(), innerTrack.getTrackType(),35,27);
+		firstTS = new TransitStation("Reading Railroad", TrackType.MIDDLE_TRACK, TrackType.OUTER_TRACK, 5, 7);
+		secondTS = new TransitStation("Pennsylvania Railroad", TrackType.MIDDLE_TRACK, TrackType.INNER_TRACK, 15, 9);
+		thirdTS = new TransitStation("B & O Railroad", TrackType.MIDDLE_TRACK, TrackType.OUTER_TRACK, 25, 35);
+		fourthTS = new TransitStation("Short Line", TrackType.MIDDLE_TRACK, TrackType.INNER_TRACK, 35, 27);
 
 		hollandTunnel = new HollandTunnel();
-		
+
 		chance = new Chance();
 		communityChest = new CommunityChest();
 		freeParking = new FreeParking();
@@ -172,7 +172,6 @@ public class Board {
 
 		Utility electricCompany = new Utility("Electric Company");
 		Utility waterWorks = new Utility("Water Works");
-		
 
 		Go go = new Go();
 		IncomeTax incomeTax = new IncomeTax();
@@ -319,7 +318,7 @@ public class Board {
 		outerTrack.addSquare(chance);
 		outerTrack.addSquare(freeParking);
 		outerTrack.addSquare(dekalbAve);
-		outerTrack.addSquare(communityChest);		
+		outerTrack.addSquare(communityChest);
 		outerTrack.addSquare(andrewYoungIntlBlvd);
 		outerTrack.addSquare(decaturSt);
 		outerTrack.addSquare(peachtreeSt);
