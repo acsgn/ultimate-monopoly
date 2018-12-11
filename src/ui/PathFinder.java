@@ -1,7 +1,5 @@
 package ui;
 
-import java.awt.Point;
-
 public class PathFinder {
 
 	private static final int OUTER_TRACK = 0;
@@ -46,14 +44,9 @@ public class PathFinder {
 
 		this.scaleFactor = scaleFactor;
 
-		outerTrack = new Track(getScaled(outerTrackUpLeftCorner), getScaled(outerTrackDownRightCorner),
-				outerTrackCornerDifference);
-
-		middleTrack = new Track(getScaled(middleTrackUpLeftCorner), getScaled(middleTrackDownRightCorner),
-				middleTrackCornerDifference);
-
-		innerTrack = new Track(getScaled(innerTrackUpLeftCorner), getScaled(innerTrackDownRightCorner),
-				innerTrackCornerDifference);
+		outerTrack = new Track(outerTrackUpLeftCorner, outerTrackDownRightCorner, outerTrackCornerDifference);
+		middleTrack = new Track(middleTrackUpLeftCorner, middleTrackDownRightCorner, middleTrackCornerDifference);
+		innerTrack = new Track(innerTrackUpLeftCorner, innerTrackDownRightCorner, innerTrackCornerDifference);
 
 		middleOuterFirst = new TransitStation(middleTrack, middleToOuterFirstTransitLocation, outerTrack,
 				outerToMiddleFirstTransitLocation);
@@ -65,12 +58,9 @@ public class PathFinder {
 				innerToMiddleSecondTransitLocation);
 	}
 
-	public void setInitialValues(int trackID, int location) {
-	}
-
-	public Point getLocation(int trackID, int location) {
+	public int[] getLocation(int trackID, int location) {
 		Track track = getTrackByID(trackID);
-		return new Point(track.getLocation(location)[0], track.getLocation(location)[1]);
+		return track.getLocation(location);
 	}
 
 	public Path findPath(int trackID, int location, int newTrackID, int newLocation) {
@@ -159,32 +149,32 @@ public class PathFinder {
 
 	private class Track {
 
-		private int upLeftCorner;
-		private int downRightCorner;
-		private int stepDistance;
+		private double upLeftCorner;
+		private double downRightCorner;
+		private double stepDistance;
 		private int cornerDifference;
 
 		public Track(int upLeftCorner, int downRightCorner, int cornerDifference) {
-			this.upLeftCorner = upLeftCorner;
-			this.downRightCorner = downRightCorner;
-			this.stepDistance = (int) ((downRightCorner - upLeftCorner) / (double) cornerDifference);
+			this.upLeftCorner = getScaled(upLeftCorner);
+			this.downRightCorner = getScaled(downRightCorner);
+			this.stepDistance = (downRightCorner - upLeftCorner) / cornerDifference;
 			this.cornerDifference = cornerDifference;
 		}
 
 		public int[] getLocation(int location) {
 			int[] point = new int[2];
 			if (location < cornerDifference) {
-				point[0] = downRightCorner - location * stepDistance;
-				point[1] = downRightCorner;
+				point[0] = (int) (downRightCorner - location * stepDistance);
+				point[1] = (int) downRightCorner;
 			} else if (location < 2 * cornerDifference) {
-				point[0] = upLeftCorner;
-				point[1] = upLeftCorner + (2 * cornerDifference - location) * stepDistance;
+				point[0] = (int) upLeftCorner;
+				point[1] = (int) (upLeftCorner + (2 * cornerDifference - location) * stepDistance);
 			} else if (location < 3 * cornerDifference) {
-				point[0] = upLeftCorner + (location - 2 * cornerDifference) * stepDistance;
-				point[1] = upLeftCorner;
+				point[0] = (int) (upLeftCorner + (location - 2 * cornerDifference) * stepDistance);
+				point[1] = (int) upLeftCorner;
 			} else if (location < 4 * cornerDifference) {
-				point[0] = downRightCorner;
-				point[1] = downRightCorner - (4 * cornerDifference - location) * stepDistance;
+				point[0] = (int) downRightCorner;
+				point[1] = (int) (downRightCorner - (4 * cornerDifference - location) * stepDistance);
 			}
 			return point;
 		}
@@ -226,8 +216,8 @@ public class PathFinder {
 
 	}
 
-	private int getScaled(int i) {
-		return (int) (i * scaleFactor);
+	private double getScaled(int i) {
+		return i * scaleFactor;
 	}
 
 }

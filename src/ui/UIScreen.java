@@ -150,12 +150,13 @@ public class UIScreen extends JFrame implements GameListener {
 		add(controlPanel);
 
 		getContentPane().setBackground(Color.BLACK);
-		
+
 		bailButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String input = JOptionPane.showInputDialog(UIScreen.this, "Please enter name of the file: ", "Save Game", JOptionPane.QUESTION_MESSAGE);
-				message = "UISCREEN/SAVEGAME/"+input;
+				String input = JOptionPane.showInputDialog(UIScreen.this, "Please enter name of the file: ",
+						"Save Game", JOptionPane.QUESTION_MESSAGE);
+				message = "UISCREEN/SAVEGAME/" + input;
 				Controller.getInstance().dispatchMessage(message);
 			}
 		});
@@ -244,8 +245,8 @@ public class UIScreen extends JFrame implements GameListener {
 			animator.startAnimator();
 			break;
 		case "MOVE2":
-			Point point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(toInt(parsed[1])).lastPoint = point;
+			int[] point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
+			pieces.get(toInt(parsed[1])).lastPoint = new Point(point[0], point[1]);
 			repaint();
 			break;
 		case "PIECE":
@@ -253,8 +254,8 @@ public class UIScreen extends JFrame implements GameListener {
 			piece.color = colorTable.get(parsed[1]);
 			int trackID = toInt(parsed[2]);
 			int location = toInt(parsed[3]);
-			pathFinder.setInitialValues(trackID, location);
-			piece.lastPoint = pathFinder.getLocation(trackID, location);
+			int[] position = pathFinder.getLocation(trackID, location);
+			piece.lastPoint = new Point(position[0], position[1]);
 			repaint();
 			pieces.add(piece);
 			break;
