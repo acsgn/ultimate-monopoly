@@ -8,9 +8,6 @@ import java.net.Socket;
 
 public class MessageSocket {
 
-	private final String messageCheck = "UMWH"; // Ult. Mon. Wat. Hat.
-	private final String confirmation = "ACK";
-
 	private Socket socket;
 	private BufferedReader is;
 	private PrintWriter os;
@@ -26,38 +23,16 @@ public class MessageSocket {
 	}
 
 	protected void sendMessage(String message) {
-		os.println(messageCheck + message);
+		os.println(message);
 		os.flush();
-		String response = receiveConfirmation();
-		while (!response.equals(confirmation)) {
-			os.println(messageCheck + message);
-			os.flush();
-		}
 	}
 
 	protected String receiveMessage() {
 		String message = "MESSAGEERROR";
 		try {
 			message = is.readLine();
-			if (message.startsWith(messageCheck))
-				sendConfirmation();
-			message = message.substring(messageCheck.length());
 		} catch (IOException e) {
 			System.err.println("Message Receiving Error");
-		}
-		return message;
-	}
-
-	private void sendConfirmation() {
-		os.println(confirmation);
-		os.flush();
-	}
-
-	private String receiveConfirmation() {
-		String message = "";
-		try {
-			message = is.readLine();
-		} catch (IOException e) {
 		}
 		return message;
 	}

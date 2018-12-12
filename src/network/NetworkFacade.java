@@ -1,21 +1,27 @@
 package network;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class NetworkFacade {
+public class NetworkFacade implements Runnable {
 
 	private static NetworkFacade self;
+	private static final int checkRate = 5000;
 
-	private ArrayList<String> IPAddresses;
+	private CopyOnWriteArrayList<String> IPAddresses;
 	private Discovery discovery;
 	private P2PServer p2p;
 	private boolean isDiscovering = true;
-	private volatile boolean isChecking = false;
+	private volatile boolean destroy = false;
+	private volatile boolean isChecking = true;
+	private volatile boolean someoneDisconnected = false;
 	private String disconnectedMesssage = "DISCONNECTED";
 	private String connectivityCheckMessage = "CONNECTIVITYCHECK";
-	private String playerCountMessage = "PLAYERCOUNT/";
+	private String playerCountMessage = "CONNECTIVITYPLAYERCOUNT/";
+	private String playerCheckMessage = "PLAYERCHECK";
 
 	private NetworkFacade() {
+		IPAddresses = new CopyOnWriteArrayList<String>();
 	}
 
 	public void startNetwork() {
@@ -28,7 +34,11 @@ public class NetworkFacade {
 	public void startGame() {
 		isDiscovering = false;
 		discovery.destroy();
-		IPAddresses = discovery.getIPAddresses();
+		for (String IP : discovery.getIPAddresses()) {
+			System.out.println(IP);
+			IPAddresses.add(IP);
+		}
+		new Thread(this, "Connection Control").start();
 	}
 
 	public void sendMessage(String message) {
@@ -45,17 +55,11 @@ public class NetworkFacade {
 		}
 		if (!closedIPs.isEmpty()) {
 			IPAddresses.removeAll(closedIPs);
-			if (IPAddresses.size() == 1)
+			if (IPAddresses.size() == 1) {
 				sendMessage(disconnectedMesssage);
-			else if (!isChecking) {
-				sendMessage(playerCountMessage + IPAddresses.size());
-				if (!isChecking) { // to prevent recursive recalls to send connectivity message
-					sendMessage(connectivityCheckMessage);
-					isChecking = true;
-				}
-			}
+			} else
+				someoneDisconnected = true;
 		}
-		isChecking = false;
 	}
 
 	public String receiveMessage() {
@@ -64,12 +68,13 @@ public class NetworkFacade {
 		} else {
 			String message = p2p.receiveMessage();
 			if (message.equals(connectivityCheckMessage))
-				isChecking = true;
+				isChecking = false;
 			return message;
 		}
 	}
 
 	public void endGame() {
+		destroy = true;
 		try {
 			P2PClient c = new P2PClient(IPAddresses.get(0));
 			MessageSocket mS = c.getMessageSocket();
@@ -86,4 +91,24 @@ public class NetworkFacade {
 		return self;
 	}
 
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				Thread.sleep(checkRate);
+				if (destroy)
+					break;
+				if (isChecking) {
+					sendMessage(connectivityCheckMessage);
+					if (someoneDisconnected) {
+						sendMessage(playerCountMessage + IPAddresses.size());
+						sendMessage(playerCheckMessage);
+					}
+				}
+				isChecking = true;
+			} catch (InterruptedException e) {
+			}
+
+		}
+	}
 }

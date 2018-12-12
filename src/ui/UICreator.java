@@ -155,7 +155,7 @@ public class UICreator extends JFrame implements GameListener {
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (Integer.parseInt(IPTextField.getText()) > 0) {
+				if (Integer.parseInt(IPTextField.getText()) > 1) {
 					if (chooserVal != JFileChooser.APPROVE_OPTION) {
 						String name = playerNameField.getText();
 						if (name.isEmpty()) {

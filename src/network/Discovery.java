@@ -15,19 +15,21 @@ public class Discovery implements Runnable {
 	private final int DISCOVERY_PORT = 3021;
 	private boolean destroy = false;
 	private volatile ArrayList<String> IPAddresses;
+	private ArrayList<InetAddress> broadcastList;
 	private final String discoveryMessage = "ULTIMATE_MONOPOLY";
 
 	public Discovery() {
 		IPAddresses = new ArrayList<>();
 		IPAddresses.add(LOCALHOST);
+		broadcastList = new ArrayList<>();
+		findBroadcasts();
 	}
 
 	@Override
 	public void run() {
 		broadcast();
-		DatagramSocket socket;
 		try {
-			socket = new DatagramSocket(DISCOVERY_PORT);
+			DatagramSocket socket = new DatagramSocket(DISCOVERY_PORT);
 			socket.setBroadcast(true);
 			socket.setSoTimeout(1000);
 			while (true) {
@@ -40,27 +42,17 @@ public class Discovery implements Runnable {
 				try {
 					socket.receive(packet);
 					String message = new String(packet.getData()).trim();
-					InetAddress IP = packet.getAddress();
 					if (message.equals(discoveryMessage)) {
-						String response = "IP_ADDRESSES";
-						for (String ip : IPAddresses)
-							response += "/" + ip;
-						byte[] sendData = response.getBytes();
+						InetAddress IP = packet.getAddress();
+						byte[] sendData = discoveryMessage.getBytes();
 						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IP, DISCOVERY_PORT);
 						socket.send(sendPacket);
-						IPAddresses.add(IP.getHostAddress());
-						synchronized (this) {
-							notify();
-						}
-						continue;
-					}
-					String[] parsed = message.split("/");
-					if (parsed[0].equals("IP_ADDRESSES")) {
-						for (int i = 1; i < parsed.length; i++)
-							if (!IPAddresses.contains(parsed[i]))
-								IPAddresses.add(parsed[i]);
-						synchronized (this) {
-							notify();
+						if (!IPAddresses.contains(IP.getHostAddress())) {
+							IPAddresses.add(IP.getHostAddress());
+							broadcast();
+							synchronized (this) {
+								notify();
+							}
 						}
 					}
 				} catch (SocketTimeoutException e) {
@@ -69,17 +61,13 @@ public class Discovery implements Runnable {
 					}
 				}
 			}
+			socket.close();
 		} catch (Exception ex) {
 		}
 	}
 
-	public void broadcast() {
-		DatagramSocket c;
+	private void findBroadcasts() {
 		try {
-			c = new DatagramSocket();
-			c.setBroadcast(true);
-			byte[] sendData = discoveryMessage.getBytes();
-
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()) {
 				NetworkInterface networkInterface = interfaces.nextElement();
@@ -89,10 +77,21 @@ public class Discovery implements Runnable {
 					InetAddress broadcast = interfaceAddress.getBroadcast();
 					if (broadcast == null)
 						continue;
-					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast,
-							DISCOVERY_PORT);
-					c.send(sendPacket);
+					broadcastList.add(broadcast);
 				}
+			}
+		} catch (Exception e) {
+		}
+	}
+
+	private void broadcast() {
+		try {
+			DatagramSocket c = new DatagramSocket();
+			c.setBroadcast(true);
+			byte[] sendData = discoveryMessage.getBytes();
+			for (InetAddress broadcast : broadcastList) {
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, DISCOVERY_PORT);
+				c.send(sendPacket);
 			}
 			c.close();
 		} catch (Exception ex) {

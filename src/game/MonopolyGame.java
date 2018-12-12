@@ -27,7 +27,8 @@ public class MonopolyGame implements Runnable {
 	private boolean destroy = false;
 
 	public MonopolyGame() {
-		players = new ArrayList<>();
+		players = new ArrayList<Player>();
+		checkedPlayers = new ArrayList<Player>();
 		isNewGame = true;
 		NetworkFacade.getInstance().startNetwork();
 		new Thread(this, "Game").start();
@@ -41,16 +42,91 @@ public class MonopolyGame implements Runnable {
 		this.players = players;
 	}
 
+	public void executeMessage(String message) {
+		String[] parsed = message.split("/");
+		switch (parsed[0]) {
+		case "UISCREEN":
+			switch (parsed[1]) {
+			case "START":
+				for (Player player : players)
+					player.createPiece();
+				break;
+			case "ROLLDICE":
+				SingletonDice.getInstance().rollDice();
+				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
+				NetworkFacade.getInstance()
+						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
+				break;
+			case "ENDGAME":
+				destroy = true;
+				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");
+				break;
+			case "BUYPROPERTY":
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYESTATE");
+				break;
+			case "ENDTURN":
+				NetworkFacade.getInstance().sendMessage("ENDTURN");
+				break;
+			case "SAVEGAME":
+				saveGame(parsed[2]);
+				break;
+			}
+			break;
+		case "UICREATOR":
+			switch (parsed[1]) {
+			case "START":
+				NetworkFacade.getInstance().startGame();
+				break;
+			case "PLAYERNAME":
+				myName = parsed[2];
+				NetworkFacade.getInstance().sendMessage("RECEIVENAME/" + parsed[2]);
+				break;
+			case "PLAYERCOLOR":
+				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVECOLOR/" + parsed[2]);
+				break;
+			case "DICE":
+				SingletonDice.getInstance().rollDice();
+				int[] dice = SingletonDice.getInstance().getFaceValues();
+				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
+				break;
+			case "LOADGAME":
+				loadGame(parsed[2]);
+				isNewGame = false;
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			synchronized (this) {
+				if (destroy)
+					break;
+			}
+			String message = NetworkFacade.getInstance().receiveMessage();
+			System.out.println(message);
+			executeNetworkMessage(message);
+		}
+	}
+
 	public void executeNetworkMessage(String message) {
 		if (message.equals("ENDTURN")) {
-			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+			currentPlayer = players.remove(0);
+			players.add(currentPlayer);
 			if (currentPlayer.getName().equals(myName))
 				Controller.getInstance().publishGameEvent("PLAY");
-		}
-		if (message.equals("CONNECTIVITYCHECK"))
+			return;
+		} else if (message.equals("CONNECTIVITYCHECK"))
+			return;
+		else if (message.equals("PLAYERCHECK")) {
 			NetworkFacade.getInstance().sendMessage("CHECK/" + myName);
-		if (message.equals("DISCONNECTED"))
+			return;
+		}
+		else if (message.equals("DISCONNECTED")) {
 			Controller.getInstance().publishGameEvent("YOUDISCONNECTED");
+			return;
+		}
 		String[] parsed = message.split("/");
 		if (parsed[0].equals("PLAYERCOUNT")) {
 			numOfPlayers = toInt(parsed[1]);
@@ -66,17 +142,26 @@ public class MonopolyGame implements Runnable {
 			}
 			return;
 		} else if (parsed[0].equals("CHECK")) {
-			if (checkedPlayers == null)
-				checkedPlayers = new ArrayList<Player>(players.size());
-			updateCurrentPlayer(parsed[1]);
+			Player player = findPlayer(parsed[1]);
+			if (!checkedPlayers.contains(player))
+				checkedPlayers.add(player);
 			if (checkedPlayers.size() == numOfPlayers) {
-				players.removeAll(checkedPlayers);
-				for (Player player : players) 
-					player.endGame();				
-				players = checkedPlayers;
+				for (Player p : players)
+					if (!checkedPlayers.contains(p)) {
+						p.endGame();
+						players.remove(p);
+					}
+				checkedPlayers.clear();
+				if (players.get(players.size() - 1) != currentPlayer) {
+					currentPlayer = players.remove(0);
+					players.add(currentPlayer);
+					if (currentPlayer.getName().equals(myName))
+						Controller.getInstance().publishGameEvent("PLAY");
+				}
 			}
+			return;
 		}
-		updateCurrentPlayer(parsed[0]);
+		currentPlayer = findPlayer(parsed[0]);
 		switch (parsed[1]) {
 		case "PLAY":
 			int[] diceRolls = new int[3];
@@ -123,84 +208,17 @@ public class MonopolyGame implements Runnable {
 		}
 	}
 
-	private void updateCurrentPlayer(String name) {
+	private Player findPlayer(String name) {
 		for (Player player : players) {
 			if (player.getName().equals(name)) {
-				currentPlayer = player;
-				break;
+				return player;
 			}
 		}
-	}
-
-	public void executeMessage(String message) {
-		String[] parsed = message.split("/");
-		switch (parsed[0]) {
-		case "UISCREEN":
-			switch (parsed[1]) {
-			case "START":
-				for (Player player : players)
-					player.createPiece();
-				break;
-			case "ROLLDICE":
-				SingletonDice.getInstance().rollDice();
-				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
-				NetworkFacade.getInstance()
-						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
-				break;
-			case "ENDGAME":
-				destroy = true;
-				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");
-				break;
-			case "BUYPROPERTY":
-				NetworkFacade.getInstance().sendMessage(myName + "/BUYESTATE");
-				break;
-			case "ENDTURN":
-				NetworkFacade.getInstance().sendMessage("ENDTURN");
-				break;
-			case "SAVEGAME":
-				saveGame(parsed[2]);
-				break;
-			}
-		case "UICREATOR":
-			switch (parsed[1]) {
-			case "START":
-				NetworkFacade.getInstance().startGame();
-				break;
-			case "PLAYERNAME":
-				myName = parsed[2];
-				NetworkFacade.getInstance().sendMessage("RECEIVENAME/" + parsed[2]);
-				break;
-			case "PLAYERCOLOR":
-				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVECOLOR/" + parsed[2]);
-				break;
-			case "DICE":
-				SingletonDice.getInstance().rollDice();
-				int[] dice = SingletonDice.getInstance().getFaceValues();
-				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
-				break;
-			case "LOADGAME":
-				loadGame(parsed[2]);
-				isNewGame = false;
-				break;
-			}
-		}
+		return null;
 	}
 
 	private int toInt(String string) {
 		return Integer.parseInt(string);
-	}
-
-	@Override
-	public void run() {
-		while (true) {
-			synchronized (this) {
-				if (destroy)
-					break;
-			}
-			String message = NetworkFacade.getInstance().receiveMessage();
-			System.out.println(message);
-			executeNetworkMessage(message);
-		}
 	}
 
 	public void saveGame(String savedGameFileName) {

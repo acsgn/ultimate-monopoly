@@ -243,7 +243,7 @@ public class UIScreen extends JFrame implements GameListener {
 			pieces.get(toInt(parsed[1])).isActive = true;
 			animator.startAnimator();
 			break;
-		case "JUMP":
+		case "PIECE":
 			Piece piece = new Piece();
 			piece.color = colorTable.get(parsed[1]);
 			int trackID = toInt(parsed[2]);
