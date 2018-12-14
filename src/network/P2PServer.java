@@ -17,10 +17,9 @@ public class P2PServer implements Runnable {
 
 	@Override
 	public void run() {
-		ServerSocket server;
 		boolean destroy = false;
 		try {
-			server = new ServerSocket(P2P_PORT);
+			ServerSocket server = new ServerSocket(P2P_PORT);
 			while (true) {
 				Socket s = server.accept();
 				MessageSocket mS = new MessageSocket(s);
