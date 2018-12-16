@@ -268,12 +268,28 @@ public class Player implements Serializable{
 		return this.properties;
 	}
 
+	/**
+	 * Gets the rent price of the estate square and
+	 * reduces the player's money in that amount.
+	 * @param s the square the player lands on
+	 * @return the reduceMoney function which
+	 * returns a boolean depending on the success of
+	 * the transaction
+	 */
 	public boolean payRent(Square s) {
 		int rent = ((Estate) s).getRent();
 		// publishGameEvent(message);
 		return reduceMoney(rent);
 	}
 
+	/**
+	 * Pays the bail amount to the pool and reduces
+	 * the player's money in that amount
+	 * @param amount the bail price to be paid
+	 * @return the reduceMoney function which
+	 * returns a boolean depending on the success of
+	 * the transaction
+	 */
 	public boolean payBail(int amount) {
 		Pool.getInstance().payToPool(amount);
 		return reduceMoney(amount);
@@ -335,6 +351,12 @@ public class Player implements Serializable{
 		}
 	}
 
+	/**
+	 * Reduces the money of the player in the given amount
+	 * @param m the input amount to be reduced from the money
+	 * @return true if the transaction if successful and
+	 * false if not
+	 */
 	public boolean reduceMoney(int m) {
 		if (money > m) {
 			this.money -= m;
@@ -344,6 +366,10 @@ public class Player implements Serializable{
 		return false;
 	}
 
+	/**
+	 * Increments the money of the player in the given amount
+	 * @param m the input amount to be added to the money
+	 */
 	public void increaseMoney(int m) {
 		this.money += m;
 		//updateState();
