@@ -23,12 +23,12 @@ public class MessageSocket {
 		}
 	}
 
-	protected void sendMessage(String message) {
+	public void sendMessage(String message) {
 		os.println(message);
 		os.flush();
 	}
 
-	protected String receiveMessage() {
+	public String receiveMessage() {
 		String message = "MESSAGEERROR";
 		try {
 			message = is.readLine();
@@ -38,7 +38,7 @@ public class MessageSocket {
 		return message;
 	}
 
-	protected void close() {
+	public void close() {
 		try {
 			if (is != null)
 				is.close();
@@ -51,6 +51,10 @@ public class MessageSocket {
 		} catch (IOException e) {
 			System.err.println("Socket Close Error");
 		}
+	}
+
+	public Socket getSocket() {
+		return socket;
 	}
 
 }

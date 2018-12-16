@@ -18,6 +18,10 @@ public class Server implements Runnable {
 		numberOfConnections = numOfPlayers;
 	}
 
+	public ArrayList<MessageSocket> getPlayers() {
+		return players;
+	}
+
 	@Override
 	public void run() {
 		connectPlayers();

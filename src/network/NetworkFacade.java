@@ -62,5 +62,9 @@ public class NetworkFacade {
 	public boolean isConnected() {
 		return isConnected;
 	}
+	
+	public MessageSocket getMessageSocket() {
+		return mS;
+	}
 
 }
