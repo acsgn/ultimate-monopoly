@@ -11,9 +11,12 @@ import game.TrackType;
 import game.building.Building;
 import game.building.BuildingFactory;
 import game.building.House;
+import game.card.Chance;
+import game.card.CommunityChest;
 import game.square.estate.Property;
 import game.square.estate.TitleDeed;
 import game.square.estate.TransitStation;
+import game.square.estate.Utility;
 
 public class PlayerTest {
 
@@ -149,6 +152,40 @@ public class PlayerTest {
 		int m1 = player1.getMoney();
 		assertTrue(player1.payRent(t));
 		assertTrue(player1.getMoney() < m1);
+		
+		Utility waterWorks = new Utility("Water Works");
+		waterWorks.setOwner(player1);
+		player1.getUtilitySquares().add(waterWorks);
+		int m2 = player1.getMoney();
+		assertTrue(player1.payRent(waterWorks));
+		
+		TitleDeed mediterraneanAveTD = new TitleDeed(2, 10, 30, 90, 160, 250, 750, 30, 50, 50, 50);
+		Property mediterraneanAve = new Property("Mediterranean Avenue", 60, mediterraneanAveTD);
+		player1.getProperties().add(mediterraneanAve);
+		mediterraneanAve.setOwner(player1);
+		int m3 = player1.getMoney();
+		assertTrue(player1.payRent(mediterraneanAve));
+	}
+	
+	@Test 
+	public void testPickCard(){
+		player1 = new Player(new Board());
+		Chance pt = new Chance("Property Taxes", true);
+		Property lakeStreet = new Property("Lake Street", 30, null);
+		player1.getProperties().add(lakeStreet);
+		int money = player1.getMoney();
+		player1.pickCard(pt);
+		assertEquals(player1.getMoney(), money-25);
+		
+		Chance pt_1 = new Chance("Holiday Bonus!", true);
+		int money_1 = player1.getMoney();
+		player1.pickCard(pt_1);
+		assertEquals(player1.getMoney(), money_1+100);
+		
+		CommunityChest cc = new CommunityChest("Pay Hospital Bills");
+		int money_2 = player1.getMoney();
+		player1.pickCard(cc);
+		assertEquals(player1.getMoney(), money_2-100);
 	}
 	
 	

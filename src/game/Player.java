@@ -140,6 +140,7 @@ public class Player implements Serializable{
 		location = board.getSquare(indexOnTrack, currentTrack);
 		properties = new ArrayList<>();
 		transitStations = new ArrayList<>();
+		utilities = new ArrayList<>();
 	}
 
 	public void setName(String name) {
@@ -437,6 +438,15 @@ public class Player implements Serializable{
 	}
 	public int getIndexOnTrack(){
 		return indexOnTrack;
+	}
+	
+	public boolean repOk(){
+		if(money <0 || name ==null || color == null || indexOnTrack > 56)
+			return false;
+		if(board==null)
+			return false;
+		
+		return true;
 	}
 
 }
