@@ -204,7 +204,11 @@ public class MonopolyGame implements Runnable {
 	}
 
 	/**
-	 * Parses the given string and creates an integer based on the string
+	 * @overview This function parses the given string 
+	 * and creates an integer based on the string
+	 * @requires the input to be a string of integers.
+	 * @modifies input string.
+	 * @effects
 	 * @param string the input to turn into integer
 	 * @return the integer created from the string
 	 */

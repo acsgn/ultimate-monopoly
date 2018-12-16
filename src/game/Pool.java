@@ -18,8 +18,12 @@ public class Pool {
 	}
 	
 	/**
-	 * The amount in the pool is increased by the given
-	 * amount
+	 * @overview The amount in the pool is increased by the 
+	 * given amount
+	 * @requires 
+	 * @modifies Pool's 'amount' field.
+	 * @effects Affects Player since usually a player pays the money
+	 * to pool, decreasing their money.
 	 * @param amount the given amount to increase the overall
 	 * amount in the pool
 	 */
