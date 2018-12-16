@@ -20,7 +20,6 @@ public class Discovery implements Runnable {
 
 	public Discovery() {
 		IPAddresses = new ArrayList<>();
-		IPAddresses.add(LOCALHOST);
 		broadcastList = new ArrayList<>();
 		findBroadcasts();
 	}
@@ -44,10 +43,10 @@ public class Discovery implements Runnable {
 					String message = new String(packet.getData()).trim();
 					if (message.equals(discoveryMessage)) {
 						InetAddress IP = packet.getAddress();
-						byte[] sendData = discoveryMessage.getBytes();
-						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IP, DISCOVERY_PORT);
-						socket.send(sendPacket);
 						if (!IPAddresses.contains(IP.getHostAddress())) {
+							byte[] sendData = discoveryMessage.getBytes();
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IP, DISCOVERY_PORT);
+							socket.send(sendPacket);
 							IPAddresses.add(IP.getHostAddress());
 							broadcast();
 							synchronized (this) {
