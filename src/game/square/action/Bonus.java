@@ -10,11 +10,17 @@ public class Bonus extends Action {
 	public Bonus() {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void executeWhenPassed(Player player) {
 		player.increaseMoney(passedAmount);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void executeWhenLanded(Player player) {
 		player.increaseMoney(landedAmount);

@@ -19,6 +19,9 @@ public class SingletonDice {
 		return dice;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void rollDice() {
 		regularDie1.roll();
 		regularDie2.roll();

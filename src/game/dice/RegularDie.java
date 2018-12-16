@@ -8,6 +8,9 @@ public class RegularDie extends Dice {
 	public RegularDie() {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void roll() {
 		Random rand = new Random(System.nanoTime());

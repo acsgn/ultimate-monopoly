@@ -8,6 +8,10 @@ public class GoToJail extends Action {
 	}
 
 	@Override
+	/**
+	 * Sends the player to jail
+	 * @param player the player that will go to jail
+	 */
 	public void executeWhenLanded(Player player) {
 		player.sendToJail();
 	}

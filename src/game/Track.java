@@ -15,6 +15,10 @@ public class Track {
 		this.type = type;
 	}
 
+	/**
+	 * Adds the given square to the array list squares
+	 * @param sq the square to be added to the array list
+	 */
 	public void addSquare(Square sq) {
 		squares.add(sq);
 	}

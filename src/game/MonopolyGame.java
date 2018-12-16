@@ -203,6 +203,11 @@ public class MonopolyGame implements Runnable {
 		}
 	}
 
+	/**
+	 * Parses the given string and creates an integer based on the string
+	 * @param string the input to turn into integer
+	 * @return the integer created from the string
+	 */
 	public int toInt(String string) {
 		return Integer.parseInt(string);
 	}

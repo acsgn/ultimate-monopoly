@@ -9,11 +9,17 @@ public class Go extends Action{
 	public Go() {
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void executeWhenPassed(Player player) {
 		player.increaseMoney(amount);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void executeWhenLanded(Player player) {
 		player.increaseMoney(amount);

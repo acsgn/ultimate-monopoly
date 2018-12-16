@@ -9,6 +9,10 @@ public class SpeedDie extends Dice {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void roll() {
 		Random rand = new Random();
 		faceValue = rand.nextInt(SPEED_MAX)+1;

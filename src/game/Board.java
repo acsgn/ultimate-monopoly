@@ -63,6 +63,10 @@ public class Board {
 			return innerTrack;
 	}
 
+	/**
+	 * Creates the squares on the inner track, creates title deeds for
+	 * the squares of estate type and adds all squares to the Track innerTrack
+	 */
 	public void constructInnerTrack() {
 		TitleDeed theEmbarcaderoTD = new TitleDeed(17, 85, 240, 475, 670, 1025, 1525, 105, 100, 100, 100);
 		TitleDeed fishermansWharfTD = new TitleDeed(21, 105, 320, 780, 950, 1125, 1625, 125, 100, 100, 100);
@@ -123,6 +127,10 @@ public class Board {
 		innerTrack.addSquare(lombardSt);
 	}
 
+	/**
+	 * Creates the squares on the middle track, creates title deeds for
+	 * the squares of estate type and adds all squares to the Track middleTrack
+	 */
 	public void constructMiddleTrack() {
 		TitleDeed mediterraneanAveTD = new TitleDeed(2, 10, 30, 90, 160, 250, 750, 30, 50, 50, 50);
 		TitleDeed balticAveTD = new TitleDeed(4, 20, 60, 180, 320, 450, 900, 30, 50, 50, 50);
@@ -221,6 +229,10 @@ public class Board {
 		middleTrack.addSquare(boardwalk);
 	}
 
+	/** 
+	 * Creates the squares on the outer track, creates title deeds for
+	 * the squares of estate type and adds all squares to the Track outerTrack
+	 */
 	public void constructOuterTrack() {
 
 		TitleDeed lakeStreetTD = new TitleDeed(1, 5, 15, 45, 80, 125, 625, 15, 50, 50, 50);
