@@ -19,6 +19,8 @@ public class Server implements Runnable {
 	}
 
 	public ArrayList<MessageSocket> getPlayers() {
+		// EFFECTS: Return the MessageSockets that we are
+		// using to communicate with other players.
 		return players;
 	}
 
@@ -132,4 +134,11 @@ public class Server implements Runnable {
 		return message;
 	}
 
+	public boolean repOk(){
+		if(players == null)
+			return false;
+		else 
+			return true;
+	}
+	
 }

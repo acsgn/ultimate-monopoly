@@ -26,6 +26,7 @@ public class NetworkFacadeTest {
 		}).start();
 		nF.connect("localhost");
 		assertTrue(nF.isConnected());
+		assertTrue(nF.repOk());
 	}
 
 	@Test
@@ -42,6 +43,7 @@ public class NetworkFacadeTest {
 		}).start();
 		nF.connect("localhost");
 		assertNotNull(nF.getMessageSocket());
+		assertTrue(nF.repOk());
 	}
 	
 	

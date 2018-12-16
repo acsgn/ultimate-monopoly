@@ -29,6 +29,7 @@ public class MessageSocketTest {
 		} catch (Exception e) {
 		}
 		assertEquals(mS.receiveMessage(), "TEST");
+		assertTrue(mS.repOk());
 	}
 	
 	@Test
@@ -48,6 +49,7 @@ public class MessageSocketTest {
 		}
 		mS.close();
 		assertTrue(mS.getSocket().isClosed());
+		assertTrue(mS.repOk());
 	}
 
 }

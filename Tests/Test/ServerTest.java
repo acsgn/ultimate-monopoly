@@ -15,6 +15,7 @@ public class ServerTest {
 		s = new Server(0);
 		assertTrue(s.getPlayers().isEmpty());
 		assertNotNull(s.getPlayers());
+		assertTrue(s.repOk());
 	}
 	
 }
