@@ -10,6 +10,11 @@ public class RegularDie extends Dice {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @requires
+	 * @modifies a random value is created,
+	 * faceValue is changed
+	 * @effects value for a regular dice is determined
 	 */
 	@Override
 	public void roll() {

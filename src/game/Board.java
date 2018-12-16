@@ -64,8 +64,11 @@ public class Board {
 	}
 
 	/**
-	 * Creates the squares on the inner track, creates title deeds for
+	 * @overview Creates the squares on the inner track, creates title deeds for
 	 * the squares of estate type and adds all squares to the Track innerTrack
+	 * @requires 
+	 * @modifies innerTrack
+	 * @effects squares are added to the innerTrack
 	 */
 	public void constructInnerTrack() {
 		TitleDeed theEmbarcaderoTD = new TitleDeed(17, 85, 240, 475, 670, 1025, 1525, 105, 100, 100, 100);
@@ -128,8 +131,11 @@ public class Board {
 	}
 
 	/**
-	 * Creates the squares on the middle track, creates title deeds for
+	 * @overview Creates the squares on the middle track, creates title deeds for
 	 * the squares of estate type and adds all squares to the Track middleTrack
+	 * @requires 
+	 * @modifies middleTrack
+	 * @effects squares are added to the middleTrack
 	 */
 	public void constructMiddleTrack() {
 		TitleDeed mediterraneanAveTD = new TitleDeed(2, 10, 30, 90, 160, 250, 750, 30, 50, 50, 50);
@@ -230,8 +236,11 @@ public class Board {
 	}
 
 	/** 
-	 * Creates the squares on the outer track, creates title deeds for
+	 * @overview Creates the squares on the outer track, creates title deeds for
 	 * the squares of estate type and adds all squares to the Track outerTrack
+	 * @requires 
+	 * @modifies outerTrack
+	 * @effects squares are added to the outerTrack
 	 */
 	public void constructOuterTrack() {
 

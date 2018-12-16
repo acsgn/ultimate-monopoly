@@ -7,11 +7,14 @@ public class GoToJail extends Action {
 	public GoToJail() {
 	}
 
-	@Override
 	/**
-	 * Sends the player to jail
-	 * @param player the player that will go to jail
+	 * {@inheritDoc}
+	 * 
+	 * @requires
+	 * @modifies 
+	 * @effects player is sent to jail
 	 */
+	@Override
 	public void executeWhenLanded(Player player) {
 		player.sendToJail();
 	}

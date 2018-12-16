@@ -3,7 +3,7 @@ public abstract class Dice {
 	protected int faceValue;
 
 	/**
-	 * Rolls the dice
+	 * @overview Rolls the dice
 	 */
 	public abstract void roll();
 	

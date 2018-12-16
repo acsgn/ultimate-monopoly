@@ -11,6 +11,11 @@ public class SpeedDie extends Dice {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @requires
+	 * @modifies a random value is created,
+	 * faceValue is changed
+	 * @effects value for the speed dice is determined
 	 */
 	@Override
 	public void roll() {

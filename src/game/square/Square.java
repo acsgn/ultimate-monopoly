@@ -7,14 +7,14 @@ import game.Player;
 public abstract class Square implements Serializable{
 
 	/**
-	 * This function is executed when the player passes
+	 * @overview This function is executed when the player passes
 	 * the square
 	 * @param player the player that passes the square
 	 */
 	public abstract void executeWhenPassed(Player player);
 
 	/**
-	 * This function is executed when the player lands
+	 * @overview This function is executed when the player lands
 	 * on the square
 	 * @param player the player that lands on the square
 	 */

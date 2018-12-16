@@ -21,6 +21,10 @@ public class SingletonDice {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @requires
+	 * @modifies 
+	 * @effects values for all dices are determined
 	 */
 	public void rollDice() {
 		regularDie1.roll();

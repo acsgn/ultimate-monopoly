@@ -12,14 +12,23 @@ public class Bonus extends Action {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @requires
+	 * @modifies money value is changed
+	 * @effects player's money is increased by the amount
 	 */
 	@Override
 	public void executeWhenPassed(Player player) {
 		player.increaseMoney(passedAmount);
 	}
 
+	
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @requires
+	 * @modifies money value is changed
+	 * @effects player's money is increased by the amount
 	 */
 	@Override
 	public void executeWhenLanded(Player player) {

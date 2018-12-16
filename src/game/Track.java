@@ -16,8 +16,11 @@ public class Track {
 	}
 
 	/**
-	 * Adds the given square to the array list squares
+	 * @overview Adds the given square to the array list squares
 	 * @param sq the square to be added to the array list
+	 * @requires
+	 * @modifies squares
+	 * @effects a new square is added to the array list
 	 */
 	public void addSquare(Square sq) {
 		squares.add(sq);
