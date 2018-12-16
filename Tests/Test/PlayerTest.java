@@ -7,11 +7,13 @@ import org.junit.Test;
 import game.Board;
 import game.Player;
 import game.Pool;
+import game.TrackType;
 import game.building.Building;
 import game.building.BuildingFactory;
 import game.building.House;
 import game.square.estate.Property;
 import game.square.estate.TitleDeed;
+import game.square.estate.TransitStation;
 
 public class PlayerTest {
 
@@ -24,10 +26,10 @@ public class PlayerTest {
 		player1 = new Player(new Board());
 		int playerMoney = player1.getMoney();
 		int money = 50;
-		
-		player1.reduceMoney(money);
-	
-		assertEquals(player1.getMoney(), playerMoney - money);
+		assertTrue(player1.reduceMoney(money));
+		assertEquals(player1.getMoney(), playerMoney - money);	
+		int m = 5000;
+		assertFalse(player1.reduceMoney(m));
 	}
 
 	@Test
@@ -118,6 +120,35 @@ public class PlayerTest {
 		player1.sellBuilding(b, theEmbarcadero);
 		assertTrue(s == theEmbarcadero.getBuildings().size()+1);
 		
+	}
+	@Test 
+	public void testColor(){
+		player1 = new Player(new Board());
+		player1.setColor("RED");
+		assertEquals("RED",player1.getColor());
+	}
+	@Test
+	public void testGoTo(){
+		Board b = new Board();
+		player1 = new Player(b);
+		player1.goTo(TrackType.INNER_TRACK, 3);
+		assertEquals(player1.getIndexOnTrack(),3);
+		assertEquals(player1.getCurrentTrack(),TrackType.INNER_TRACK);
+	}
+	@Test 
+	public void testGetName(){
+		player1 = new Player(new Board());
+		player1.setName("Water");
+		assertEquals("Water",player1.getName());
+	}
+	@Test
+	public void testPayRent(){
+		player1 = new Player(new Board());
+		TransitStation t = new TransitStation("Transit", TrackType.INNER_TRACK, TrackType.MIDDLE_TRACK, 4,5);
+		player1.getTransitStations().add(t);
+		int m1 = player1.getMoney();
+		assertTrue(player1.payRent(t));
+		assertTrue(player1.getMoney() < m1);
 	}
 	
 	

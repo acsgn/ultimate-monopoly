@@ -139,6 +139,7 @@ public class Player implements Serializable{
 		playerIndexCounter++;
 		location = board.getSquare(indexOnTrack, currentTrack);
 		properties = new ArrayList<>();
+		transitStations = new ArrayList<>();
 	}
 
 	public void setName(String name) {
@@ -433,6 +434,9 @@ public class Player implements Serializable{
 
 	public String getColor() {
 		return color;
+	}
+	public int getIndexOnTrack(){
+		return indexOnTrack;
 	}
 
 }
