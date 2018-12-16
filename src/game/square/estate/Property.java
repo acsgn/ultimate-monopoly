@@ -17,6 +17,7 @@ public class Property extends Estate {
 	public Property(String name, int price, TitleDeed titleDeed) {
 		super(name, price, type);
 		this.titleDeed = titleDeed;
+		buildings = new ArrayList<>();
 	}
 
 	//The rent system is prone to change

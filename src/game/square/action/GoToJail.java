@@ -9,7 +9,7 @@ public class GoToJail extends Action {
 
 	@Override
 	public void executeWhenLanded(Player player) {
-		player.setInJail();
+		player.sendToJail();
 	}
 
 	@Override

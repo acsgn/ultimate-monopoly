@@ -39,6 +39,10 @@ public class Player implements Serializable{
 		totalHouses++;
 	}
 	
+	public int getMoney(){
+		return money;
+	}
+	
 	public int getTotalTransitStations() {
 		int size = transitStations.size();
 		return size;
@@ -306,12 +310,12 @@ public class Player implements Serializable{
 		location = board.getSquare(index, track);
 	}
 
-	public boolean buyBuilding(Building building, Property Property) {
-		return false;
+	public void buyBuilding(Building building, Property Property) {
+		Property.getBuildings().add(building);
 	}
 
 	public void sellBuilding(Building building, Property Property) {
-
+		Property.getBuildings().remove(building);
 	}
 
 	public void pickCard(Card card) {
@@ -334,7 +338,7 @@ public class Player implements Serializable{
 	public boolean reduceMoney(int m) {
 		if (money > m) {
 			this.money -= m;
-			updateState();
+			//updateState();
 			return true;
 		}
 		return false;
@@ -342,7 +346,7 @@ public class Player implements Serializable{
 
 	public void increaseMoney(int m) {
 		this.money += m;
-		updateState();
+		//updateState();
 	}
 
 	public String getName() {
@@ -369,9 +373,9 @@ public class Player implements Serializable{
 		this.utilities = utilities;
 	}
 
-	public void setInJail() {
+	public void sendToJail() {
 		this.inJail = true;
-		updateState();
+		//updateState();
 	}
 
 	public void updateState() {

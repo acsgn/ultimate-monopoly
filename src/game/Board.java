@@ -54,7 +54,7 @@ public class Board {
 		return getTrack(type).getSquareIndex(sq);
 	}
 
-	private Track getTrack(TrackType type) {
+	public Track getTrack(TrackType type) {
 		if (type == outerTrack.getTrackType())
 			return outerTrack;
 		else if (type == middleTrack.getTrackType())
@@ -63,7 +63,7 @@ public class Board {
 			return innerTrack;
 	}
 
-	private void constructInnerTrack() {
+	public void constructInnerTrack() {
 		TitleDeed theEmbarcaderoTD = new TitleDeed(17, 85, 240, 475, 670, 1025, 1525, 105, 100, 100, 100);
 		TitleDeed fishermansWharfTD = new TitleDeed(21, 105, 320, 780, 950, 1125, 1625, 125, 100, 100, 100);
 		TitleDeed beaconStTD = new TitleDeed(30, 160, 470, 1050, 1250, 1500, 2500, 165, 200, 200, 200);
@@ -123,7 +123,7 @@ public class Board {
 		innerTrack.addSquare(lombardSt);
 	}
 
-	private void constructMiddleTrack() {
+	public void constructMiddleTrack() {
 		TitleDeed mediterraneanAveTD = new TitleDeed(2, 10, 30, 90, 160, 250, 750, 30, 50, 50, 50);
 		TitleDeed balticAveTD = new TitleDeed(4, 20, 60, 180, 320, 450, 900, 30, 50, 50, 50);
 		TitleDeed orientalAveTD = new TitleDeed(6, 30, 90, 270, 400, 550, 1050, 50, 50, 50, 50);
@@ -221,7 +221,7 @@ public class Board {
 		middleTrack.addSquare(boardwalk);
 	}
 
-	private void constructOuterTrack() {
+	public void constructOuterTrack() {
 
 		TitleDeed lakeStreetTD = new TitleDeed(1, 5, 15, 45, 80, 125, 625, 15, 50, 50, 50);
 		TitleDeed nicolletAveTD = new TitleDeed(1, 5, 15, 45, 80, 125, 625, 15, 50, 50, 50);

@@ -23,12 +23,12 @@ public class Chance extends Card {
 		} else {
 		
 		if (name.equals("Go to Jail!")) {
-			player.setInJail();
+			player.sendToJail();
 			player.goTo(TrackType.MIDDLE_TRACK, 10);
 		}
 		
 		if (name.equals("Advance to Saint Charles Place")) {
-			player.setInJail();
+			player.sendToJail();
 			player.goTo(TrackType.MIDDLE_TRACK, 11);
 		}
 		

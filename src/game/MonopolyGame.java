@@ -30,6 +30,10 @@ public class MonopolyGame implements Runnable {
 		players.add(currentPlayer);
 		isNewGame = true;
 	}
+	
+	public Player getCurrentPlayer(){
+		return currentPlayer;
+	}
 
 	public ArrayList<Player> getPlayers() {
 		return players;
@@ -116,7 +120,7 @@ public class MonopolyGame implements Runnable {
 		}
 	}
 
-	private void updateCurrentPlayer(String name) {
+	public void updateCurrentPlayer(String name) {
 		for (Player player : players) {
 			System.out.println(player.getName());
 			if (player.getName().equals(name)) {
@@ -199,7 +203,7 @@ public class MonopolyGame implements Runnable {
 		}
 	}
 
-	private int toInt(String string) {
+	public int toInt(String string) {
 		return Integer.parseInt(string);
 	}
 	
