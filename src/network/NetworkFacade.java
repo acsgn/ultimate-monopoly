@@ -20,16 +20,20 @@ public class NetworkFacade {
 				mS = new Client("localhost").getMessageSocket();
 			} catch (Exception e) {
 			}
+			isInitiated = true;
 		}
 	}
 
 	public void connect(String IPAddress) {
+		// REQUIRES: IPAddress of server player
+		// MODIFIES: isInitiated and mS are changed
 		if (!isInitiated) {
 			try {
 				mS = new Client(IPAddress).getMessageSocket();
 			} catch (Exception e) {
 				isConnected = false;
 			}
+			isInitiated = true;
 		}
 	}
 
@@ -60,7 +64,20 @@ public class NetworkFacade {
 	}
 
 	public boolean isConnected() {
+		// EFFECTS: If the system connected to a server
+		// it returns true, otherwise false.
 		return isConnected;
+	}
+	
+	public MessageSocket getMessageSocket() {
+		return mS;
+	}
+	
+	public boolean repOk(){
+		if(mS ==null || isInitiated == false)
+			return false;
+		else 
+			return true;
 	}
 
 }

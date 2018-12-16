@@ -18,6 +18,12 @@ public class Server implements Runnable {
 		numberOfConnections = numOfPlayers;
 	}
 
+	public ArrayList<MessageSocket> getPlayers() {
+		// EFFECTS: Return the MessageSockets that we are
+		// using to communicate with other players.
+		return players;
+	}
+
 	@Override
 	public void run() {
 		connectPlayers();
@@ -128,4 +134,11 @@ public class Server implements Runnable {
 		return message;
 	}
 
+	public boolean repOk(){
+		if(players == null)
+			return false;
+		else 
+			return true;
+	}
+	
 }

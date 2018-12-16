@@ -16,6 +16,7 @@ public class BoardTest {
 		assertEquals(b.getTrack(TrackType.INNER_TRACK).getSquareNumber(), 24);
 		assertEquals(b.getTrack(TrackType.MIDDLE_TRACK).getSquareNumber(), 40);
 		assertEquals(b.getTrack(TrackType.OUTER_TRACK).getSquareNumber(), 56);
+		assertTrue(b.repOk());
 	}
 
 }

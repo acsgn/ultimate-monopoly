@@ -17,6 +17,7 @@ public class MonopolyGameTest {
 	public void testtoInt() {
 		mg = new MonopolyGame();
 		assertEquals(mg.toInt("3"), 3);
+		assertTrue(mg.repOk());
 	}
 
 	@Test
@@ -28,6 +29,7 @@ public class MonopolyGameTest {
 		mg.getPlayers().add(player1);
 		mg.updateCurrentPlayer(player1.getName());
 		assertEquals(player1.getName(), mg.getCurrentPlayer().getName());
+		assertTrue(mg.repOk());
 	}
 
 }

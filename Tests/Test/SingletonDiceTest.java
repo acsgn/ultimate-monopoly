@@ -26,6 +26,7 @@ public class SingletonDiceTest {
 		int value1 = values2[0] * 7 + values2[1] * 13 + values2[2] * 23;
 
 		assertNotEquals(value, value1);
+		assertTrue(SingletonDice.getInstance().repOk());
 
 	}
 
@@ -51,6 +52,7 @@ public class SingletonDiceTest {
 			test = true;
 
 		assertFalse(test);
+		assertTrue(SingletonDice.getInstance().repOk());
 
 	}
 
@@ -76,6 +78,7 @@ public class SingletonDiceTest {
 			test = true;
 
 		assertFalse(test);
+		assertTrue(SingletonDice.getInstance().repOk());
 
 	}
 
