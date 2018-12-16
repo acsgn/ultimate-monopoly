@@ -7,11 +7,16 @@ import org.junit.Test;
 import game.Board;
 import game.Player;
 import game.Pool;
+import game.TrackType;
 import game.building.Building;
 import game.building.BuildingFactory;
 import game.building.House;
+import game.card.Chance;
+import game.card.CommunityChest;
 import game.square.estate.Property;
 import game.square.estate.TitleDeed;
+import game.square.estate.TransitStation;
+import game.square.estate.Utility;
 
 public class PlayerTest {
 
@@ -24,10 +29,10 @@ public class PlayerTest {
 		player1 = new Player(new Board());
 		int playerMoney = player1.getMoney();
 		int money = 50;
-		
-		player1.reduceMoney(money);
-	
-		assertEquals(player1.getMoney(), playerMoney - money);
+		assertTrue(player1.reduceMoney(money));
+		assertEquals(player1.getMoney(), playerMoney - money);	
+		int m = 5000;
+		assertFalse(player1.reduceMoney(m));
 	}
 
 	@Test
@@ -118,6 +123,69 @@ public class PlayerTest {
 		player1.sellBuilding(b, theEmbarcadero);
 		assertTrue(s == theEmbarcadero.getBuildings().size()+1);
 		
+	}
+	@Test 
+	public void testColor(){
+		player1 = new Player(new Board());
+		player1.setColor("RED");
+		assertEquals("RED",player1.getColor());
+	}
+	@Test
+	public void testGoTo(){
+		Board b = new Board();
+		player1 = new Player(b);
+		player1.goTo(TrackType.INNER_TRACK, 3);
+		assertEquals(player1.getIndexOnTrack(),3);
+		assertEquals(player1.getCurrentTrack(),TrackType.INNER_TRACK);
+	}
+	@Test 
+	public void testGetName(){
+		player1 = new Player(new Board());
+		player1.setName("Water");
+		assertEquals("Water",player1.getName());
+	}
+	@Test
+	public void testPayRent(){
+		player1 = new Player(new Board());
+		TransitStation t = new TransitStation("Transit", TrackType.INNER_TRACK, TrackType.MIDDLE_TRACK, 4,5);
+		player1.getTransitStations().add(t);
+		int m1 = player1.getMoney();
+		assertTrue(player1.payRent(t));
+		assertTrue(player1.getMoney() < m1);
+		
+		Utility waterWorks = new Utility("Water Works");
+		waterWorks.setOwner(player1);
+		player1.getUtilitySquares().add(waterWorks);
+		int m2 = player1.getMoney();
+		assertTrue(player1.payRent(waterWorks));
+		
+		TitleDeed mediterraneanAveTD = new TitleDeed(2, 10, 30, 90, 160, 250, 750, 30, 50, 50, 50);
+		Property mediterraneanAve = new Property("Mediterranean Avenue", 60, mediterraneanAveTD);
+		player1.getProperties().add(mediterraneanAve);
+		mediterraneanAve.setOwner(player1);
+		int m3 = player1.getMoney();
+		assertTrue(player1.payRent(mediterraneanAve));
+	}
+	
+	@Test 
+	public void testPickCard(){
+		player1 = new Player(new Board());
+		Chance pt = new Chance("Property Taxes", true);
+		Property lakeStreet = new Property("Lake Street", 30, null);
+		player1.getProperties().add(lakeStreet);
+		int money = player1.getMoney();
+		player1.pickCard(pt);
+		assertEquals(player1.getMoney(), money-25);
+		
+		Chance pt_1 = new Chance("Holiday Bonus!", true);
+		int money_1 = player1.getMoney();
+		player1.pickCard(pt_1);
+		assertEquals(player1.getMoney(), money_1+100);
+		
+		CommunityChest cc = new CommunityChest("Pay Hospital Bills");
+		int money_2 = player1.getMoney();
+		player1.pickCard(cc);
+		assertEquals(player1.getMoney(), money_2-100);
 	}
 	
 	
