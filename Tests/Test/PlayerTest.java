@@ -33,6 +33,7 @@ public class PlayerTest {
 		assertEquals(player1.getMoney(), playerMoney - money);	
 		int m = 5000;
 		assertFalse(player1.reduceMoney(m));
+		assertTrue(player1.repOk());
 	}
 
 	@Test
@@ -42,6 +43,7 @@ public class PlayerTest {
 		int money = 50;
 		player1.increaseMoney(money);
 		assertEquals(player1.getMoney(), playerMoney + money);
+		assertTrue(player1.repOk());
 	}
 
 	@Test
@@ -54,15 +56,20 @@ public class PlayerTest {
 		player1.payBail(money);
 		assertEquals(player1.getMoney(), playerMoney - money);
 		assertEquals(pool1.getAmount(), money);
+		assertTrue(player1.repOk());
+
 	}
 
 	@Test
 	public void testPayToPool() {
-
+		player1 = new Player(new Board());
 		pool1 = Pool.getInstance();
 		int money = 200;
 		pool1.payToPool(money);
+		//
 		assertEquals(pool1.getAmount(), money);
+		assertTrue(player1.repOk());
+
 	}
 	
 	@Test
@@ -71,7 +78,8 @@ public class PlayerTest {
 		player1 = new Player(new Board());
 		player1.addHouse();
 		assertEquals(1, player1.getTotalHouses());
-		
+		assertTrue(player1.repOk());
+
 	}
 	
 	@Test
@@ -80,7 +88,8 @@ public class PlayerTest {
 		player1 = new Player(new Board());
 		player1.addHotel();
 		assertEquals(1, player1.getTotalHotels());
-		
+		assertTrue(player1.repOk());
+
 	}
 	
 	@Test
@@ -89,7 +98,8 @@ public class PlayerTest {
 		player1 = new Player(new Board());
 		player1.addSkyscaper();
 		assertEquals(1, player1.getTotalSkyscrapers());
-		
+		assertTrue(player1.repOk());
+
 	}
 	
 	@Test
@@ -98,7 +108,8 @@ public class PlayerTest {
 		player1 = new Player(new Board());
 		player1.sendToJail();
 		assertTrue(player1.isInJail());
-		
+		assertTrue(player1.repOk());
+
 	}
 	@Test
 	public void testbuyBuilding() {
@@ -109,7 +120,8 @@ public class PlayerTest {
 		Property theEmbarcadero = new Property("The Embarcadero", 210, theEmbarcaderoTD);
 		player1.buyBuilding(b, theEmbarcadero);
 		assertTrue( theEmbarcadero.getBuildings().size()==1 &&  theEmbarcadero.getBuildings().get(0) instanceof House);
-		
+		assertTrue(player1.repOk());
+
 	}
 	
 	@Test
@@ -122,13 +134,16 @@ public class PlayerTest {
 		int s = theEmbarcadero.getBuildings().size();
 		player1.sellBuilding(b, theEmbarcadero);
 		assertTrue(s == theEmbarcadero.getBuildings().size()+1);
-		
+		assertTrue(player1.repOk());
+
 	}
 	@Test 
 	public void testColor(){
 		player1 = new Player(new Board());
 		player1.setColor("RED");
 		assertEquals("RED",player1.getColor());
+		assertTrue(player1.repOk());
+
 	}
 	@Test
 	public void testGoTo(){
@@ -137,12 +152,15 @@ public class PlayerTest {
 		player1.goTo(TrackType.INNER_TRACK, 3);
 		assertEquals(player1.getIndexOnTrack(),3);
 		assertEquals(player1.getCurrentTrack(),TrackType.INNER_TRACK);
+		assertTrue(player1.repOk());
 	}
 	@Test 
 	public void testGetName(){
 		player1 = new Player(new Board());
 		player1.setName("Water");
 		assertEquals("Water",player1.getName());
+		assertTrue(player1.repOk());
+
 	}
 	@Test
 	public void testPayRent(){
@@ -165,6 +183,9 @@ public class PlayerTest {
 		mediterraneanAve.setOwner(player1);
 		int m3 = player1.getMoney();
 		assertTrue(player1.payRent(mediterraneanAve));
+		
+		assertTrue(player1.repOk());
+
 	}
 	
 	@Test 
@@ -186,6 +207,8 @@ public class PlayerTest {
 		int money_2 = player1.getMoney();
 		player1.pickCard(cc);
 		assertEquals(player1.getMoney(), money_2-100);
+		
+		assertTrue(player1.repOk());
 	}
 	
 	

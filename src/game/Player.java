@@ -451,7 +451,7 @@ public class Player implements Serializable{
 	}
 	
 	public boolean repOk(){
-		if(money <0 || name ==null || color == null || indexOnTrack > 56)
+		if(money <0 || indexOnTrack > 56)
 			return false;
 		if(board==null)
 			return false;

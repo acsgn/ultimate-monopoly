@@ -32,8 +32,14 @@ public class SingletonDice {
 		int[] diceRolls = new int[3];
 		diceRolls[0] = regularDie1.getFaceValue();
 		diceRolls[1] = regularDie2.getFaceValue();
-		diceRolls[2]= speedDie.getFaceValue();
+		diceRolls[2] = speedDie.getFaceValue();
 		return diceRolls;
+	}
+
+	public boolean repOk() {
+		if (speedDie == null || regularDie1 == null || regularDie2 == null)
+			return false;
+		return true;
 	}
 
 }

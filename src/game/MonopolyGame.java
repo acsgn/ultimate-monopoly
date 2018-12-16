@@ -290,5 +290,12 @@ public class MonopolyGame implements Runnable {
 			ex.printStackTrace();
 		}
 	}
+	
+	public boolean repOk(){
+		if(currentPlayer==null ||players==null ||players.size()==0 )
+			return false;
+		
+		return true;
+	}
 
 }

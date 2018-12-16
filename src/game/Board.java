@@ -363,5 +363,11 @@ public class Board {
 		outerTrack.addSquare(chance);
 		outerTrack.addSquare(rodeoDr);
 	}
+	
+	public boolean repOk(){
+		if(innerTrack == null || middleTrack ==null || outerTrack == null)
+			return false;
+		return true;
+	}
 
 }
