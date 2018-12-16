@@ -326,10 +326,20 @@ public class Player implements Serializable{
 		location = board.getSquare(index, track);
 	}
 
+	/**
+	 * Adds the building to the property chosen
+	 * @param building the building to be added to the property
+	 * @param Property the property that will get the building
+	 */
 	public void buyBuilding(Building building, Property Property) {
 		Property.getBuildings().add(building);
 	}
 
+	/**
+	 * Removes the building from the property chosen
+	 * @param building the building that will be removed from the property
+	 * @param Property the property that will have its building removed
+	 */
 	public void sellBuilding(Building building, Property Property) {
 		Property.getBuildings().remove(building);
 	}
