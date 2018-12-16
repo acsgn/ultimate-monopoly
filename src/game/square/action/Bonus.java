@@ -21,7 +21,6 @@ public class Bonus extends Action {
 	public void executeWhenPassed(Player player) {
 		player.increaseMoney(passedAmount);
 	}
-
 	
 	/**
 	 * {@inheritDoc}
