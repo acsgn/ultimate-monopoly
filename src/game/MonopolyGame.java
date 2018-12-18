@@ -149,6 +149,7 @@ public class MonopolyGame implements Runnable {
 			if (!checkedPlayers.contains(player))
 				checkedPlayers.add(player);
 			if (checkedPlayers.size() == numOfPlayers) {
+				System.out.println(numOfPlayers);
 				for (Player p : players)
 					if (!checkedPlayers.contains(p)) {
 						p.endGame();
@@ -201,7 +202,8 @@ public class MonopolyGame implements Runnable {
 				players.clear();
 				for (Player p : tmp)
 					players.add(p);
-				if (players.peek().getName().equals(myName))
+				currentPlayer = players.poll();
+				if (currentPlayer.getName().equals(myName))
 					Controller.getInstance().publishGameEvent("PLAY");
 				Controller.getInstance().publishGameEvent("START");
 			}

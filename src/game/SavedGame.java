@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class SavedGame implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private ConcurrentLinkedDeque<Player> players;
 	private Player currentPlayer;
 	private int order;

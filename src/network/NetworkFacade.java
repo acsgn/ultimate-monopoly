@@ -76,7 +76,7 @@ public class NetworkFacade implements Runnable {
 	public void endGame() {
 		destroy = true;
 		try {
-			P2PClient c = new P2PClient(IPAddresses.get(0));
+			P2PClient c = new P2PClient("localhost");
 			MessageSocket mS = c.getMessageSocket();
 			mS.sendMessage("CLOSE");
 			mS.close();
@@ -103,6 +103,7 @@ public class NetworkFacade implements Runnable {
 					if (someoneDisconnected) {
 						sendMessage(playerCountMessage + IPAddresses.size());
 						sendMessage(playerCheckMessage);
+						someoneDisconnected = false;
 					}
 				}
 				isChecking = true;

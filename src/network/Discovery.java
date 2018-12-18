@@ -11,7 +11,6 @@ import java.util.Enumeration;
 
 public class Discovery implements Runnable {
 
-	private final String LOCALHOST = "localhost";
 	private final int DISCOVERY_PORT = 3021;
 	private boolean destroy = false;
 	private volatile ArrayList<String> IPAddresses;

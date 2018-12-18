@@ -17,22 +17,21 @@ public class P2PServer implements Runnable {
 
 	@Override
 	public void run() {
-		boolean destroy = false;
 		try {
 			ServerSocket server = new ServerSocket(P2P_PORT);
 			while (true) {
 				Socket s = server.accept();
 				MessageSocket mS = new MessageSocket(s);
 				String message = mS.receiveMessage();
-				if(message.equals("CLOSE"))
-					destroy = true;
+				if (message.equals("CLOSE")) {
+					mS.close();
+					break;
+				}
 				messages.add(message);
 				synchronized (this) {
 					notify();
 				}
 				mS.close();
-				if(destroy)
-					break;
 			}
 			server.close();
 		} catch (IOException e) {

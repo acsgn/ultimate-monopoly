@@ -11,7 +11,8 @@ import game.square.Square;
 import game.square.estate.*;
 
 public class Player implements Serializable{
-
+	private static final long serialVersionUID = 1L;
+	
 	private static final int BEGIN_MONEY = 3200;
 	private static final TrackType BEGIN_TRACK = TrackType.MIDDLE_TRACK;
 	private static final int BEGIN_INDEX = 0;
