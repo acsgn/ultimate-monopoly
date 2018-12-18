@@ -192,6 +192,10 @@ public class MonopolyGame implements Runnable {
 		case "RECEIVEDICE":
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
 			if (++numOfDiceReceived == numOfPlayers) {
+				for(Player p: players) {
+					System.out.println(p.getName());
+				}
+				System.out.println(players);
 				Player[] tmp = new Player[players.size()];
 				Arrays.sort(players.toArray(tmp), new Comparator<Player>() {
 					@Override
@@ -199,10 +203,17 @@ public class MonopolyGame implements Runnable {
 						return Integer.compare(p2.getInitialDiceOrder(), p1.getInitialDiceOrder());
 					}
 				});
-				players.clear();
-				for (Player p : tmp)
+				for(Player p: players) {
+					System.out.println(p.getName());
+				}
+				System.out.println(players);
+				for (Player p : tmp) {
 					players.add(p);
+					players.poll();
+				}
+				System.out.println(players);
 				currentPlayer = players.poll();
+				players.add(currentPlayer);
 				if (currentPlayer.getName().equals(myName))
 					Controller.getInstance().publishGameEvent("PLAY");
 				Controller.getInstance().publishGameEvent("START");
@@ -218,8 +229,11 @@ public class MonopolyGame implements Runnable {
 	}
 
 	private Player findPlayer(String name) {
+		System.out.println(players);
 		for (Player player : players) {
+			System.out.println(player);
 			if (player.getName().equals(name)) {
+				System.out.println(name);
 				return player;
 			}
 		}

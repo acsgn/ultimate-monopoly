@@ -1,14 +1,14 @@
 package network;
 
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class NetworkFacade implements Runnable {
 
 	private static NetworkFacade self;
 	private static final int checkRate = 5000;
 
-	private CopyOnWriteArrayList<String> IPAddresses;
+	private ConcurrentLinkedQueue<String> IPAddresses;
 	private Discovery discovery;
 	private P2PServer p2p;
 	private boolean isDiscovering = true;
@@ -21,7 +21,7 @@ public class NetworkFacade implements Runnable {
 	private String playerCheckMessage = "PLAYERCHECK";
 
 	private NetworkFacade() {
-		IPAddresses = new CopyOnWriteArrayList<String>();
+		IPAddresses = new ConcurrentLinkedQueue<String>();
 	}
 
 	public void startNetwork() {
@@ -109,7 +109,6 @@ public class NetworkFacade implements Runnable {
 				isChecking = true;
 			} catch (InterruptedException e) {
 			}
-
 		}
 	}
 }
