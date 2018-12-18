@@ -11,7 +11,6 @@ public class MessageSocket {
 	private Socket socket;
 	private BufferedReader is;
 	private PrintWriter os;
-	protected int diceValue = 0;
 
 	public MessageSocket(Socket s) {
 		this.socket = s;
@@ -49,10 +48,8 @@ public class MessageSocket {
 				is.close();
 			if (os != null)
 				os.close();
-			if (socket != null) {
+			if (socket != null)
 				socket.close();
-				System.out.println("Socket Closed");
-			}
 		} catch (IOException e) {
 			System.err.println("Socket Close Error");
 		}

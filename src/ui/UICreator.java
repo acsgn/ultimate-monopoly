@@ -21,21 +21,22 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import game.Controller;
+import game.GameListener;
 
-public class UICreator extends JFrame {
+public class UICreator extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
 	private static final String ultimateMonopoly = "resources/ultimate_monopoly.jpg";
 
 	private String message = "UICREATOR/";
+	private JTextField IPTextField;
 
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 	private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-	private int chooserVal = 121754780;
+	private int chooserVal = -1;
 
 	/**
 	 * Create the frame.
 	 * 
-	 * @param controller
 	 */
 	public UICreator() {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
@@ -95,29 +96,14 @@ public class UICreator extends JFrame {
 		IPLabel.setBounds(35, 10, 130, 20);
 		IPPanel.add(IPLabel);
 
-		JTextField IPTextField = new JTextField();
+		IPTextField = new JTextField("1");
 		IPTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		IPTextField.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		IPTextField.setBounds(0, 35, 200, 30);
+		IPTextField.setEditable(false);
 		IPPanel.add(IPTextField);
 
 		getContentPane().add(IPPanel);
-
-		serverButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				slider.setEnabled(true);
-				IPTextField.setEnabled(false);
-			}
-		});
-
-		clientButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				slider.setEnabled(false);
-				IPTextField.setEnabled(true);
-			}
-		});
 
 		JLabel playerNameLabel = new JLabel("Player Name:");
 		playerNameLabel.setBounds(435, 260, 130, 20);
@@ -169,65 +155,40 @@ public class UICreator extends JFrame {
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String networkMessage;
-				if (buttonGroup.isSelected(serverButton.getModel()))
-					networkMessage = "SERVER/" + slider.getValue();
-				else {
-					String IP = IPTextField.getText();
-					if (isLegitIP(IP))
-						networkMessage = "CLIENT/" + IP;
-					else {
-						JOptionPane.showMessageDialog(UICreator.this,
-								"Please enter a valid IP Address (e.g. 192.168.1.2) !", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						return;
+				if (Integer.parseInt(IPTextField.getText()) > 1) {
+					if (chooserVal != JFileChooser.APPROVE_OPTION) {
+						String name = playerNameField.getText();
+						if (name.isEmpty()) {
+							JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						Controller.getInstance().dispatchMessage(message + "START");
+						Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
+						Controller.getInstance()
+								.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
+						Controller.getInstance().dispatchMessage(message + "DICE");
 					}
-				}
-				if (chooserVal != JFileChooser.APPROVE_OPTION ) {
-					String name = playerNameField.getText();
-					if (name.isEmpty()) {
-						JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
-					Controller.getInstance()
-							.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
-				}
-				Controller.getInstance().dispatchMessage(message + networkMessage);
-
-			}
-
-			private boolean isLegitIP(String IP) {
-				if (IP.equals("localhost"))
-					return true;
-				String[] areas = IP.split("\\.");
-				if (areas.length != 4)
-					return false;
-				for (String ip : areas) {
-					int number = 0;
-					try {
-						number = Integer.parseInt(ip);
-					} catch (NumberFormatException numberException) {
-						return false;
-					}
-					if (number < 0 || number > 255) {
-						return false;
-					}
-				}
-				return true;
+					// Should handle load game in here
+				} else
+					JOptionPane.showMessageDialog(UICreator.this, "You need at least 2 players to play!", "Error",
+							JOptionPane.ERROR_MESSAGE);
 			}
 		});
 
 	}
 
-	public void close() {
-		dispose();
-	}
-
-	public void serverNotFound() {
-		JOptionPane.showMessageDialog(UICreator.this, "No server found on given IP Address!", "Error",
-				JOptionPane.ERROR_MESSAGE);
+	@Override
+	public void onGameEvent(String message) {
+		String[] parsed = message.split("/");
+		switch (parsed[0]) {
+		case "PLAYERCOUNT":
+			IPTextField.setText(parsed[1]);
+			break;
+		case "START":
+			dispose();
+			break;
+		}
 	}
 
 	private Hashtable<Integer, JLabel> createLabelTable() {

@@ -222,15 +222,14 @@ public class UIScreen extends JFrame implements GameListener {
 		return controlPaneHeight - (i * controlPaneButtonHeight + i * controlPaneYSpace);
 	}
 
-	public void start() {
-		controller.dispatchMessage("UISCREEN/START");
-		setVisible(true);
-	}
-
 	@Override
 	public void onGameEvent(String message) {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
+		case "START":
+			controller.dispatchMessage("UISCREEN/START");
+			setVisible(true);
+			break;
 		case "ACTION":
 			infoText.insert(parsed[1], 0);
 			break;
@@ -241,10 +240,10 @@ public class UIScreen extends JFrame implements GameListener {
 		case "MOVE":
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
 			pieces.get(toInt(parsed[1])).path = path;
-			board.indexOfPiece = toInt(parsed[1]);
+			pieces.get(toInt(parsed[1])).isActive = true;
 			animator.startAnimator();
 			break;
-		case "MOVE2":
+		case "JUMP":
 			int[] point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 			pieces.get(toInt(parsed[1])).lastPoint = new Point(point[0], point[1]);
 			repaint();
@@ -286,22 +285,22 @@ public class UIScreen extends JFrame implements GameListener {
 		private Path path;
 		private Point lastPoint;
 		private Color color;
+		private boolean isActive = false;
 
 		public Piece() {
-		}
-
-		public void paintOneTime(Graphics g) {
-			g.setColor(color);
-			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 		}
 
 		public void paint(Graphics g) {
 			g.setColor(color);
 			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
-			if (path != null && path.hasMoreSteps()) {
-				lastPoint = path.nextPosition();
-			} else
-				animator.stopAnimator();
+			if (isActive) {
+				if (path != null && path.hasMoreSteps())
+					lastPoint = path.nextPosition();
+				else {
+					animator.stopAnimator();
+					isActive = false;
+				}
+			}
 		}
 
 	}
@@ -309,16 +308,11 @@ public class UIScreen extends JFrame implements GameListener {
 	private class JBoard extends JLabel {
 		private static final long serialVersionUID = 1L;
 
-		private int indexOfPiece;
-
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
-			for (int i = 0; i < pieces.size(); i++) {
-				if (i == indexOfPiece)
-					pieces.get(i).paint(g);
-				else
-					pieces.get(i).paintOneTime(g);
+			for (Piece piece : pieces) {
+				piece.paint(g);
 			}
 		}
 	}

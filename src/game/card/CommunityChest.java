@@ -7,6 +7,7 @@ import game.TrackType;
 import java.util.*;
 
 import game.building.*;
+import game.dice.SingletonDice;
 import game.square.estate.*;
 
 public class CommunityChest extends Card {
@@ -69,7 +70,7 @@ public class CommunityChest extends Card {
 		// ref: card "Be Kind, Rewind"
 		else if (name.equalsIgnoreCase("Be Kind, Rewind")) {
 			
-			int[] dice = player.rollDice();
+			int[] dice = SingletonDice.getInstance().getFaceValues();
 			dice[0] = -dice[0];
 			dice[1] = -dice[1];
 			

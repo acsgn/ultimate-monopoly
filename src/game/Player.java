@@ -2,21 +2,18 @@ package game;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import game.building.Building;
-import game.card.ActionCards;
 import game.card.Card;
 import game.card.Chance;
 import game.card.CommunityChest;
 import game.card.RollThree;
-import game.dice.SingletonDice;
 import game.square.Square;
 import game.square.estate.*;
-import network.NetworkFacade;
 
 public class Player implements Serializable{
-
+	private static final long serialVersionUID = 1L;
+	
 	private static final int BEGIN_MONEY = 3200;
 	private static final TrackType BEGIN_TRACK = TrackType.MIDDLE_TRACK;
 	private static final int BEGIN_INDEX = 0;
@@ -26,6 +23,7 @@ public class Player implements Serializable{
 	private String name;
 	private String color;
 	private int playerIndex;
+	private int initialDiceOrder;
 	private int money;
 
 	private ArrayList<Chance> ChanceCards;
@@ -130,8 +128,9 @@ public class Player implements Serializable{
 
 	private String message;
 
-	public Player(Board board) {
+	public Player(Board board, String name) {
 		this.board = board;
+		this.name = name;
 		money = BEGIN_MONEY;
 		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
@@ -142,11 +141,9 @@ public class Player implements Serializable{
 		transitStations = new ArrayList<>();
 		utilities = new ArrayList<>();
 	}
-
-	public void setName(String name) {
-		this.name = name;
-		message = "NAME/" + name;
-		publishGameEvent(message);
+	
+	public String getName() {
+		return name;
 	}
 
 	public void setColor(String color) {
@@ -163,9 +160,10 @@ public class Player implements Serializable{
 		publishGameEvent(message);
 	}
 
-	public void play() {
-		int[] diceRolls = rollDice();
+	public void play(int[] diceRolls) {
+		sendColor();
 		message = "ACTION/";
+		message += name+" rolled:";
 		message += "Regular Die 1: " + diceRolls[0] + "\n";
 		message += "Regular Die 2: " + diceRolls[1] + "\n";
 		if (diceRolls[2] == 4) {
@@ -177,21 +175,13 @@ public class Player implements Serializable{
 		}
 		publishGameEvent(message);
 		move(diceRolls);
-		NetworkFacade.getInstance()
-		.sendMessageToOthers(this.name + "/MOVE/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 		updateState();
 		location.executeWhenLanded(this);
-	}
-
-	public int[] rollDice() {
-		SingletonDice.getInstance().rollDice();
-		return SingletonDice.getInstance().getFaceValues();
 	}
 
 	public void move(int[] diceRolls) {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
-		sendColor();
 		int sum = diceRolls[0] + diceRolls[1];
 
 		Square newLocation = location;
@@ -266,7 +256,7 @@ public class Player implements Serializable{
 		return isBankrupt;
 	}
 
-	public List<Property> getProperties() {
+	public ArrayList<Property> getProperties() {
 		return this.properties;
 	}
 
@@ -309,23 +299,28 @@ public class Player implements Serializable{
 	}
 
 	public boolean buySquare() {
-		if (location instanceof Property) {
-			Property property = (Property) location;
-			if (property.getOwner() == null) {
-				property.setOwner(this);
-				reduceMoney(property.getPrice());
-				properties.add(property);
-				message = "ACTION/" + property.getName() + " is bought by " + this.getName() + "\n";
+		if (location instanceof Estate) {
+			Estate estate = (Estate) location;
+			if (estate.getOwner() == null) {
+				estate.setOwner(this);
+				reduceMoney(estate.getPrice());
+				if(estate instanceof Property)
+					properties.add((Property) estate);
+				else if (estate instanceof TransitStation)
+					transitStations.add((TransitStation) estate);
+				else if (estate instanceof Utility)
+					utilities.add((Utility) estate);
+				message = "ACTION/" + estate.getName() + " is bought by " + name + "\n";
 				publishGameEvent(message);
 				updateState();
 				return true;
 			} else {
-				message = "ACTION/" + "Property: is owned by " + property.getOwner().getName() + "\n";
+				message = "ACTION/" + "This square is owned by " + estate.getOwner().name + "\n";
 				publishGameEvent(message);
 				return false;
 			}
 		} else {
-			message = "ACTION/" + "Sale Failed. It's not a property Square";
+			message = "ACTION/" + "You can not own this square!";
 			publishGameEvent(message);
 			return false;
 		}
@@ -413,10 +408,6 @@ public class Player implements Serializable{
 		//updateState();
 	}
 
-	public String getName() {
-		return name;
-	}
-
 	public void setProperties(ArrayList<Property> properties) {
 		this.properties = properties;
 	}
@@ -429,7 +420,7 @@ public class Player implements Serializable{
 		this.transitStations = transitStations;
 	}
 
-	public List<Utility> getUtilitySquares() {
+	public ArrayList<Utility> getUtilitySquares() {
 		return utilities;
 	}
 
@@ -452,8 +443,6 @@ public class Player implements Serializable{
 			message += i + "- " + property.getName() + "/";
 			i++;
 		}
-		publishGameEvent(message);
-		NetworkFacade.getInstance().sendMessageToOthers(name + "/UPDATESTATE/" + message);
 	}
 
 	public void setGoAnyWhere() {
@@ -463,10 +452,20 @@ public class Player implements Serializable{
 	public void endGame() {
 		message = "REMOVEPIECE/"+playerIndex;
 		publishGameEvent(message);
+		message = "ACTION/" + name + " left the game.";
+		publishGameEvent(message);
 	}
 
 	public void publishGameEvent(String message) {
 		Controller.getInstance().publishGameEvent(message);
+	}
+
+	public int getInitialDiceOrder() {
+		return initialDiceOrder;
+	}
+
+	public void setInitialDiceOrder(int initialDiceOrder) {
+		this.initialDiceOrder = initialDiceOrder;
 	}
 
 	public String getColor() {

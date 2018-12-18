@@ -1,6 +1,5 @@
 package game;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class Controller {
@@ -18,7 +17,7 @@ public class Controller {
 		monopolyGame.executeMessage(message);
 	}
 
-	public void initialize(MonopolyGame monopolyGame) {
+	public void setGame(MonopolyGame monopolyGame) {
 		this.monopolyGame = monopolyGame;
 	}	
 

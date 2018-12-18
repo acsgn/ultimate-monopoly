@@ -1,133 +1,51 @@
 package game;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import game.card.ActionCards;
 import game.card.Card;
+import game.dice.SingletonDice;
 import network.NetworkFacade;
-import ui.UIFacade;
 
 public class MonopolyGame implements Runnable {
-	private boolean start = false;
-	private boolean destroy = false;
-	private volatile ArrayList<Player> players;
-	private volatile Player currentPlayer;
-	private Board board;
+
+	private ConcurrentLinkedDeque<Player> players;
+	private ConcurrentLinkedDeque<Player> checkedPlayers;
+	private Player currentPlayer;
+
+	private String myName;
+	private int numOfPlayers = 0;
+	private int numOfDiceReceived = 0;
 	private int order;
 	private boolean isNewGame;
-	
+	private Board board;
+	private boolean destroy = false;
 
 	public MonopolyGame() {
 		board = new Board();
-		players = new ArrayList<>();
-		currentPlayer = new Player(board);
-		players.add(currentPlayer);
+		players = new ConcurrentLinkedDeque<Player>();
+		checkedPlayers = new ConcurrentLinkedDeque<Player>();
 		isNewGame = true;
+		NetworkFacade.getInstance().startNetwork();
+		new Thread(this, "Game").start();
 	}
-	
-	public Player getCurrentPlayer(){
+
+	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
 
-	public ArrayList<Player> getPlayers() {
+	public ConcurrentLinkedDeque<Player> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(ArrayList<Player> players) {
+	public void setPlayers(ConcurrentLinkedDeque<Player> players) {
 		this.players = players;
-	}
-
-	public void executeNetworkMessage(String[] parsed) {
-		if (parsed[0].equals("SENDDICE")) {
-			if (isNewGame) {
-				int[] dice = currentPlayer.rollDice();
-				NetworkFacade.getInstance().sendMessageToOthers((dice[0] + dice[1]) + "");
-			} else {
-				NetworkFacade.getInstance().sendMessageToOthers(players.size() - order + "");
-			}
-			return;
-		} else if (parsed[0].equals("SENDNAME")) {
-			NetworkFacade.getInstance().sendMessageToOthers(players.get(0).getName());
-			return;
-		} else if (parsed[0].equals("SENDCOLOR")) {
-			NetworkFacade.getInstance().sendMessageToOthers(players.get(0).getColor());
-			return;
-		} else if (parsed[0].equals("RECEIVENAME")) {
-			if (isNewGame) {
-				if (!parsed[1].equals(players.get(0).getName())) {
-
-					Player newPlayer = new Player(board);
-					newPlayer.setName(parsed[1]);
-					players.add(newPlayer);
-
-				} else {
-					// This is the current player order in playing.
-					order = players.size() - 1;
-				}
-			}
-			return;
-		} else if (parsed[0].equals("ALLDONE")) {
-			UIFacade.getInstance().connectionDone();
-			return;
-		} else if (parsed[0].equals("PAUSE")) {
-			pause();
-			return;
-		}	else if (parsed[0].equals("RESUME")) {
-			resume();
-			return;
-		}
-		updateCurrentPlayer(parsed[0]);
-		switch (parsed[1]) {
-		case "MOVE":
-			int[] diceRolls = new int[3];
-			diceRolls[0] = toInt(parsed[2]);
-			diceRolls[1] = toInt(parsed[3]);
-			diceRolls[2] = toInt(parsed[4]);
-			currentPlayer.move(diceRolls);
-			break;
-		case "BUYESTATE":
-			currentPlayer.buySquare();
-			break;
-		case "CARD":
-			Card card;
-			if (toInt(parsed[2]) == 0)
-				card = ActionCards.getInstance().getChanceCard();
-			else
-				card = ActionCards.getInstance().getCommunityChestCard();
-			currentPlayer.pickCard(card);
-			break;
-		case "RECEIVECOLOR":
-			currentPlayer.setColor(parsed[2]);
-			break;
-		case "UPDATESTATE":
-			String message = "";
-			for (int i = 2; i < parsed.length; i++) {
-				message += parsed[i] + "/";
-			}
-			currentPlayer.publishGameEvent(message);
-			break;
-		case "ENDGAME":
-			currentPlayer.endGame();
-			players.remove(currentPlayer);
-			Controller.getInstance().dispatchMessage("ACTION/" + currentPlayer.getName() + " left the game.");
-			break;
-		}
-	}
-
-	public void updateCurrentPlayer(String name) {
-		for (Player player : players) {
-			System.out.println(player.getName());
-			if (player.getName().equals(name)) {
-				currentPlayer = player;
-				break;
-			}
-		}
 	}
 
 	public void executeMessage(String message) {
@@ -141,59 +59,48 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "PAUSE":
 				pause();
-				NetworkFacade.getInstance().sendMessageToOthers("PAUSE");
+				NetworkFacade.getInstance().sendMessage("PAUSE");
 				break;
 			case "RESUME":
-				NetworkFacade.getInstance().sendMessageToOthers("RESUME");
+				NetworkFacade.getInstance().sendMessage("RESUME");
 				break;
 			case "ROLLDICE":
-				currentPlayer.play();
+				SingletonDice.getInstance().rollDice();
+				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
+				NetworkFacade.getInstance()
+						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				break;
 			case "ENDGAME":
-				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/ENDGAME");
 				destroy = true;
+				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");
 				break;
 			case "BUYPROPERTY":
-				currentPlayer.buySquare();
-				NetworkFacade.getInstance().sendMessageToOthers(currentPlayer.getName() + "/BUYESTATE");
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYESTATE");
 				break;
 			case "ENDTURN":
-				NetworkFacade.getInstance().sendMessageToOthers("ENDTURN");
-				synchronized (this) {
-					start = true;
-					notify();
-				}
+				NetworkFacade.getInstance().sendMessage("ENDTURN");
 				break;
 			case "SAVEGAME":
 				saveGame(parsed[2]);
 				break;
 			}
+			break;
 		case "UICREATOR":
 			switch (parsed[1]) {
+			case "START":
+				NetworkFacade.getInstance().startGame();
+				break;
 			case "PLAYERNAME":
-				currentPlayer.setName(parsed[2]);
+				myName = parsed[2];
+				NetworkFacade.getInstance().sendMessage("RECEIVENAME/" + parsed[2]);
 				break;
 			case "PLAYERCOLOR":
-				currentPlayer.setColor(parsed[2]);
-				currentPlayer.sendColor();
+				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVECOLOR/" + parsed[2]);
 				break;
-			case "SERVER":
-				NetworkFacade.getInstance().connect(Integer.parseInt(parsed[2]));
-				synchronized (this) {
-					start = true;
-					notify();
-				}
-				break;
-			case "CLIENT":
-				NetworkFacade.getInstance().connect(parsed[2]);
-				if (!NetworkFacade.getInstance().isConnected()) {
-					UIFacade.getInstance().connectionError();
-					break;
-				}
-				synchronized (this) {
-					start = true;
-					notify();
-				}
+			case "DICE":
+				SingletonDice.getInstance().rollDice();
+				int[] dice = SingletonDice.getInstance().getFaceValues();
+				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
 				break;
 			case "LOADGAME":
 				loadGame(parsed[2]);
@@ -204,8 +111,8 @@ public class MonopolyGame implements Runnable {
 	}
 
 	/**
-	 * @overview This function parses the given string 
-	 * and creates an integer based on the string
+	 * @overview This function parses the given string and creates an integer based
+	 *           on the string
 	 * @requires the input to be a string of integers.
 	 * @modifies input string.
 	 * @effects
@@ -215,11 +122,11 @@ public class MonopolyGame implements Runnable {
 	public int toInt(String string) {
 		return Integer.parseInt(string);
 	}
-	
+
 	private void resume() {
 		Controller.getInstance().publishGameEvent("RESUME");
 	}
-	
+
 	private void pause() {
 		Controller.getInstance().publishGameEvent("PAUSE");
 	}
@@ -227,27 +134,143 @@ public class MonopolyGame implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
-			try {
-				synchronized (this) {
-					if (!start)
-						wait();
-					if (destroy)
-						break;
-				}
-				if (start) {
-					String message = NetworkFacade.getInstance().receiveMessage();
-					String[] parsed = message.split("/");
-					while (!parsed[0].equals("PLAY")) {
-						executeNetworkMessage(parsed);
-						message = NetworkFacade.getInstance().receiveMessage();
-						parsed = message.split("/");
+			synchronized (this) {
+				if (destroy)
+					break;
+			}
+			String message = NetworkFacade.getInstance().receiveMessage();
+			System.out.println(message);
+			executeNetworkMessage(message);
+		}
+	}
+
+	public void executeNetworkMessage(String message) {
+		if (message.equals("ENDTURN")) {
+			currentPlayer = players.poll();
+			players.add(currentPlayer);
+			if (currentPlayer.getName().equals(myName))
+				Controller.getInstance().publishGameEvent("PLAY");
+			return;
+		} else if (message.equals("CONNECTIVITYCHECK"))
+			return;
+		else if (message.equals("PLAYERCHECK")) {
+			NetworkFacade.getInstance().sendMessage("CHECK/" + myName);
+			return;
+		} else if (message.equals("DISCONNECTED")) {
+			Controller.getInstance().publishGameEvent("YOUDISCONNECTED");
+			return;
+		}
+		String[] parsed = message.split("/");
+		if (parsed[0].equals("PLAYERCOUNT")) {
+			numOfPlayers = toInt(parsed[1]);
+			Controller.getInstance().publishGameEvent(message);
+			return;
+		} else if (parsed[0].equals("RECEIVENAME")) {
+			if (isNewGame) {
+				Player newPlayer = new Player(board, parsed[1]);
+				players.add(newPlayer);
+			} else {
+				// This is the current player order in playing.
+				order = players.size() - 1;
+			}
+			return;
+		} else if (parsed[0].equals("CONNECTIVITYPLAYERCOUNT")) {
+			numOfPlayers = toInt(parsed[1]);
+			return;
+		} else if (parsed[0].equals("CHECK")) {
+			Player player = findPlayer(parsed[1]);
+			if (!checkedPlayers.contains(player))
+				checkedPlayers.add(player);
+			if (checkedPlayers.size() == numOfPlayers) {
+				System.out.println(numOfPlayers);
+				for (Player p : players)
+					if (!checkedPlayers.contains(p)) {
+						p.endGame();
+						players.remove(p);
 					}
-					currentPlayer = players.get(0);
-					currentPlayer.publishGameEvent("PLAY");
+				checkedPlayers.clear();
+				if (players.peekLast() != currentPlayer) {
+					currentPlayer = players.poll();
+					players.add(currentPlayer);
+					if (currentPlayer.getName().equals(myName))
+						Controller.getInstance().publishGameEvent("PLAY");
 				}
-			} catch (InterruptedException e) {
+			}
+			return;
+		}
+		currentPlayer = findPlayer(parsed[0]);
+		switch (parsed[1]) {
+		case "PLAY":
+			int[] diceRolls = new int[3];
+			diceRolls[0] = toInt(parsed[2]);
+			diceRolls[1] = toInt(parsed[3]);
+			diceRolls[2] = toInt(parsed[4]);
+			currentPlayer.play(diceRolls);
+			break;
+		case "BUYESTATE":
+			currentPlayer.buySquare();
+			break;
+		case "CARD":
+			// This should be picked by executeMessage
+			Card card;
+			if (toInt(parsed[2]) == 0)
+				card = ActionCards.getInstance().getChanceCard();
+			else
+				card = ActionCards.getInstance().getCommunityChestCard();
+			currentPlayer.pickCard(card);
+			break;
+		case "RECEIVECOLOR":
+			currentPlayer.setColor(parsed[2]);
+			break;
+		case "RECEIVEDICE":
+			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
+			if (++numOfDiceReceived == numOfPlayers) {
+				for (Player p : players) {
+					System.out.println(p.getName());
+				}
+				System.out.println(players);
+				Player[] tmp = new Player[players.size()];
+				Arrays.sort(players.toArray(tmp), new Comparator<Player>() {
+					@Override
+					public int compare(Player p1, Player p2) {
+						return Integer.compare(p2.getInitialDiceOrder(), p1.getInitialDiceOrder());
+					}
+				});
+				for (Player p : players) {
+					System.out.println(p.getName());
+				}
+				System.out.println(players);
+				for (Player p : tmp) {
+					players.add(p);
+					players.poll();
+				}
+				System.out.println(players);
+				currentPlayer = players.poll();
+				players.add(currentPlayer);
+				if (currentPlayer.getName().equals(myName))
+					Controller.getInstance().publishGameEvent("PLAY");
+				Controller.getInstance().publishGameEvent("START");
+			}
+			break;
+		case "ENDGAME":
+			currentPlayer.endGame();
+			players.remove(currentPlayer);
+			if (currentPlayer.getName().equals(myName))
+				NetworkFacade.getInstance().endGame();
+			break;
+		}
+	}
+
+	private Player findPlayer(String name) {
+		System.out.println(players);
+		for (Player player : players) {
+			System.out.println(player);
+			if (player.getName().equals(name)) {
+				System.out.println(name);
+				return player;
 			}
 		}
+		return null;
 	}
 
 	public void saveGame(String savedGameFileName) {
@@ -278,27 +301,24 @@ public class MonopolyGame implements Runnable {
 			// read and print what we wrote before
 			SavedGame saved = (SavedGame) ois.readObject();
 			players = saved.getPlayers();
-			/*for (Player p : players) {
-				if (p.getName().equals(saved.getCurreentPlayer())) {
-					currentPlayer = p;
-					break;
-				}
-			}*/
+			/*
+			 * for (Player p : players) { if (p.getName().equals(saved.getCurreentPlayer()))
+			 * { currentPlayer = p; break; } }
+			 */
 			// Who is the first player to play will be handled by server
 			// (Instead of sending him the original order, we can send it modified
-			// a bit. 
-			currentPlayer = players.get(0);
+			// a bit.
+			currentPlayer = players.poll();
 			this.order = saved.getOrder();
-
+			ois.close();
 		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
-	
-	public boolean repOk(){
-		if(currentPlayer==null ||players==null ||players.size()==0 )
+
+	public boolean repOk() {
+		if (currentPlayer == null || players == null || players.size() == 0)
 			return false;
-		
+
 		return true;
 	}
 

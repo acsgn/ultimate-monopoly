@@ -14,7 +14,7 @@ public class Chance extends Action {
 	public void executeWhenLanded(Player player) {
 		game.card.Chance card = ActionCards.getInstance().getChanceCard();
 		player.pickCard(card);
-		NetworkFacade.getInstance().sendMessageToOthers(player.getName()+"/CARD/"+card.getCardType().ordinal());
+		NetworkFacade.getInstance().sendMessage(player.getName()+"/CARD/"+card.getCardType().ordinal());
 	}
 
 	@Override
