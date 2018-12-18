@@ -1,39 +1,42 @@
 package game;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class SavedGame implements Serializable{
-	private ArrayList<Player> players;
+public class SavedGame implements Serializable {
+	private ConcurrentLinkedDeque<Player> players;
 	private Player currentPlayer;
 	private int order;
-	
-	public SavedGame(ArrayList<Player> players, Player currentPlayer, int order){
+
+	public SavedGame(ConcurrentLinkedDeque<Player> players, Player currentPlayer, int order) {
 		this.players = players;
 		this.currentPlayer = currentPlayer;
 		this.order = order;
 	}
 
-	
 	// Getters
-	public ArrayList<Player> getPlayers() {
+	public ConcurrentLinkedDeque<Player> getPlayers() {
 		return players;
 	}
-	public Player getCurreentPlayer(){
+
+	public Player getCurreentPlayer() {
 		return currentPlayer;
 	}
-	public int getOrder(){
+
+	public int getOrder() {
 		return order;
 	}
+
 	// Setters
-	public void setPlayers(ArrayList<Player> players) {
+	public void setPlayers(ConcurrentLinkedDeque<Player> players) {
 		this.players = players;
 	}
-	public void setPlayer(Player currentPlayer){
+
+	public void setPlayer(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
 	}
-	public void setOrder(int order){
+
+	public void setOrder(int order) {
 		this.order = order;
 	}
 }

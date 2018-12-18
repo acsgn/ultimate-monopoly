@@ -4,8 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import game.card.ActionCards;
 import game.card.Card;
@@ -14,8 +15,8 @@ import network.NetworkFacade;
 
 public class MonopolyGame implements Runnable {
 
-	private ArrayList<Player> players;
-	private ArrayList<Player> checkedPlayers;
+	private ConcurrentLinkedDeque<Player> players;
+	private ConcurrentLinkedDeque<Player> checkedPlayers;
 	private Player currentPlayer;
 
 	private String myName;
@@ -27,18 +28,18 @@ public class MonopolyGame implements Runnable {
 	private boolean destroy = false;
 
 	public MonopolyGame() {
-		players = new ArrayList<Player>();
-		checkedPlayers = new ArrayList<Player>();
+		players = new ConcurrentLinkedDeque<Player>();
+		checkedPlayers = new ConcurrentLinkedDeque<Player>();
 		isNewGame = true;
 		NetworkFacade.getInstance().startNetwork();
 		new Thread(this, "Game").start();
 	}
 
-	public ArrayList<Player> getPlayers() {
+	public ConcurrentLinkedDeque<Player> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(ArrayList<Player> players) {
+	public void setPlayers(ConcurrentLinkedDeque<Player> players) {
 		this.players = players;
 	}
 
@@ -112,7 +113,7 @@ public class MonopolyGame implements Runnable {
 
 	public void executeNetworkMessage(String message) {
 		if (message.equals("ENDTURN")) {
-			currentPlayer = players.remove(0);
+			currentPlayer = players.poll();
 			players.add(currentPlayer);
 			if (currentPlayer.getName().equals(myName))
 				Controller.getInstance().publishGameEvent("PLAY");
@@ -154,8 +155,8 @@ public class MonopolyGame implements Runnable {
 						players.remove(p);
 					}
 				checkedPlayers.clear();
-				if (players.get(players.size() - 1) != currentPlayer) {
-					currentPlayer = players.remove(0);
+				if (players.peekLast() != currentPlayer) {
+					currentPlayer = players.poll();
 					players.add(currentPlayer);
 					if (currentPlayer.getName().equals(myName))
 						Controller.getInstance().publishGameEvent("PLAY");
@@ -190,13 +191,17 @@ public class MonopolyGame implements Runnable {
 		case "RECEIVEDICE":
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
 			if (++numOfDiceReceived == numOfPlayers) {
-				players.sort(new Comparator<Player>() {
+				Player[] tmp = new Player[players.size()];
+				Arrays.sort(players.toArray(tmp), new Comparator<Player>() {
 					@Override
 					public int compare(Player p1, Player p2) {
 						return Integer.compare(p2.getInitialDiceOrder(), p1.getInitialDiceOrder());
 					}
 				});
-				if (players.get(0).getName().equals(myName))
+				players.clear();
+				for (Player p : tmp)
+					players.add(p);
+				if (players.peek().getName().equals(myName))
 					Controller.getInstance().publishGameEvent("PLAY");
 				Controller.getInstance().publishGameEvent("START");
 			}
@@ -258,7 +263,7 @@ public class MonopolyGame implements Runnable {
 			// Who is the first player to play will be handled by server
 			// (Instead of sending him the original order, we can send it modified
 			// a bit.
-			currentPlayer = players.get(0);
+			currentPlayer = players.poll();
 			this.order = saved.getOrder();
 			ois.close();
 		} catch (Exception ex) {
