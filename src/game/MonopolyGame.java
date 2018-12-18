@@ -122,8 +122,7 @@ public class MonopolyGame implements Runnable {
 		else if (message.equals("PLAYERCHECK")) {
 			NetworkFacade.getInstance().sendMessage("CHECK/" + myName);
 			return;
-		}
-		else if (message.equals("DISCONNECTED")) {
+		} else if (message.equals("DISCONNECTED")) {
 			Controller.getInstance().publishGameEvent("YOUDISCONNECTED");
 			return;
 		}
@@ -140,6 +139,9 @@ public class MonopolyGame implements Runnable {
 				// This is the current player order in playing.
 				order = players.size() - 1;
 			}
+			return;
+		} else if (parsed[0].equals("CONNECTIVITYPLAYERCOUNT")) {
+			numOfPlayers = toInt(parsed[1]);
 			return;
 		} else if (parsed[0].equals("CHECK")) {
 			Player player = findPlayer(parsed[1]);
