@@ -11,9 +11,9 @@ import game.card.RollThree;
 import game.square.Square;
 import game.square.estate.*;
 
-public class Player implements Serializable{
+public class Player implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final int BEGIN_MONEY = 3200;
 	private static final TrackType BEGIN_TRACK = TrackType.MIDDLE_TRACK;
 	private static final int BEGIN_INDEX = 0;
@@ -27,46 +27,45 @@ public class Player implements Serializable{
 	private int money;
 
 	private ArrayList<Chance> ChanceCards;
-	
-	//needed for chance cards
+
+	// needed for chance cards
 	private int totalHouses = 0;
 	private int totalHotels = 0;
 	private int totalSkyscrapers = 0;
-	
+
 	public void addHouse() {
 		totalHouses++;
 	}
-	
-	public int getMoney(){
+
+	public int getMoney() {
 		return money;
 	}
-	
+
 	public int getTotalTransitStations() {
 		int size = transitStations.size();
 		return size;
-		
+
 	}
-	
+
 	public void addHotel() {
-		
+
 		totalHotels++;
 	}
-	
-	public void buyHouse()
-	{
+
+	public void buyHouse() {
 		addHouse();
 	}
-	
-	public void buyHotel(){
+
+	public void buyHotel() {
 		addHotel();
 	}
-	
-	public void buySkyscraper(){
+
+	public void buySkyscraper() {
 		addSkyscaper();
 	}
-	
+
 	public int getTotalHouses() {
-		//total num of houses
+		// total num of houses
 		return totalHouses;
 	}
 
@@ -75,7 +74,7 @@ public class Player implements Serializable{
 	}
 
 	public int getTotalHotels() {
-		//total num of hotels
+		// total num of hotels
 		return totalHotels;
 	}
 
@@ -84,7 +83,7 @@ public class Player implements Serializable{
 	}
 
 	public int getTotalSkyscrapers() {
-		//total num of sky
+		// total num of sky
 		return totalSkyscrapers;
 	}
 
@@ -93,7 +92,7 @@ public class Player implements Serializable{
 	}
 
 	public void addSkyscaper() {
-		//added as sky is bought
+		// added as sky is bought
 		totalSkyscrapers++;
 	}
 
@@ -119,6 +118,9 @@ public class Player implements Serializable{
 	boolean inJail;
 	boolean isBankrupt;
 	boolean goAnyWhere;
+	
+	private int jailCounter = 0;
+	private static final int jailBail = 50;
 
 	private ArrayList<Property> properties;
 	private ArrayList<TransitStation> transitStations;
@@ -141,7 +143,7 @@ public class Player implements Serializable{
 		transitStations = new ArrayList<>();
 		utilities = new ArrayList<>();
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -163,7 +165,7 @@ public class Player implements Serializable{
 	public void play(int[] diceRolls) {
 		sendColor();
 		message = "ACTION/";
-		message += name+" rolled:";
+		message += name + " rolled:";
 		message += "Regular Die 1: " + diceRolls[0] + "\n";
 		message += "Regular Die 2: " + diceRolls[1] + "\n";
 		if (diceRolls[2] == 4) {
@@ -174,9 +176,33 @@ public class Player implements Serializable{
 			message += "Speed Die: " + diceRolls[2];
 		}
 		publishGameEvent(message);
-		move(diceRolls);
-		updateState();
-		location.executeWhenLanded(this);
+		if (!inJail) {
+			move(diceRolls);
+			updateState();
+			location.executeWhenLanded(this);
+		}else{
+			if(jailCounter<3){
+				jailCounter++;
+				if(diceRolls[0]==diceRolls[1]){
+					jailCounter =0;
+					inJail = false;
+					move(diceRolls);
+					updateState();
+					location.executeWhenLanded(this);
+					message = "ACTION/" + "You Rolled Doubles You got out of Jail";
+					publishGameEvent(message);
+				}else{
+					if(jailCounter==3){
+						this.payBail();
+						move(diceRolls);
+						updateState();
+						location.executeWhenLanded(this);
+						message = "ACTION/" + "You paid Bail";
+						publishGameEvent(message);
+					}
+				}
+			}
+		}
 	}
 
 	public void move(int[] diceRolls) {
@@ -197,7 +223,8 @@ public class Player implements Serializable{
 		boolean transitUsed = false;
 		boolean isLastMove = false;
 
-		// TODO I have attempted adjustments to allow moving backward. Must test for bugs.
+		// TODO I have attempted adjustments to allow moving backward. Must test
+		// for bugs.
 		while (true) {
 			if (!transitUsed && isEven && newLocation instanceof TransitStation) {
 				newIndex = ((TransitStation) newLocation).getOtherIndex(newTrack);
@@ -211,7 +238,9 @@ public class Player implements Serializable{
 
 				if (sum > 0) {
 					sum--;
-				} else if (sum < 0) { sum++; }
+				} else if (sum < 0) {
+					sum++;
+				}
 
 				transitUsed = false;
 			}
@@ -222,17 +251,16 @@ public class Player implements Serializable{
 		}
 
 		message = "MOVE/" + playerIndex + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal()
-		+ "/" + newIndex;
+				+ "/" + newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
 		location = newLocation;
 	}
-	
+
 	public Square getLocation() {
 		return location;
 	}
-
 
 	// get roll3
 	public Card getRoll3() {
@@ -261,18 +289,15 @@ public class Player implements Serializable{
 	}
 
 	/**
-	 * @overview This function gets the rent price 
-	 * of the estate square and reduces the player's
-	 * money in that amount.
+	 * @overview This function gets the rent price of the estate square and
+	 *           reduces the player's money in that amount.
 	 * @requires input Square to be an Estate.
-	 * @modifies Player's money field, reduces it for
-	 * the amount of rent.
-	 * @effects Player, input Square, and the Player
-	 * who owns the square.
-	 * @param s the square the player lands on
-	 * @return the reduceMoney function which
-	 * returns a boolean depending on the success of
-	 * the transaction
+	 * @modifies Player's money field, reduces it for the amount of rent.
+	 * @effects Player, input Square, and the Player who owns the square.
+	 * @param s
+	 *            the square the player lands on
+	 * @return the reduceMoney function which returns a boolean depending on the
+	 *         success of the transaction
 	 */
 	public boolean payRent(Square s) {
 		int rent = ((Estate) s).getRent();
@@ -281,22 +306,21 @@ public class Player implements Serializable{
 	}
 
 	/**
-	 * @overview This function pays the bail amount 
-	 * to the pool and reduces the player's money 
-	 * in that amount
+	 * @overview This function pays the bail amount to the pool and reduces the
+	 *           player's money in that amount
 	 * @requires
-	 * @modifies Player's money and Pool's amount
-	 * fields.
+	 * @modifies Player's money and Pool's amount fields.
 	 * @effects Player, Pool.
-	 * @param amount the bail price to be paid
-	 * @return the reduceMoney function which
-	 * returns a boolean depending on the success of
-	 * the transaction
+	 * @param amount
+	 *            the bail price to be paid
+	 * @return the reduceMoney function which returns a boolean depending on the
+	 *         success of the transaction
 	 */
-	public boolean payBail(int amount) {
-		Pool.getInstance().payToPool(amount);
-		this.inJail =false;
-		return reduceMoney(amount);
+	public boolean payBail() {
+		Pool.getInstance().payToPool(jailBail);
+		this.inJail = false;
+		this.jailCounter = 0;
+		return reduceMoney(jailBail);
 	}
 
 	public boolean buySquare() {
@@ -305,7 +329,7 @@ public class Player implements Serializable{
 			if (estate.getOwner() == null) {
 				estate.setOwner(this);
 				reduceMoney(estate.getPrice());
-				if(estate instanceof Property)
+				if (estate instanceof Property)
 					properties.add((Property) estate);
 				else if (estate instanceof TransitStation)
 					transitStations.add((TransitStation) estate);
@@ -340,8 +364,10 @@ public class Player implements Serializable{
 	 * @requires
 	 * @modifies Property's buildings field by expanding it.
 	 * @effects Property, Property's owner Player if applicable.
-	 * @param building the building to be added to the property
-	 * @param Property the property that will get the building
+	 * @param building
+	 *            the building to be added to the property
+	 * @param Property
+	 *            the property that will get the building
 	 */
 	public void buyBuilding(Building building, Property Property) {
 		Property.getBuildings().add(building);
@@ -349,12 +375,14 @@ public class Player implements Serializable{
 
 	/**
 	 * @overview This function removes the building from the property chosen
-	 * @requires input building to be included in Property, and Property to
-	 * have buildings in the first place.
+	 * @requires input building to be included in Property, and Property to have
+	 *           buildings in the first place.
 	 * @modifies Property's buildings field, Property's owner's money field.
 	 * @effects Property, Property's owner
-	 * @param building the building that will be removed from the property
-	 * @param Property the property that will have its building removed
+	 * @param building
+	 *            the building that will be removed from the property
+	 * @param Property
+	 *            the property that will have its building removed
 	 */
 	public void sellBuilding(Building building, Property Property) {
 		Property.getBuildings().remove(building);
@@ -378,35 +406,36 @@ public class Player implements Serializable{
 	}
 
 	/**
-	 * @overview This function reduces the money of the player 
-	 * in the given amount
+	 * @overview This function reduces the money of the player in the given
+	 *           amount
 	 * @requires
 	 * @modifies Player's money field.
 	 * @effects Player.
-	 * @param m the input amount to be reduced from the money
-	 * @return true if the transaction if successful and
-	 * false if not
+	 * @param m
+	 *            the input amount to be reduced from the money
+	 * @return true if the transaction if successful and false if not
 	 */
 	public boolean reduceMoney(int m) {
 		if (money > m) {
 			this.money -= m;
-			//updateState();
+			// updateState();
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * @overview This function increments the money of the 
-	 * player in the given amount
+	 * @overview This function increments the money of the player in the given
+	 *           amount
 	 * @requires
 	 * @modifies Player's money field.
 	 * @effects Player.
-	 * @param m the input amount to be added to the money
+	 * @param m
+	 *            the input amount to be added to the money
 	 */
 	public void increaseMoney(int m) {
 		this.money += m;
-		//updateState();
+		// updateState();
 	}
 
 	public void setProperties(ArrayList<Property> properties) {
@@ -452,7 +481,7 @@ public class Player implements Serializable{
 	}
 
 	public void endGame() {
-		message = "REMOVEPIECE/"+playerIndex;
+		message = "REMOVEPIECE/" + playerIndex;
 		publishGameEvent(message);
 		message = "ACTION/" + name + " left the game.";
 		publishGameEvent(message);
@@ -473,17 +502,21 @@ public class Player implements Serializable{
 	public String getColor() {
 		return color;
 	}
-	public int getIndexOnTrack(){
+
+	public int getIndexOnTrack() {
 		return indexOnTrack;
 	}
-	
-	public boolean repOk(){
-		if(money <0 || indexOnTrack > 56)
+
+	public boolean repOk() {
+		if (money < 0 || indexOnTrack > 56)
 			return false;
-		if(board==null)
+		if (board == null)
 			return false;
-		
+
 		return true;
+	}
+	public void delegateTask(String mess){
+		Controller.getInstance().dispatchMessage("PLAYER/"+mess);
 	}
 
 }

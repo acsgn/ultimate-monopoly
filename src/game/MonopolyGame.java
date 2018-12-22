@@ -26,6 +26,8 @@ public class MonopolyGame implements Runnable {
 	private boolean isNewGame;
 	private Board board;
 	private boolean destroy = false;
+	
+	private int toBeDeleted = 0;
 
 	public MonopolyGame() {
 		board = new Board();
@@ -70,6 +72,14 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
+				if(toBeDeleted==0){
+					diceRolls[0] = 20;
+					diceRolls[1] = 12;
+					toBeDeleted ++;
+				}else{
+					diceRolls[0] = 10;
+					diceRolls[1] = 7;
+				}
 				NetworkFacade.getInstance()
 						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				break;
@@ -110,6 +120,25 @@ public class MonopolyGame implements Runnable {
 				isNewGame = false;
 				break;
 			}
+			break;
+		case "PLAYER":
+			switch(parsed[1]){
+			case "BIRTHGIFT":
+				int money = 0;
+				for(Player player : players){
+					if(player.getName().equals(parsed[3]))
+							continue;
+					if(player.reduceMoney(toInt(parsed[2]))){
+						money += toInt(parsed[2]);
+					}else{
+						// The player is bankrupted.
+					}
+				}
+				Player p = findPlayer(parsed[3]);
+				p.increaseMoney(money);
+				break;
+			}
+			break;
 		}
 	}
 
