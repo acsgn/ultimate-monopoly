@@ -151,14 +151,14 @@ public class PathFinder {
 
 		private double upLeftCorner;
 		private double downRightCorner;
-		private double stepDistance;
 		private int cornerDifference;
+		private double stepDistance;
 
 		public Track(int upLeftCorner, int downRightCorner, int cornerDifference) {
 			this.upLeftCorner = getScaled(upLeftCorner);
 			this.downRightCorner = getScaled(downRightCorner);
-			this.stepDistance = (downRightCorner - upLeftCorner) / cornerDifference;
 			this.cornerDifference = cornerDifference;
+			this.stepDistance = (this.downRightCorner - this.upLeftCorner) / this.cornerDifference;
 		}
 
 		public int[] getLocation(int location) {

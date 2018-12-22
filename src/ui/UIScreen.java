@@ -231,7 +231,7 @@ public class UIScreen extends JFrame implements GameListener {
 			setVisible(true);
 			break;
 		case "ACTION":
-			infoText.insert(parsed[1], 0);
+			infoText.insert(parsed[1] + "\n", 0);
 			break;
 		case "COLOR":
 			playerColor = colorTable.get(parsed[1]);
@@ -246,16 +246,14 @@ public class UIScreen extends JFrame implements GameListener {
 		case "JUMP":
 			int[] point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 			pieces.get(toInt(parsed[1])).lastPoint = new Point(point[0], point[1]);
-			repaint();
+			board.repaint();
 			break;
 		case "PIECE":
 			Piece piece = new Piece();
 			piece.color = colorTable.get(parsed[1]);
-			int trackID = toInt(parsed[2]);
-			int location = toInt(parsed[3]);
-			int[] position = pathFinder.getLocation(trackID, location);
-			piece.lastPoint = new Point(position[0], position[1]);
-			repaint();
+			int[] initialPoint = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
+			piece.lastPoint = new Point(initialPoint[0], initialPoint[1]);
+			board.repaint();
 			pieces.add(piece);
 			break;
 		case "PLAYERDATA":

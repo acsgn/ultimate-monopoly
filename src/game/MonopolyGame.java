@@ -54,8 +54,11 @@ public class MonopolyGame implements Runnable {
 		case "UISCREEN":
 			switch (parsed[1]) {
 			case "START":
+				currentPlayer = players.pollLast();
+				currentPlayer.createPiece();
 				for (Player player : players)
 					player.createPiece();
+				players.add(currentPlayer);
 				break;
 			case "PAUSE":
 				pause();
@@ -182,7 +185,6 @@ public class MonopolyGame implements Runnable {
 			if (!checkedPlayers.contains(player))
 				checkedPlayers.add(player);
 			if (checkedPlayers.size() == numOfPlayers) {
-				System.out.println(numOfPlayers);
 				for (Player p : players)
 					if (!checkedPlayers.contains(p)) {
 						p.endGame();
@@ -225,10 +227,6 @@ public class MonopolyGame implements Runnable {
 		case "RECEIVEDICE":
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
 			if (++numOfDiceReceived == numOfPlayers) {
-				for (Player p : players) {
-					System.out.println(p.getName());
-				}
-				System.out.println(players);
 				Player[] tmp = new Player[players.size()];
 				Arrays.sort(players.toArray(tmp), new Comparator<Player>() {
 					@Override
@@ -236,17 +234,13 @@ public class MonopolyGame implements Runnable {
 						return Integer.compare(p2.getInitialDiceOrder(), p1.getInitialDiceOrder());
 					}
 				});
-				for (Player p : players) {
-					System.out.println(p.getName());
-				}
-				System.out.println(players);
 				for (Player p : tmp) {
 					players.add(p);
 					players.poll();
 				}
-				System.out.println(players);
 				currentPlayer = players.poll();
 				players.add(currentPlayer);
+				currentPlayer.sendColor();
 				if (currentPlayer.getName().equals(myName))
 					Controller.getInstance().publishGameEvent("PLAY");
 				Controller.getInstance().publishGameEvent("START");
@@ -262,14 +256,9 @@ public class MonopolyGame implements Runnable {
 	}
 
 	private Player findPlayer(String name) {
-		System.out.println(players);
-		for (Player player : players) {
-			System.out.println(player);
-			if (player.getName().equals(name)) {
-				System.out.println(name);
+		for (Player player : players)
+			if (player.getName().equals(name))
 				return player;
-			}
-		}
 		return null;
 	}
 

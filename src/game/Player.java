@@ -167,11 +167,11 @@ public class Player implements Serializable{
 		message += "Regular Die 1: " + diceRolls[0] + "\n";
 		message += "Regular Die 2: " + diceRolls[1] + "\n";
 		if (diceRolls[2] == 4) {
-			message += "Speed Die : Bus Icon\n";
+			message += "Speed Die : Bus Icon";
 		} else if (diceRolls[2] == 5) {
-			message += "Speed Die : Mr.Monopoly Bonus Move\n";
+			message += "Speed Die : Mr.Monopoly Bonus Move";
 		} else {
-			message += "Speed Die: " + diceRolls[2] + "\n";
+			message += "Speed Die: " + diceRolls[2];
 		}
 		publishGameEvent(message);
 		move(diceRolls);
@@ -310,12 +310,12 @@ public class Player implements Serializable{
 					transitStations.add((TransitStation) estate);
 				else if (estate instanceof Utility)
 					utilities.add((Utility) estate);
-				message = "ACTION/" + estate.getName() + " is bought by " + name + "\n";
+				message = "ACTION/" + estate.getName() + " is bought by " + name;
 				publishGameEvent(message);
 				updateState();
 				return true;
 			} else {
-				message = "ACTION/" + "This square is owned by " + estate.getOwner().name + "\n";
+				message = "ACTION/" + "This square is owned by " + estate.getOwner().name;
 				publishGameEvent(message);
 				return false;
 			}
@@ -362,17 +362,17 @@ public class Player implements Serializable{
 	public void pickCard(Card card) {
 		if (card instanceof CommunityChest) {
 			((CommunityChest) card).executeAction(this);
-			message = "ACTION/" + ((CommunityChest) card).getName() + "\n";
+			message = "ACTION/" + ((CommunityChest) card).getName();
 			publishGameEvent(message);
 		}
 		if (card instanceof Chance) {
 			((Chance) card).executeAction(this);
-			message = "ACTION/" + ((Chance) card).getName() + "\n";
+			message = "ACTION/" + ((Chance) card).getName();
 			publishGameEvent(message);
 		}
 		if (card instanceof RollThree) {
 			((RollThree) card).executeAction(this);
-			message = "ACTION/ Roll Three\n";
+			message = "ACTION/Roll Three";
 		}
 	}
 
