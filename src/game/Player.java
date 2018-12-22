@@ -228,7 +228,7 @@ public class Player implements Serializable{
 		currentTrack = newTrack;
 		location = newLocation;
 	}
-
+	
 	public Square getLocation() {
 		return location;
 	}
@@ -295,6 +295,7 @@ public class Player implements Serializable{
 	 */
 	public boolean payBail(int amount) {
 		Pool.getInstance().payToPool(amount);
+		this.inJail =false;
 		return reduceMoney(amount);
 	}
 
@@ -430,7 +431,8 @@ public class Player implements Serializable{
 
 	public void sendToJail() {
 		this.inJail = true;
-		//updateState();
+		this.goTo(TrackType.MIDDLE_TRACK, 10);
+		updateState();
 	}
 
 	public void updateState() {

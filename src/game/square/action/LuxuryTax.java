@@ -1,6 +1,7 @@
 package game.square.action;
 
 import game.Player;
+import game.Pool;
 
 public class LuxuryTax extends Action {
 	
@@ -12,6 +13,7 @@ public class LuxuryTax extends Action {
 	@Override
 	public void executeWhenLanded(Player player) {
 		player.reduceMoney(amount);
+		Pool.getInstance().payToPool(amount);
 	}
 
 	@Override

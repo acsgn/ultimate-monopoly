@@ -34,10 +34,4 @@ public class Bonus extends Action {
 		player.increaseMoney(landedAmount);
 	}
 
-	public boolean repOk(){
-		if(this == null){
-			return false;
-		}
-		return true;
-	}
 }
