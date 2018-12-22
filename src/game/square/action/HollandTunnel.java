@@ -11,8 +11,8 @@ public class HollandTunnel extends Action {
 
 	private boolean notInitialized = true;
 
-	private int index1;
-	private int index2;
+	private static final int index1 = 18;
+	private static final int index2 = 14;
 
 	public HollandTunnel() {
 	}
@@ -39,6 +39,15 @@ public class HollandTunnel extends Action {
 
 	@Override
 	public void executeWhenLanded(Player player) {
+		player.goTo(getOtherTrack(player.getCurrentTrack()), getOtherIndex(player.getCurrentTrack()));
+	}
+	
+	public TrackType getOtherTrack(TrackType track) {
+		return track == track1 ? track2 : track1;
+	}
+
+	public int getOtherIndex(TrackType track) {
+		return track == track1 ? index2 : index1;
 	}
 	
 }
