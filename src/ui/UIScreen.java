@@ -245,7 +245,7 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "JUMP":
 			int[] point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(toInt(parsed[1])).lastPoint = new Point(point[0], point[1]);
+			pieces.get(toInt(parsed[1])).path.addPoint(new Point(point[0], point[1]));
 			board.repaint();
 			break;
 		case "PIECE":

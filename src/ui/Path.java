@@ -63,4 +63,8 @@ public class Path {
 		path.addAll(otherPath.path);
 	}
 
+	public void addPoint(Point point) {
+		path.add(point);
+	}
+
 }
