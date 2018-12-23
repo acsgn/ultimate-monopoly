@@ -72,14 +72,6 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
-				if(toBeDeleted==0){
-					diceRolls[0] = 20;
-					diceRolls[1] = 12;
-					toBeDeleted ++;
-				}else{
-					diceRolls[0] = 10;
-					diceRolls[1] = 7;
-				}
 				NetworkFacade.getInstance()
 						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				break;
@@ -95,6 +87,22 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "SAVEGAME":
 				saveGame(parsed[2]);
+				break;
+			}
+			break;
+		case "BOT":
+			switch(parsed[1]){
+			case "ROLLDICE":
+				SingletonDice.getInstance().rollDice();
+				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
+				NetworkFacade.getInstance()
+						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
+				break;
+			case "BUYPROPERTY":
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYESTATE");
+				break;
+			case "ENDTURN":
+				NetworkFacade.getInstance().sendMessage("ENDTURN");
 				break;
 			}
 			break;
