@@ -33,6 +33,7 @@ public class UICreator extends JFrame implements GameListener {
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
 	private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
 	private int chooserVal = -1;
+	private boolean wantABot = false;
 
 	/**
 	 * Create the frame.
@@ -68,21 +69,15 @@ public class UICreator extends JFrame implements GameListener {
 		playerCountPanel.setBounds(165, 275, 200, 87);
 		playerCountPanel.setLayout(null);
 
-		JLabel playerCountLabel = new JLabel("Number of Players:");
-		playerCountLabel.setBounds(24, 0, 151, 20);
-		playerCountPanel.add(playerCountLabel);
-		playerCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		playerCountLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-
-		Hashtable<Integer, JLabel> labelTable = createLabelTable();
-		JSlider slider = new JSlider(2, 10, 2);
-		slider.setBounds(0, 23, 200, 64);
-		slider.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		slider.setLabelTable(labelTable);
-		slider.setMajorTickSpacing(1);
-		slider.setPaintLabels(true);
-		slider.setEnabled(false);
-		playerCountPanel.add(slider);
+		JButton wantBot = new JButton("I want a bot");
+		wantBot.setBounds(0, 0, 200, 87);
+		playerCountPanel.add(wantBot);
+		wantBot.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				wantABot = wantABot ? false : true;
+			}
+		});
 
 		getContentPane().add(playerCountPanel);
 
@@ -168,6 +163,8 @@ public class UICreator extends JFrame implements GameListener {
 						Controller.getInstance()
 								.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
 						Controller.getInstance().dispatchMessage(message + "DICE");
+						if (wantABot)
+							Controller.getInstance().dispatchMessage(message + "BOT");
 					}
 					// Should handle load game in here
 				} else
