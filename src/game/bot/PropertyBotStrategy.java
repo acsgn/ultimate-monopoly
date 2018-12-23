@@ -20,6 +20,6 @@ public class PropertyBotStrategy implements botStrategy{
 			message += "NOTHING";
 		}
 		
-		return message;
+		return message+"/"+player.getName();
 	}
 }

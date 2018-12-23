@@ -8,7 +8,7 @@ public class GeneralBotStrategy implements botStrategy{
 	@Override
 	public String getActionMessage(Square s, Player player) {
 		// TODO Auto-generated method stub
-		String message = "BOT/NOTHING";
+		String message = "BOT/NOTHING/"+player.getName();
 		return message;
 	}
 }

@@ -159,12 +159,12 @@ public class UICreator extends JFrame implements GameListener {
 							return;
 						}
 						Controller.getInstance().dispatchMessage(message + "START");
+						if (wantABot)
+							Controller.getInstance().dispatchMessage(message + "BOTCOUNT/"+1);
 						Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
 						Controller.getInstance()
 								.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
 						Controller.getInstance().dispatchMessage(message + "DICE");
-						if (wantABot)
-							Controller.getInstance().dispatchMessage(message + "BOT");
 					}
 					// Should handle load game in here
 				} else

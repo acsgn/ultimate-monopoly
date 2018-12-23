@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -12,13 +13,12 @@ import game.card.ActionCards;
 import game.card.Card;
 import game.dice.SingletonDice;
 import network.NetworkFacade;
-
+import game.bot.bot;
 public class MonopolyGame implements Runnable {
 
 	private ConcurrentLinkedDeque<Player> players;
 	private ConcurrentLinkedDeque<Player> checkedPlayers;
 	private Player currentPlayer;
-
 	private String myName;
 	private int numOfPlayers = 0;
 	private int numOfDiceReceived = 0;
@@ -27,12 +27,14 @@ public class MonopolyGame implements Runnable {
 	private Board board;
 	private boolean destroy = false;
 	
-	private int toBeDeleted = 0;
+	private ArrayList<bot> bots; 
+	
 
 	public MonopolyGame() {
 		board = new Board();
 		players = new ConcurrentLinkedDeque<Player>();
 		checkedPlayers = new ConcurrentLinkedDeque<Player>();
+		bots = new ArrayList<>();
 		isNewGame = true;
 		NetworkFacade.getInstance().startNetwork();
 		new Thread(this, "Game").start();
@@ -96,13 +98,22 @@ public class MonopolyGame implements Runnable {
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
 				NetworkFacade.getInstance()
-						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
+						.sendMessage(parsed[2] + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				break;
 			case "BUYPROPERTY":
-				NetworkFacade.getInstance().sendMessage(myName + "/BUYESTATE");
+				NetworkFacade.getInstance().sendMessage(parsed[2] + "/BUYESTATE");
 				break;
 			case "ENDTURN":
 				NetworkFacade.getInstance().sendMessage("ENDTURN");
+				break;
+			case "CREATEBOT":
+				NetworkFacade.getInstance().sendMessage("RECEIVENAME/" + parsed[2]);
+				NetworkFacade.getInstance().sendMessage(parsed[2] + "/RECEIVECOLOR/" + "Black");
+				SingletonDice.getInstance().rollDice();
+				int[] dice = SingletonDice.getInstance().getFaceValues();
+				NetworkFacade.getInstance().sendMessage(parsed[2] + "/RECEIVEDICE/" + (dice[0] + dice[1]));
+				bot b = new bot(findPlayer(parsed[2]));
+				bots.add(b);
 				break;
 			}
 			break;
@@ -126,6 +137,13 @@ public class MonopolyGame implements Runnable {
 			case "LOADGAME":
 				loadGame(parsed[2]);
 				isNewGame = false;
+				break;
+			case "BOTCOUNT":
+				int numOfBots = toInt(parsed[2]);
+				numOfPlayers += numOfBots;
+				for(int i = 0;i<numOfBots ; i++){
+					bot.createBot();
+				}
 				break;
 			}
 			break;
@@ -190,6 +208,11 @@ public class MonopolyGame implements Runnable {
 			players.add(currentPlayer);
 			if (currentPlayer.getName().equals(myName))
 				Controller.getInstance().publishGameEvent("PLAY");
+			for(bot b : bots){
+				if(b.getCurrentPlayer().getName().equals(currentPlayer.getName())){
+					b.play();
+				}
+			}
 			return;
 		} else if (message.equals("CONNECTIVITYCHECK"))
 			return;
@@ -280,6 +303,11 @@ public class MonopolyGame implements Runnable {
 				currentPlayer.sendColor();
 				if (currentPlayer.getName().equals(myName))
 					Controller.getInstance().publishGameEvent("PLAY");
+				for(bot b : bots){
+					if(b.getCurrentPlayer().getName().equals(currentPlayer.getName())){
+						b.play();
+					}
+				}
 				Controller.getInstance().publishGameEvent("START");
 			}
 			break;
