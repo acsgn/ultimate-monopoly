@@ -1,11 +1,9 @@
 package ui;
 
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -15,9 +13,11 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.Hashtable;
 
 import game.Controller;
@@ -25,15 +25,18 @@ import game.GameListener;
 
 public class UICreator extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
-	private static final String ultimateMonopoly = "resources/ultimate_monopoly.jpg";
+	private static final String ultimateMonopolyImagePath = "resources/ultimate_monopoly.jpg";
 
 	private String message = "UICREATOR/";
-	private JTextField IPTextField;
+	private JTextField playerCountTextField;
 
-	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-	private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
+	private int width = Toolkit.getDefaultToolkit().getScreenSize().width / 3;
+	private int height = Toolkit.getDefaultToolkit().getScreenSize().height / 2;
+
+	private Image ultimateMonopolyImage = new ImageIcon(ultimateMonopolyImagePath).getImage().getScaledInstance(width,
+			-1, Image.SCALE_SMOOTH);
+
 	private int chooserVal = -1;
-	private boolean wantABot = false;
 
 	/**
 	 * Create the frame.
@@ -43,114 +46,123 @@ public class UICreator extends JFrame implements GameListener {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setBounds((screenWidth - 636) / 2, (screenHeight - 450) / 2, 636, 503);
+		setBounds(width, height / 2, width, height);
 		getContentPane().setLayout(null);
 
 		JLabel image = new JLabel();
-		image.setIcon(new ImageIcon(ultimateMonopoly));
-		image.setBounds(0, 0, 630, 252);
+		image.setIcon(new ImageIcon(ultimateMonopolyImage));
+		image.setBounds(0, 0, width, ultimateMonopolyImage.getHeight(this));
 		getContentPane().add(image);
 
-		ButtonGroup buttonGroup = new ButtonGroup();
-		JRadioButton serverButton = new JRadioButton("Server");
-		serverButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		buttonGroup.add(serverButton);
-		serverButton.setBounds(30, 275, 100, 75);
-		getContentPane().add(serverButton);
-
-		JRadioButton clientButton = new JRadioButton("Client");
-		clientButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		buttonGroup.add(clientButton);
-		clientButton.setSelected(true);
-		clientButton.setBounds(30, 375, 100, 75);
-		getContentPane().add(clientButton);
+		int gamePanelHeight = height - 32;
+		JPanel gamePanel = new JPanel();
+		gamePanel.setBounds(0, ultimateMonopolyImage.getHeight(this), width,
+				gamePanelHeight - ultimateMonopolyImage.getHeight(this));
+		gamePanel.setLayout(null);
 
 		JPanel playerCountPanel = new JPanel();
-		playerCountPanel.setBounds(165, 275, 200, 87);
+		playerCountPanel.setBounds(width / 25, (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		playerCountPanel.setLayout(null);
 
-		JButton wantBot = new JButton("I want a bot");
-		wantBot.setBounds(0, 0, 200, 87);
-		playerCountPanel.add(wantBot);
-		wantBot.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				wantABot = wantABot ? false : true;
-			}
-		});
+		JLabel playerCountLabel = new JLabel("Number of Players Found:");
+		playerCountLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		playerCountLabel.setBounds(0, 0, 11 * width / 25,
+				3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerCountPanel.add(playerCountLabel);
 
-		getContentPane().add(playerCountPanel);
+		playerCountTextField = new JTextField();
+		playerCountTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		playerCountTextField.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		playerCountTextField.setBounds(0, 3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 4 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerCountTextField.setEditable(false);
+		playerCountTextField.setEnabled(true);
+		playerCountPanel.add(playerCountTextField);
 
-		JPanel IPPanel = new JPanel();
-		IPPanel.setBounds(165, 375, 200, 75);
-		IPPanel.setLayout(null);
+		gamePanel.add(playerCountPanel);
 
-		JLabel IPLabel = new JLabel("Server IP:");
-		IPLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		IPLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		IPLabel.setBounds(35, 10, 130, 20);
-		IPPanel.add(IPLabel);
+		JPanel botPanel = new JPanel();
+		botPanel.setBounds(width / 25, 9 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		botPanel.setLayout(null);
 
-		IPTextField = new JTextField("1");
-		IPTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		IPTextField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		IPTextField.setBounds(0, 35, 200, 30);
-		IPTextField.setEditable(false);
-		IPPanel.add(IPTextField);
+		JLabel botLabel = new JLabel("Number of Bots:");
+		botLabel.setBounds(0, 0, 11 * width / 25, 2 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		botLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		botLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		botPanel.add(botLabel);
 
-		getContentPane().add(IPPanel);
+		Hashtable<Integer, JLabel> labelTable = createLabelTable();
+		JSlider botSilder = new JSlider(0, 9, 0);
+		botSilder.setBounds(0, 2 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25, 11 * width / 25,
+				5 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		botSilder.setLabelTable(labelTable);
+		botSilder.setPaintLabels(true);
+		botPanel.add(botSilder);
 
-		JLabel playerNameLabel = new JLabel("Player Name:");
-		playerNameLabel.setBounds(435, 260, 130, 20);
-		getContentPane().add(playerNameLabel);
-		playerNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		playerNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-
-		JTextField playerNameField = new JTextField();
-		playerNameField.setBounds(400, 285, 200, 30);
-		playerNameField.setHorizontalAlignment(SwingConstants.CENTER);
-		playerNameField.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		getContentPane().add(playerNameField);
-
-		String[] colorNames = { "Red", "Green", "Blue", "Yellow", "Cyan", "Pink", "Orange", "Magenta", "Gray",
-				"Black" };
-		JComboBox<String> colorBox = new JComboBox<String>(colorNames);
-		colorBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		colorBox.setBounds(400, 327, 200, 30);
-		colorBox.setSelectedIndex(2);
-		getContentPane().add(colorBox);
-
-		JFileChooser chooser = new JFileChooser();
-		// We are going to filter file options.
+		gamePanel.add(botPanel);
 
 		JButton loadGameButton = new JButton("Load Game");
 		loadGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		loadGameButton.setBounds(400, 370, 200, 40);
-		getContentPane().add(loadGameButton);
+		loadGameButton.setBounds(width / 25, 17 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		gamePanel.add(loadGameButton);
+
+		JFileChooser chooser = new JFileChooser();
+		// We are going to filter file options.
 
 		loadGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				chooserVal = chooser.showOpenDialog(UICreator.this);
 				if (chooserVal == JFileChooser.APPROVE_OPTION) {
-					// Line below will return you a FÝle object with selected
-					// file.
 					String fileMessage = message + "LOADGAME/" + chooser.getSelectedFile().getPath();
 					Controller.getInstance().dispatchMessage(fileMessage);
 				}
-
 			}
 		});
 
+		JPanel playerNamePanel = new JPanel();
+		playerNamePanel.setBounds(13 * width / 25, (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerNamePanel.setLayout(null);
+
+		JLabel playerNameLabel = new JLabel("Player Name:");
+		playerNameLabel.setBounds(0, 0, 11 * width / 25,
+				3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		playerNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerNamePanel.add(playerNameLabel);
+
+		JTextField playerNameField = new JTextField();
+		playerNameField.setBounds(0, 3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 4 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerNameField.setHorizontalAlignment(SwingConstants.CENTER);
+		playerNameField.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		playerNamePanel.add(playerNameField);
+
+		gamePanel.add(playerNamePanel);
+
+		String[] colorNames = { "Red", "Green", "Blue", "Yellow", "Cyan", "Pink", "Orange", "Magenta", "Gray",
+				"Black" };
+		JComboBox<String> colorBox = new JComboBox<String>(colorNames);
+		colorBox.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		colorBox.setBounds(13 * width / 25, 9 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		gamePanel.add(colorBox);
+
 		JButton startGameButton = new JButton("Start Game");
 		startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		startGameButton.setBounds(400, 420, 200, 40);
-		getContentPane().add(startGameButton);
+		startGameButton.setBounds(13 * width / 25, 17 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		gamePanel.add(startGameButton);
 
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (Integer.parseInt(IPTextField.getText()) > 1) {
+				if (Integer.parseInt(playerCountTextField.getText()) > 1) {
 					if (chooserVal != JFileChooser.APPROVE_OPTION) {
 						String name = playerNameField.getText();
 						if (name.isEmpty()) {
@@ -159,8 +171,6 @@ public class UICreator extends JFrame implements GameListener {
 							return;
 						}
 						Controller.getInstance().dispatchMessage(message + "START");
-						if (wantABot)
-							Controller.getInstance().dispatchMessage(message + "BOTCOUNT/"+1);
 						Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
 						Controller.getInstance()
 								.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
@@ -173,6 +183,8 @@ public class UICreator extends JFrame implements GameListener {
 			}
 		});
 
+		getContentPane().add(gamePanel);
+
 	}
 
 	@Override
@@ -180,7 +192,7 @@ public class UICreator extends JFrame implements GameListener {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
 		case "PLAYERCOUNT":
-			IPTextField.setText(parsed[1]);
+			playerCountTextField.setText(parsed[1]);
 			break;
 		case "START":
 			dispose();
@@ -189,7 +201,9 @@ public class UICreator extends JFrame implements GameListener {
 	}
 
 	private Hashtable<Integer, JLabel> createLabelTable() {
-		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>(9);
+		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>(10);
+		labelTable.put(0, new JLabel("0"));
+		labelTable.put(1, new JLabel("1"));
 		labelTable.put(2, new JLabel("2"));
 		labelTable.put(3, new JLabel("3"));
 		labelTable.put(4, new JLabel("4"));
@@ -198,7 +212,6 @@ public class UICreator extends JFrame implements GameListener {
 		labelTable.put(7, new JLabel("7"));
 		labelTable.put(8, new JLabel("8"));
 		labelTable.put(9, new JLabel("9"));
-		labelTable.put(10, new JLabel("10"));
 		return labelTable;
 	}
 
