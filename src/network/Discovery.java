@@ -21,6 +21,10 @@ public class Discovery implements Runnable {
 		IPAddresses = new ArrayList<>();
 		broadcastList = new ArrayList<>();
 		findBroadcasts();
+		try {
+			IPAddresses.add(InetAddress.getLocalHost().getHostAddress());
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
@@ -40,17 +44,15 @@ public class Discovery implements Runnable {
 				try {
 					socket.receive(packet);
 					String message = new String(packet.getData()).trim();
-					if (message.equals(discoveryMessage)) {
-						InetAddress IP = packet.getAddress();
-						if (!IPAddresses.contains(IP.getHostAddress())) {
-							byte[] sendData = discoveryMessage.getBytes();
-							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IP, DISCOVERY_PORT);
-							socket.send(sendPacket);
-							IPAddresses.add(IP.getHostAddress());
-							broadcast();
-							synchronized (this) {
-								notify();
-							}
+					InetAddress IP = packet.getAddress();
+					if (message.equals(discoveryMessage) && !IPAddresses.contains(IP.getHostAddress())) {
+						byte[] sendData = discoveryMessage.getBytes();
+						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IP, DISCOVERY_PORT);
+						socket.send(sendPacket);
+						IPAddresses.add(IP.getHostAddress());
+						broadcast();
+						synchronized (this) {
+							notify();
 						}
 					}
 				} catch (SocketTimeoutException e) {
@@ -87,10 +89,8 @@ public class Discovery implements Runnable {
 			DatagramSocket c = new DatagramSocket();
 			c.setBroadcast(true);
 			byte[] sendData = discoveryMessage.getBytes();
-			for (InetAddress broadcast : broadcastList) {
-				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, DISCOVERY_PORT);
-				c.send(sendPacket);
-			}
+			for (InetAddress broadcast : broadcastList)
+				c.send(new DatagramPacket(sendData, sendData.length, broadcast, DISCOVERY_PORT));
 			c.close();
 		} catch (Exception ex) {
 		}

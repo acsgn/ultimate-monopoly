@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import java.awt.Font;
 import java.awt.Image;
@@ -29,6 +31,9 @@ public class UICreator extends JFrame implements GameListener {
 
 	private String message = "UICREATOR/";
 	private JTextField playerCountTextField;
+	private JSlider botSlider;
+	private int playerCount = 0;
+	private int botCount = 0;
 
 	private int width = Toolkit.getDefaultToolkit().getScreenSize().width / 3;
 	private int height = Toolkit.getDefaultToolkit().getScreenSize().height / 2;
@@ -95,12 +100,19 @@ public class UICreator extends JFrame implements GameListener {
 		botPanel.add(botLabel);
 
 		Hashtable<Integer, JLabel> labelTable = createLabelTable();
-		JSlider botSilder = new JSlider(0, 9, 0);
-		botSilder.setBounds(0, 2 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25, 11 * width / 25,
+		botSlider = new JSlider(0, 9, 0);
+		botSlider.setBounds(0, 2 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25, 11 * width / 25,
 				5 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
-		botSilder.setLabelTable(labelTable);
-		botSilder.setPaintLabels(true);
-		botPanel.add(botSilder);
+		botSlider.setLabelTable(labelTable);
+		botSlider.setPaintLabels(true);
+		botPanel.add(botSlider);
+		botSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				botCount = botSlider.getValue();
+				playerCountTextField.setText(playerCount + botCount + "");
+			}
+		});
 
 		gamePanel.add(botPanel);
 
@@ -148,9 +160,9 @@ public class UICreator extends JFrame implements GameListener {
 		String[] colorNames = { "Red", "Green", "Blue", "Yellow", "Cyan", "Pink", "Orange", "Magenta", "Gray",
 				"Black" };
 		JComboBox<String> colorBox = new JComboBox<String>(colorNames);
-		colorBox.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		colorBox.setBounds(13 * width / 25, 9 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		colorBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		colorBox.setBounds(13 * width / 25, 19 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 50,
+				11 * width / 25, 6 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		gamePanel.add(colorBox);
 
 		JButton startGameButton = new JButton("Start Game");
@@ -162,7 +174,7 @@ public class UICreator extends JFrame implements GameListener {
 		startGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (Integer.parseInt(playerCountTextField.getText()) > 1) {
+				if (playerCount + botCount > 1) {
 					if (chooserVal != JFileChooser.APPROVE_OPTION) {
 						String name = playerNameField.getText();
 						if (name.isEmpty()) {
@@ -170,11 +182,8 @@ public class UICreator extends JFrame implements GameListener {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						Controller.getInstance().dispatchMessage(message + "START");
-						Controller.getInstance().dispatchMessage(message + "PLAYERNAME/" + name);
-						Controller.getInstance()
-								.dispatchMessage(message + "PLAYERCOLOR/" + colorNames[colorBox.getSelectedIndex()]);
-						Controller.getInstance().dispatchMessage(message + "DICE");
+						Controller.getInstance().dispatchMessage(message + "CREATE/" + name + "/"
+								+ colorNames[colorBox.getSelectedIndex()] + "/" + botCount);
 					}
 					// Should handle load game in here
 				} else
@@ -192,7 +201,8 @@ public class UICreator extends JFrame implements GameListener {
 		String[] parsed = message.split("/");
 		switch (parsed[0]) {
 		case "PLAYERCOUNT":
-			playerCountTextField.setText(parsed[1]);
+			playerCount = Integer.parseInt(parsed[1]);
+			playerCountTextField.setText(playerCount + botCount + "");
 			break;
 		case "START":
 			dispose();

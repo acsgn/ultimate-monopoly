@@ -7,13 +7,15 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Hashtable;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import game.card.ActionCards;
 import game.card.Card;
 import game.dice.SingletonDice;
 import network.NetworkFacade;
-import game.bot.bot;
+import game.bot.Bot;
+
 public class MonopolyGame implements Runnable {
 
 	private ConcurrentLinkedDeque<Player> players;
@@ -26,15 +28,15 @@ public class MonopolyGame implements Runnable {
 	private boolean isNewGame;
 	private Board board;
 	private boolean destroy = false;
-	
-	private ArrayList<bot> bots; 
-	
+	private Object animationEnded = new Object();
+
+	private Hashtable<String, ArrayList<Bot>> bots;
 
 	public MonopolyGame() {
 		board = new Board();
 		players = new ConcurrentLinkedDeque<Player>();
 		checkedPlayers = new ConcurrentLinkedDeque<Player>();
-		bots = new ArrayList<>();
+		bots = new Hashtable<String, ArrayList<Bot>>();
 		isNewGame = true;
 		NetworkFacade.getInstance().startNetwork();
 		new Thread(this, "Game").start();
@@ -57,15 +59,7 @@ public class MonopolyGame implements Runnable {
 		switch (parsed[0]) {
 		case "UISCREEN":
 			switch (parsed[1]) {
-			case "START":
-				currentPlayer = players.pollLast();
-				currentPlayer.createPiece();
-				for (Player player : players)
-					player.createPiece();
-				players.add(currentPlayer);
-				break;
 			case "PAUSE":
-				pause();
 				NetworkFacade.getInstance().sendMessage("PAUSE");
 				break;
 			case "RESUME":
@@ -80,6 +74,9 @@ public class MonopolyGame implements Runnable {
 			case "ENDGAME":
 				destroy = true;
 				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");
+				if (bots.containsKey(myName))
+					for (Bot b : bots.get(myName))
+						b.destroy();
 				break;
 			case "BUYPROPERTY":
 				NetworkFacade.getInstance().sendMessage(myName + "/BUYESTATE");
@@ -90,10 +87,14 @@ public class MonopolyGame implements Runnable {
 			case "SAVEGAME":
 				saveGame(parsed[2]);
 				break;
+			case "ANIMATIONEND":
+				synchronized (animationEnded) {
+					animationEnded.notify();
+				}
 			}
 			break;
 		case "BOT":
-			switch(parsed[1]){
+			switch (parsed[1]) {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
@@ -104,32 +105,32 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance().sendMessage(parsed[2] + "/BUYESTATE");
 				break;
 			case "ENDTURN":
+				synchronized (animationEnded) {
+					try {
+						animationEnded.wait();
+					} catch (InterruptedException e) {
+					}
+				}
 				NetworkFacade.getInstance().sendMessage("ENDTURN");
 				break;
 			case "CREATEBOT":
-				NetworkFacade.getInstance().sendMessage("RECEIVENAME/" + parsed[2]);
-				NetworkFacade.getInstance().sendMessage(parsed[2] + "/RECEIVECOLOR/" + "Black");
+				NetworkFacade.getInstance()
+						.sendMessage("CREATEBOT/" + myName + "/" + myName + parsed[2] + "/" + "Black");
 				SingletonDice.getInstance().rollDice();
 				int[] dice = SingletonDice.getInstance().getFaceValues();
-				NetworkFacade.getInstance().sendMessage(parsed[2] + "/RECEIVEDICE/" + (dice[0] + dice[1]));
-				bot b = new bot(findPlayer(parsed[2]));
-				bots.add(b);
+				NetworkFacade.getInstance().sendMessage(myName + parsed[2] + "/RECEIVEDICE/" + (dice[0] + dice[1]));
 				break;
 			}
 			break;
 		case "UICREATOR":
 			switch (parsed[1]) {
-			case "START":
+			case "CREATE":
 				NetworkFacade.getInstance().startGame();
-				break;
-			case "PLAYERNAME":
 				myName = parsed[2];
-				NetworkFacade.getInstance().sendMessage("RECEIVENAME/" + parsed[2]);
-				break;
-			case "PLAYERCOLOR":
-				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVECOLOR/" + parsed[2]);
-				break;
-			case "DICE":
+				int numOfBots = toInt(parsed[4]);
+				for (int i = 0; i < numOfBots; i++)
+					Bot.createBot();
+				NetworkFacade.getInstance().sendMessage("CREATEPLAYER/" + parsed[2] + "/" + parsed[3]);
 				SingletonDice.getInstance().rollDice();
 				int[] dice = SingletonDice.getInstance().getFaceValues();
 				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
@@ -138,25 +139,18 @@ public class MonopolyGame implements Runnable {
 				loadGame(parsed[2]);
 				isNewGame = false;
 				break;
-			case "BOTCOUNT":
-				int numOfBots = toInt(parsed[2]);
-				numOfPlayers += numOfBots;
-				for(int i = 0;i<numOfBots ; i++){
-					bot.createBot();
-				}
-				break;
 			}
 			break;
 		case "PLAYER":
-			switch(parsed[1]){
+			switch (parsed[1]) {
 			case "BIRTHGIFT":
 				int money = 0;
-				for(Player player : players){
-					if(player.getName().equals(parsed[3]))
-							continue;
-					if(player.reduceMoney(toInt(parsed[2]))){
+				for (Player player : players) {
+					if (player.getName().equals(parsed[3]))
+						continue;
+					if (player.reduceMoney(toInt(parsed[2]))) {
 						money += toInt(parsed[2]);
-					}else{
+					} else {
 						// The player is bankrupted.
 					}
 				}
@@ -181,14 +175,6 @@ public class MonopolyGame implements Runnable {
 		return Integer.parseInt(string);
 	}
 
-	private void resume() {
-		Controller.getInstance().publishGameEvent("RESUME");
-	}
-
-	private void pause() {
-		Controller.getInstance().publishGameEvent("PAUSE");
-	}
-
 	@Override
 	public void run() {
 		while (true) {
@@ -203,50 +189,68 @@ public class MonopolyGame implements Runnable {
 	}
 
 	public void executeNetworkMessage(String message) {
-		if (message.equals("ENDTURN")) {
+		switch (message) {
+		case "ENDTURN":
 			currentPlayer = players.poll();
 			players.add(currentPlayer);
-			if (currentPlayer.getName().equals(myName))
-				Controller.getInstance().publishGameEvent("PLAY");
-			for(bot b : bots){
-				if(b.getCurrentPlayer().getName().equals(currentPlayer.getName())){
-					b.play();
-				}
-			}
+			informCurrentPlayer();
 			return;
-		} else if (message.equals("CONNECTIVITYCHECK"))
+		case "CONNECTIVITYCHECK":
 			return;
-		else if (message.equals("PLAYERCHECK")) {
+		case "PLAYERCHECK":
 			NetworkFacade.getInstance().sendMessage("CHECK/" + myName);
 			return;
-		} else if (message.equals("DISCONNECTED")) {
+		case "DISCONNECTED":
 			Controller.getInstance().publishGameEvent("YOUDISCONNECTED");
+			return;
+		case "PAUSE":
+			Controller.getInstance().publishGameEvent("PAUSE");
+			return;
+		case "RESUME":
+			Controller.getInstance().publishGameEvent("RESUME");
 			return;
 		}
 		String[] parsed = message.split("/");
-		if (parsed[0].equals("PLAYERCOUNT")) {
+		switch (parsed[0]) {
+		case "PLAYERCOUNT":
 			numOfPlayers = toInt(parsed[1]);
 			Controller.getInstance().publishGameEvent(message);
 			return;
-		} else if (parsed[0].equals("RECEIVENAME")) {
+		case "CREATEPLAYER":
 			if (isNewGame) {
-				Player newPlayer = new Player(board, parsed[1]);
+				Player newPlayer = new Player(board, parsed[1], parsed[2]);
 				players.add(newPlayer);
 			} else {
 				// This is the current player order in playing.
 				order = players.size() - 1;
 			}
 			return;
-		} else if (parsed[0].equals("CONNECTIVITYPLAYERCOUNT")) {
+		case "CREATEBOT":
+			if (isNewGame) {
+				Player newPlayer = new Player(board, parsed[2], parsed[3]);
+				newPlayer.setBot();
+				Bot b = new Bot(newPlayer);
+				if (parsed[1].equals(myName))
+					b.start();
+				players.add(newPlayer);
+				if (bots.containsKey(parsed[1]))
+					bots.get(parsed[1]).add(b);
+				else {
+					bots.put(parsed[1], new ArrayList<Bot>());
+					bots.get(parsed[1]).add(b);
+				}
+			}
+			return;
+		case "CONNECTIVITYPLAYERCOUNT":
 			numOfPlayers = toInt(parsed[1]);
 			return;
-		} else if (parsed[0].equals("CHECK")) {
+		case "CHECK":
 			Player player = findPlayer(parsed[1]);
 			if (!checkedPlayers.contains(player))
 				checkedPlayers.add(player);
 			if (checkedPlayers.size() == numOfPlayers) {
 				for (Player p : players)
-					if (!checkedPlayers.contains(p)) {
+					if (!checkedPlayers.contains(p) && !p.isBot()) {
 						p.endGame();
 						players.remove(p);
 					}
@@ -254,8 +258,7 @@ public class MonopolyGame implements Runnable {
 				if (players.peekLast() != currentPlayer) {
 					currentPlayer = players.poll();
 					players.add(currentPlayer);
-					if (currentPlayer.getName().equals(myName))
-						Controller.getInstance().publishGameEvent("PLAY");
+					informCurrentPlayer();
 				}
 			}
 			return;
@@ -281,34 +284,19 @@ public class MonopolyGame implements Runnable {
 				card = ActionCards.getInstance().getCommunityChestCard();
 			currentPlayer.pickCard(card);
 			break;
-		case "RECEIVECOLOR":
-			currentPlayer.setColor(parsed[2]);
-			break;
 		case "RECEIVEDICE":
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
-			if (++numOfDiceReceived == numOfPlayers) {
-				Player[] tmp = new Player[players.size()];
-				Arrays.sort(players.toArray(tmp), new Comparator<Player>() {
-					@Override
-					public int compare(Player p1, Player p2) {
-						return Integer.compare(p2.getInitialDiceOrder(), p1.getInitialDiceOrder());
-					}
-				});
-				for (Player p : tmp) {
-					players.add(p);
-					players.poll();
-				}
+			if (!currentPlayer.isBot())
+				numOfDiceReceived++;
+			if (numOfDiceReceived == numOfPlayers) {
+				sortPlayers();
+				for (Player player : players)
+					player.createPiece();
 				currentPlayer = players.poll();
 				players.add(currentPlayer);
 				currentPlayer.sendColor();
-				if (currentPlayer.getName().equals(myName))
-					Controller.getInstance().publishGameEvent("PLAY");
-				for(bot b : bots){
-					if(b.getCurrentPlayer().getName().equals(currentPlayer.getName())){
-						b.play();
-					}
-				}
 				Controller.getInstance().publishGameEvent("START");
+				informCurrentPlayer();
 			}
 			break;
 		case "ENDGAME":
@@ -317,6 +305,29 @@ public class MonopolyGame implements Runnable {
 			if (currentPlayer.getName().equals(myName))
 				NetworkFacade.getInstance().endGame();
 			break;
+		}
+	}
+
+	private void informCurrentPlayer() {
+		if (currentPlayer.getName().equals(myName))
+			Controller.getInstance().publishGameEvent("PLAY");
+		else if (bots.containsKey(myName))
+			for (Bot b : bots.get(myName))
+				if (b.getPlayer().equals(currentPlayer))
+					b.play();
+	}
+
+	private void sortPlayers() {
+		Player[] tmp = new Player[players.size()];
+		Arrays.sort(players.toArray(tmp), new Comparator<Player>() {
+			@Override
+			public int compare(Player p1, Player p2) {
+				return Integer.compare(p2.getInitialDiceOrder(), p1.getInitialDiceOrder());
+			}
+		});
+		for (Player p : tmp) {
+			players.add(p);
+			players.poll();
 		}
 	}
 
