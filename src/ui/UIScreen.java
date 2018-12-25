@@ -17,7 +17,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import game.Controller;
@@ -27,7 +27,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
 	private static final String boardImagePath = "resources/board.png";
 
-	private Hashtable<Integer, Piece> pieces = new Hashtable<Integer, Piece>();
+	private ArrayList<Piece> pieces = new ArrayList<Piece>();
 	private static Hashtable<String, JButton> buttons = new Hashtable<String, JButton>();
 
 	private Animator animator;
@@ -248,11 +248,11 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PIECE":
 			Piece piece = new Piece();
-			piece.color = colorTable.get(parsed[2]);
-			int[] initialPoint = pathFinder.getLocation(toInt(parsed[3]), toInt(parsed[4]));
+			piece.color = colorTable.get(parsed[1]);
+			int[] initialPoint = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
 			piece.lastPoint = new Point(initialPoint[0], initialPoint[1]);
 			board.repaint();
-			pieces.put(Integer.parseInt(parsed[1]), piece);
+			pieces.add(piece);
 			break;
 		case "PLAYERDATA":
 			playerText.setText("");
@@ -308,7 +308,7 @@ public class UIScreen extends JFrame implements GameListener {
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
-			for (Piece piece : pieces.values()) {
+			for (Piece piece : pieces) {
 				piece.paint(g);
 			}
 		}

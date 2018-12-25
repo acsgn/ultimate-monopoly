@@ -156,7 +156,7 @@ public class Player implements Serializable {
 	}
 
 	public void createPiece() {
-		message = "PIECE/" +playerIndex+ "/"+color + "/" + currentTrack.ordinal() + "/" + indexOnTrack;
+		message = "PIECE/" + color + "/" + currentTrack.ordinal() + "/" + indexOnTrack;
 		publishGameEvent(message);
 	}
 

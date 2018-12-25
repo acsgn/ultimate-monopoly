@@ -219,6 +219,7 @@ public class MonopolyGame implements Runnable {
 		case "CREATEPLAYER":
 			if (isNewGame) {
 				Player newPlayer = new Player(board, parsed[1], parsed[2]);
+				newPlayer.createPiece();
 				players.add(newPlayer);
 			} else {
 				// This is the current player order in playing.
@@ -229,6 +230,7 @@ public class MonopolyGame implements Runnable {
 			if (isNewGame) {
 				Player newPlayer = new Player(board, parsed[2], parsed[3]);
 				newPlayer.setBot();
+				newPlayer.createPiece();
 				Bot b = new Bot(newPlayer);
 				if (parsed[1].equals(myName))
 					b.start();
@@ -290,8 +292,6 @@ public class MonopolyGame implements Runnable {
 				numOfDiceReceived++;
 			if (numOfDiceReceived == numOfPlayers) {
 				sortPlayers();
-				for (Player player : players)
-					player.createPiece();
 				currentPlayer = players.poll();
 				players.add(currentPlayer);
 				currentPlayer.sendColor();
