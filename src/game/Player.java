@@ -18,102 +18,28 @@ public class Player implements Serializable {
 	private static final TrackType BEGIN_TRACK = TrackType.MIDDLE_TRACK;
 	private static final int BEGIN_INDEX = 0;
 
-	private static int playerIndexCounter = 0;
-
 	private String name;
 	private String color;
-	private int playerIndex;
-	private int initialDiceOrder;
 	private int money;
 
-	private ArrayList<Chance> ChanceCards;
+	private Board board;
+	private Square location;
+	private TrackType currentTrack;
+	private int indexOnTrack;
 
-	// needed for chance cards
+	private ArrayList<Property> properties;
+	private ArrayList<TransitStation> transitStations;
+	private ArrayList<Utility> utilities;
+
 	private int totalHouses = 0;
 	private int totalHotels = 0;
 	private int totalSkyscrapers = 0;
 
-	public void addHouse() {
-		totalHouses++;
-	}
+	private int initialDiceOrder;
+	private String message;
 
-	public int getMoney() {
-		return money;
-	}
-
-	public int getTotalTransitStations() {
-		int size = transitStations.size();
-		return size;
-
-	}
-
-	public void addHotel() {
-
-		totalHotels++;
-	}
-
-	public void buyHouse() {
-		addHouse();
-	}
-
-	public void buyHotel() {
-		addHotel();
-	}
-
-	public void buySkyscraper() {
-		addSkyscaper();
-	}
-
-	public int getTotalHouses() {
-		// total num of houses
-		return totalHouses;
-	}
-
-	public void setTotalHouses(int totalHouses) {
-		this.totalHouses = totalHouses;
-	}
-
-	public int getTotalHotels() {
-		// total num of hotels
-		return totalHotels;
-	}
-
-	public void setTotalHotels(int totalHotels) {
-		this.totalHotels = totalHotels;
-	}
-
-	public int getTotalSkyscrapers() {
-		// total num of sky
-		return totalSkyscrapers;
-	}
-
-	public void setTotalSkyscrapers(int totalSkyscrapers) {
-		this.totalSkyscrapers = totalSkyscrapers;
-	}
-
-	public void addSkyscaper() {
-		// added as sky is bought
-		totalSkyscrapers++;
-	}
-
-	public void addCard(Chance chance) {
-		ChanceCards.add(chance);
-	}
-
-	public ArrayList<Chance> getChanceCards() {
-		return ChanceCards;
-	}
-
-	public void setChanceCards(ArrayList<Chance> chanceCards) {
-		ChanceCards = chanceCards;
-	}
-
-	// roll 3 field
+	private ArrayList<Chance> ChanceCards;
 	private Card roll3card;
-
-	private TrackType currentTrack;
-	private int indexOnTrack;
-	private Square location;
 
 	private boolean inJail;
 	private boolean isBankrupt;
@@ -123,14 +49,6 @@ public class Player implements Serializable {
 	private int jailCounter = 0;
 	private static final int jailBail = 50;
 
-	private ArrayList<Property> properties;
-	private ArrayList<TransitStation> transitStations;
-	private ArrayList<Utility> utilities;
-
-	private Board board;
-
-	private String message;
-
 	public Player(Board board, String name, String color) {
 		this.board = board;
 		this.name = name;
@@ -138,8 +56,6 @@ public class Player implements Serializable {
 		money = BEGIN_MONEY;
 		currentTrack = BEGIN_TRACK;
 		indexOnTrack = BEGIN_INDEX;
-		playerIndex = playerIndexCounter;
-		playerIndexCounter++;
 		location = board.getSquare(indexOnTrack, currentTrack);
 		properties = new ArrayList<>();
 		transitStations = new ArrayList<>();
@@ -156,7 +72,7 @@ public class Player implements Serializable {
 	}
 
 	public void createPiece() {
-		message = "PIECE/" + color + "/" + currentTrack.ordinal() + "/" + indexOnTrack;
+		message = "PIECE/" + name + "/" + color + "/" + currentTrack.ordinal() + "/" + indexOnTrack;
 		publishGameEvent(message);
 	}
 
@@ -187,7 +103,7 @@ public class Player implements Serializable {
 					move(diceRolls);
 					updateState();
 					location.executeWhenLanded(this);
-					message = "ACTION/" + "You Rolled Doubles You got out of Jail";
+					message = "ACTION/" + name + " rolled Doubles and got out of Jail";
 					publishGameEvent(message);
 				} else {
 					if (jailCounter == 3) {
@@ -195,7 +111,7 @@ public class Player implements Serializable {
 						move(diceRolls);
 						updateState();
 						location.executeWhenLanded(this);
-						message = "ACTION/" + "You paid Bail";
+						message = "ACTION/" + name + " paid Bail";
 						publishGameEvent(message);
 					}
 				}
@@ -248,8 +164,8 @@ public class Player implements Serializable {
 				break;
 		}
 
-		message = "MOVE/" + playerIndex + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal()
-				+ "/" + newIndex;
+		message = "MOVE/" + name + "/" + currentTrack.ordinal() + "/" + indexOnTrack + "/" + newTrack.ordinal() + "/"
+				+ newIndex;
 		publishGameEvent(message);
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
@@ -258,11 +174,6 @@ public class Player implements Serializable {
 
 	public Square getLocation() {
 		return location;
-	}
-
-	// get roll3
-	public Card getRoll3() {
-		return roll3card;
 	}
 
 	// get current track
@@ -348,7 +259,7 @@ public class Player implements Serializable {
 	}
 
 	public void goTo(TrackType track, int index) {
-		message = "JUMP/" + playerIndex + "/" + track.ordinal() + "/" + index;
+		message = "JUMP/" + name + "/" + track.ordinal() + "/" + index;
 		publishGameEvent(message);
 		indexOnTrack = index;
 		currentTrack = track;
@@ -365,6 +276,79 @@ public class Player implements Serializable {
 	 */
 	public void buyBuilding(Building building, Property Property) {
 		Property.getBuildings().add(building);
+	}
+
+	public void addHouse() {
+		totalHouses++;
+	}
+
+	public int getMoney() {
+		return money;
+	}
+
+	public int getTotalTransitStations() {
+		int size = transitStations.size();
+		return size;
+	}
+
+	public void addHotel() {
+		totalHotels++;
+	}
+
+	public void buyHouse() {
+		addHouse();
+	}
+
+	public void buyHotel() {
+		addHotel();
+	}
+
+	public void buySkyscraper() {
+		addSkyscaper();
+	}
+
+	public int getTotalHouses() {
+		return totalHouses;
+	}
+
+	public void setTotalHouses(int totalHouses) {
+		this.totalHouses = totalHouses;
+	}
+
+	public int getTotalHotels() {
+		return totalHotels;
+	}
+
+	public void setTotalHotels(int totalHotels) {
+		this.totalHotels = totalHotels;
+	}
+
+	public int getTotalSkyscrapers() {
+		return totalSkyscrapers;
+	}
+
+	public void setTotalSkyscrapers(int totalSkyscrapers) {
+		this.totalSkyscrapers = totalSkyscrapers;
+	}
+
+	public void addSkyscaper() {
+		totalSkyscrapers++;
+	}
+
+	public void addCard(Chance chance) {
+		ChanceCards.add(chance);
+	}
+
+	public Card getRoll3() {
+		return roll3card;
+	}
+
+	public ArrayList<Chance> getChanceCards() {
+		return ChanceCards;
+	}
+
+	public void setChanceCards(ArrayList<Chance> chanceCards) {
+		ChanceCards = chanceCards;
 	}
 
 	/**
@@ -408,7 +392,7 @@ public class Player implements Serializable {
 	public boolean reduceMoney(int m) {
 		if (money > m) {
 			this.money -= m;
-			// updateState();
+			updateState();
 			return true;
 		}
 		return false;
@@ -424,7 +408,7 @@ public class Player implements Serializable {
 	 */
 	public void increaseMoney(int m) {
 		this.money += m;
-		// updateState();
+		updateState();
 	}
 
 	public void setProperties(ArrayList<Property> properties) {
@@ -470,7 +454,7 @@ public class Player implements Serializable {
 	}
 
 	public void endGame() {
-		message = "REMOVEPIECE/" + playerIndex;
+		message = "REMOVEPIECE/" + name;
 		publishGameEvent(message);
 		message = "ACTION/" + name + " left the game.";
 		publishGameEvent(message);
