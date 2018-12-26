@@ -1,18 +1,24 @@
 package game;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.concurrent.ConcurrentLinkedDeque;
+
+import game.bot.Bot;
 
 public class SavedGame implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
 	private ConcurrentLinkedDeque<Player> players;
 	private Player currentPlayer;
-	private int order;
+	private Hashtable<String, ArrayList<Bot>> bots;
 
-	public SavedGame(ConcurrentLinkedDeque<Player> players, Player currentPlayer, int order) {
+	public SavedGame(ConcurrentLinkedDeque<Player> players, Player currentPlayer,
+			Hashtable<String, ArrayList<Bot>> bots) {
 		this.players = players;
 		this.currentPlayer = currentPlayer;
-		this.order = order;
+		this.bots = bots;
 	}
 
 	// Getters
@@ -24,8 +30,8 @@ public class SavedGame implements Serializable {
 		return currentPlayer;
 	}
 
-	public int getOrder() {
-		return order;
+	public Hashtable<String, ArrayList<Bot>> getBots() {
+		return bots;
 	}
 
 	// Setters
@@ -37,7 +43,7 @@ public class SavedGame implements Serializable {
 		this.currentPlayer = currentPlayer;
 	}
 
-	public void setOrder(int order) {
-		this.order = order;
+	public void setBots(Hashtable<String, ArrayList<Bot>> bots) {
+		this.bots = bots;
 	}
 }
