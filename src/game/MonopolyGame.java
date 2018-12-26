@@ -24,11 +24,9 @@ public class MonopolyGame implements Runnable {
 	private String myName;
 	private int numOfPlayers = 0;
 	private int numOfDiceReceived = 0;
-	private int order;
 	private boolean isNewGame;
 	private Board board;
 	private boolean destroy = false;
-	private Object animationEnded = new Object();
 
 	private Hashtable<String, ArrayList<Bot>> bots;
 
@@ -72,8 +70,9 @@ public class MonopolyGame implements Runnable {
 						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				break;
 			case "ENDGAME":
-				destroy = true;
 				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");
+				destroy = true;
+				NetworkFacade.getInstance().endGame();
 				if (bots.containsKey(myName))
 					for (Bot b : bots.get(myName))
 						b.destroy();
@@ -88,9 +87,10 @@ public class MonopolyGame implements Runnable {
 				saveGame(parsed[2]);
 				break;
 			case "ANIMATIONEND":
-				synchronized (animationEnded) {
-					animationEnded.notify();
+				synchronized (this) {
+					notify();
 				}
+				break;
 			}
 			break;
 		case "BOT":
@@ -105,9 +105,9 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance().sendMessage(parsed[2] + "/BUYESTATE");
 				break;
 			case "ENDTURN":
-				synchronized (animationEnded) {
+				synchronized (this) {
 					try {
-						animationEnded.wait();
+						wait();
 					} catch (InterruptedException e) {
 					}
 				}
@@ -222,8 +222,6 @@ public class MonopolyGame implements Runnable {
 				newPlayer.createPiece();
 				players.add(newPlayer);
 			} else {
-				// This is the current player order in playing.
-				order = players.size() - 1;
 			}
 			return;
 		case "CREATEBOT":
@@ -302,8 +300,11 @@ public class MonopolyGame implements Runnable {
 		case "ENDGAME":
 			currentPlayer.endGame();
 			players.remove(currentPlayer);
-			if (currentPlayer.getName().equals(myName))
-				NetworkFacade.getInstance().endGame();
+			if (bots.containsKey(currentPlayer.getName()))
+				for (Bot b : bots.get(currentPlayer.getName())) {
+					b.getPlayer().endGame();
+					players.remove(b.getPlayer());
+				}
 			break;
 		}
 	}
@@ -341,7 +342,7 @@ public class MonopolyGame implements Runnable {
 	public void saveGame(String savedGameFileName) {
 		// Create the SavedGame Object.
 
-		SavedGame saved = new SavedGame(players, currentPlayer, order);
+		SavedGame saved = new SavedGame(players, currentPlayer, bots);
 		try {
 			// create a new file with an ObjectOutputStream
 			FileOutputStream out = new FileOutputStream(savedGameFileName + ".txt");
@@ -374,7 +375,7 @@ public class MonopolyGame implements Runnable {
 			// (Instead of sending him the original order, we can send it modified
 			// a bit.
 			currentPlayer = players.poll();
-			this.order = saved.getOrder();
+			bots = saved.getBots();
 			ois.close();
 		} catch (Exception ex) {
 		}

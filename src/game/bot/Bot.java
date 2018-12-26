@@ -1,10 +1,12 @@
 package game.bot;
 
+import java.io.Serializable;
+
 import game.Controller;
 import game.Player;
-import game.square.Square;
 
-public class Bot implements Runnable {
+public class Bot implements Runnable, Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private Player player;
 	private botStrategy strategy;
@@ -24,14 +26,13 @@ public class Bot implements Runnable {
 			notify();
 		}
 	}
-	
+
 	public void destroy() {
 		destroy = true;
 		synchronized (this) {
 			notify();
 		}
 	}
-	
 
 	public static void createBot() {
 		botCounter++;
@@ -51,17 +52,16 @@ public class Bot implements Runnable {
 				} catch (InterruptedException e) {
 				}
 			}
-			if(destroy)
+			if (destroy)
 				break;
+			
 			// Roll the dice
 			String message = "BOT/ROLLDICE/" + player.getName();
 			Controller.getInstance().dispatchMessage(message);
 
-			// Do some Action,
-			Square location = player.getLocation();
-			String message_1;
-			strategy = botStrategyFactory.getInstance().getbotStrategy(location);
-			message_1 = strategy.getActionMessage(location, player);
+			// Do some Action
+			strategy = botStrategyFactory.getInstance().getbotStrategy(player.getLocation());
+			String message_1 = strategy.getActionMessage(player.getLocation(), player);
 			Controller.getInstance().dispatchMessage(message_1);
 
 			// End your Turn.

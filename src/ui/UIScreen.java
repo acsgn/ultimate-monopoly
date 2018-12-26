@@ -17,7 +17,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+
 import java.util.Hashtable;
 
 import game.Controller;
@@ -27,16 +27,15 @@ public class UIScreen extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
 	private static final String boardImagePath = "resources/board.png";
 
-	private ArrayList<Piece> pieces = new ArrayList<Piece>();
-	private static Hashtable<String, JButton> buttons = new Hashtable<String, JButton>();
-
-	private Animator animator;
 	private Controller controller;
+	private Animator animator;
+	private PathFinder pathFinder;
+	private Hashtable<String, Piece> pieces;
+	private Hashtable<String, JButton> buttons = new Hashtable<String, JButton>();
+
 	private String message;
 	private JTextArea infoText;
 	private JTextArea playerText;
-	private Color playerColor;
-	private PathFinder pathFinder;
 	private JPanel playerArea;
 	private JBoard board;
 
@@ -71,7 +70,8 @@ public class UIScreen extends JFrame implements GameListener {
 	 * Create the panel.
 	 */
 	public UIScreen() {
-		this.controller = Controller.getInstance();
+		controller = Controller.getInstance();
+		pieces = new Hashtable<String, Piece>();
 
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -84,7 +84,8 @@ public class UIScreen extends JFrame implements GameListener {
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
 		add(board);
 
-		animator = new Animator(board);
+		animator = new Animator();
+		animator.addComponentToAnimate(board);
 		new Thread(animator, "Animator").start();
 
 		pathFinder = new PathFinder(scaleFactor);
@@ -200,12 +201,9 @@ public class UIScreen extends JFrame implements GameListener {
 		endGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				message = "UISCREEN/ENDGAME";
 				animator.destruct();
-				synchronized (animator) {
-					animator.notify();
-				}
-				controller.dispatchMessage(message);
+				controller.dispatchMessage("UISCREEN/ANIMATIONEND");
+				controller.dispatchMessage("UISCREEN/ENDGAME");
 				dispose();
 			}
 		});
@@ -232,27 +230,26 @@ public class UIScreen extends JFrame implements GameListener {
 			infoText.insert(parsed[1] + "\n", 0);
 			break;
 		case "COLOR":
-			playerColor = colorTable.get(parsed[1]);
-			playerArea.setBackground(playerColor);
+			playerArea.setBackground(colorTable.get(parsed[1]));
 			break;
 		case "MOVE":
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
-			pieces.get(toInt(parsed[1])).path = path;
-			pieces.get(toInt(parsed[1])).isActive = true;
+			pieces.get(parsed[1]).path = path;
+			pieces.get(parsed[1]).isActive = true;
 			animator.startAnimator();
 			break;
 		case "JUMP":
 			int[] point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(toInt(parsed[1])).path.addPoint(new Point(point[0], point[1]));
+			pieces.get(parsed[1]).path.addPoint(new Point(point[0], point[1]));
 			board.repaint();
 			break;
 		case "PIECE":
 			Piece piece = new Piece();
-			piece.color = colorTable.get(parsed[1]);
-			int[] initialPoint = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
+			piece.color = colorTable.get(parsed[2]);
+			int[] initialPoint = pathFinder.getLocation(toInt(parsed[3]), toInt(parsed[4]));
 			piece.lastPoint = new Point(initialPoint[0], initialPoint[1]);
 			board.repaint();
-			pieces.add(piece);
+			pieces.put(parsed[1], piece);
 			break;
 		case "PLAYERDATA":
 			playerText.setText("");
@@ -265,8 +262,8 @@ public class UIScreen extends JFrame implements GameListener {
 				button.setEnabled(true);
 			}
 			break;
-		case "DELETEPIECE":
-			pieces.remove(toInt(parsed[1]));
+		case "REMOVEPIECE":
+			pieces.remove(parsed[1]);
 			repaint();
 		default:
 			break;
@@ -295,7 +292,7 @@ public class UIScreen extends JFrame implements GameListener {
 				else {
 					animator.stopAnimator();
 					isActive = false;
-					Controller.getInstance().dispatchMessage("UISCREEN/ANIMATIONEND");
+					controller.dispatchMessage("UISCREEN/ANIMATIONEND");
 				}
 			}
 		}
@@ -308,7 +305,7 @@ public class UIScreen extends JFrame implements GameListener {
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
-			for (Piece piece : pieces) {
+			for (Piece piece : pieces.values()) {
 				piece.paint(g);
 			}
 		}
