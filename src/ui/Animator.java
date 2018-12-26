@@ -1,50 +1,59 @@
 package ui;
 
-import javax.swing.JLabel;
+import java.util.ArrayList;
+
+import javax.swing.JComponent;
 
 public class Animator implements Runnable {
 
 	private static long sleepTime = 25;
 
-	private volatile boolean animatorStopped = true;
-	private boolean animatorDestruct = false;
-	private JLabel board;
+	private boolean stop = true;
+	private boolean destruct = false;
+	private ArrayList<JComponent> components;
 
 	@Override
 	public void run() {
 		while (true) {
-			if (animatorDestruct)
-				break;
 			try {
 				synchronized (this) {
-					if (animatorStopped)
+					if (destruct)
+						break;
+					if (stop)
 						wait();
-					else {
-						Thread.sleep(sleepTime);
-						board.repaint();
-					}
 				}
+				Thread.sleep(sleepTime);
+				for (JComponent c : components)
+					c.repaint();
 			} catch (InterruptedException e) {
 			}
 		}
 	}
 
-	public Animator(JLabel board) {
-		this.board = board;
+	public Animator() {
+		components = new ArrayList<JComponent>();
+	}
+
+	public void addComponentToAnimate(JComponent component) {
+		components.add(component);
 	}
 
 	public void startAnimator() {
+		stop = false;
 		synchronized (this) {
-			animatorStopped = false;
 			notify();
 		}
 	}
 
 	public void stopAnimator() {
-		animatorStopped = true;
+		stop = true;
 	}
 
 	public void destruct() {
-		animatorDestruct = true;
+		destruct = true;
+		synchronized (this) {
+			notify();
+		}
 	}
+
 }
