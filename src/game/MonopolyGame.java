@@ -115,7 +115,7 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "CREATEBOT":
 				NetworkFacade.getInstance()
-						.sendMessage("CREATEBOT/" + myName + "/" + myName + parsed[2] + "/" + "Black");
+						.sendMessage("CREATEBOT/" + myName + "/" + myName + parsed[2] + "/" + (-10066177));
 				SingletonDice.getInstance().rollDice();
 				int[] dice = SingletonDice.getInstance().getFaceValues();
 				NetworkFacade.getInstance().sendMessage(myName + parsed[2] + "/RECEIVEDICE/" + (dice[0] + dice[1]));

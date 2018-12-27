@@ -6,14 +6,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -34,14 +35,14 @@ public class UICreator extends JFrame implements GameListener {
 	private JSlider botSlider;
 	private int playerCount = 0;
 	private int botCount = 0;
+	private Color choosenColor;
+	private int chooserVal = -1;
 
 	private int width = Toolkit.getDefaultToolkit().getScreenSize().width / 3;
 	private int height = Toolkit.getDefaultToolkit().getScreenSize().height / 2;
 
 	private Image ultimateMonopolyImage = new ImageIcon(ultimateMonopolyImagePath).getImage().getScaledInstance(width,
 			-1, Image.SCALE_SMOOTH);
-
-	private int chooserVal = -1;
 
 	/**
 	 * Create the frame.
@@ -157,13 +158,19 @@ public class UICreator extends JFrame implements GameListener {
 
 		gamePanel.add(playerNamePanel);
 
-		String[] colorNames = { "Red", "Green", "Blue", "Yellow", "Cyan", "Pink", "Orange", "Magenta", "Gray",
-				"Black" };
-		JComboBox<String> colorBox = new JComboBox<String>(colorNames);
-		colorBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		colorBox.setBounds(13 * width / 25, 19 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 50,
-				11 * width / 25, 6 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
-		gamePanel.add(colorBox);
+		JButton colorButton = new JButton("Choose a color");
+		colorButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		colorButton.setBounds(13 * width / 25, 9 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
+				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		gamePanel.add(colorButton);
+
+		colorButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				choosenColor = JColorChooser.showDialog(UICreator.this, "Choose Background Color",
+						UICreator.this.getBackground());
+			}
+		});
 
 		JButton startGameButton = new JButton("Start Game");
 		startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -182,8 +189,13 @@ public class UICreator extends JFrame implements GameListener {
 									JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-						Controller.getInstance().dispatchMessage(message + "CREATE/" + name + "/"
-								+ colorNames[colorBox.getSelectedIndex()] + "/" + botCount);
+						if (choosenColor == null) {
+							JOptionPane.showMessageDialog(UICreator.this, "Please choose a color!", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+						Controller.getInstance().dispatchMessage(
+								message + "CREATE/" + name + "/" + choosenColor.getRGB() + "/" + botCount);
 					}
 					// Should handle load game in here
 				} else

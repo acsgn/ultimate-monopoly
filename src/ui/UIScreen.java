@@ -82,7 +82,7 @@ public class UIScreen extends JFrame implements GameListener {
 		board = new JBoard();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
-		add(board);
+		getContentPane().add(board);
 
 		animator = new Animator();
 		animator.addComponentToAnimate(board);
@@ -91,17 +91,20 @@ public class UIScreen extends JFrame implements GameListener {
 		pathFinder = new PathFinder(scaleFactor);
 
 		JPanel controlPanel = new JPanel();
+		controlPanel.setBounds(screenX + screenHeight, screenY, controlPaneWidth, controlPaneHeight);
 		controlPanel.setLayout(null);
 
 		playerArea = new JPanel();
 		playerArea.setLayout(null);
+		playerArea.setOpaque(true);
+		playerArea.setBounds(controlPaneXSpace, controlPaneYSpace, controlPaneAreaWidth, controlPaneAreaHeight);
+		
 		playerText = new JTextArea();
 		playerText.setEditable(false);
 		JScrollPane playerScroll = new JScrollPane(playerText);
 		playerScroll.setBounds(controlPaneXSpace, 2 * controlPaneYSpace, controlPaneAreaWidth - 2 * controlPaneXSpace,
 				controlPaneAreaHeight - 2 * controlPaneYSpace);
 		playerArea.add(playerScroll);
-		playerArea.setBounds(controlPaneXSpace, controlPaneYSpace, controlPaneAreaWidth, controlPaneAreaHeight);
 		controlPanel.add(playerArea);
 
 		JButton endGameButton = new JButton("End Game");
@@ -145,10 +148,8 @@ public class UIScreen extends JFrame implements GameListener {
 		endTurnButton.setBounds(controlPaneXSpace, getButtonY(1), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(endTurnButton);
 		endTurnButton.setEnabled(false);
-
-		controlPanel.setBounds(screenX + screenHeight, screenY, controlPaneWidth, controlPaneHeight);
-		add(controlPanel);
-
+		
+		getContentPane().add(controlPanel);
 		getContentPane().setBackground(Color.BLACK);
 
 		bailButton.addActionListener(new ActionListener() {
@@ -161,7 +162,6 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 		});
 
-		// Action Listeners
 		rollDiceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -230,7 +230,8 @@ public class UIScreen extends JFrame implements GameListener {
 			infoText.insert(parsed[1] + "\n", 0);
 			break;
 		case "COLOR":
-			playerArea.setBackground(colorTable.get(parsed[1]));
+			repaint();
+			playerArea.setBackground(new Color(toInt(parsed[1]), true));
 			break;
 		case "MOVE":
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
@@ -245,7 +246,7 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PIECE":
 			Piece piece = new Piece();
-			piece.color = colorTable.get(parsed[2]);
+			piece.color = new Color(toInt(parsed[2]), true);
 			int[] initialPoint = pathFinder.getLocation(toInt(parsed[3]), toInt(parsed[4]));
 			piece.lastPoint = new Point(initialPoint[0], initialPoint[1]);
 			board.repaint();
@@ -264,8 +265,7 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "REMOVEPIECE":
 			pieces.remove(parsed[1]);
-			repaint();
-		default:
+			board.repaint();
 			break;
 		}
 	}
@@ -310,21 +310,5 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 		}
 	}
-
-	private static Hashtable<String, Color> colorTable = new Hashtable<String, Color>() {
-		private static final long serialVersionUID = 1L;
-		{
-			put("Red", Color.RED);
-			put("Green", Color.GREEN);
-			put("Blue", Color.BLUE);
-			put("Yellow", Color.YELLOW);
-			put("Cyan", Color.CYAN);
-			put("Pink", Color.PINK);
-			put("Orange", Color.ORANGE);
-			put("Magenta", Color.MAGENTA);
-			put("Gray", Color.GRAY);
-			put("Black", Color.BLACK);
-		}
-	};
 
 }
