@@ -34,10 +34,8 @@ public class NetworkFacade implements Runnable {
 	public void startGame() {
 		isDiscovering = false;
 		discovery.destroy();
-		for (String IP : discovery.getIPAddresses()) {
-			System.out.println(IP);
+		for (String IP : discovery.getIPAddresses())
 			IPAddresses.add(IP);
-		}
 		new Thread(this, "Connection Control").start();
 	}
 
