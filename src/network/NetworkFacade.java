@@ -43,8 +43,7 @@ public class NetworkFacade implements Runnable {
 		ArrayList<String> closedIPs = new ArrayList<String>();
 		for (String IP : IPAddresses) {
 			try {
-				P2PClient c = new P2PClient(IP);
-				MessageSocket mS = c.getMessageSocket();
+				MessageSocket mS = new P2PClient(IP).getMessageSocket();
 				mS.sendMessage(message);
 				mS.close();
 			} catch (Exception e) {
@@ -76,8 +75,7 @@ public class NetworkFacade implements Runnable {
 	public void endGame() {
 		destroy = true;
 		try {
-			P2PClient c = new P2PClient("localhost");
-			MessageSocket mS = c.getMessageSocket();
+			MessageSocket mS = new P2PClient("localhost").getMessageSocket();
 			mS.sendMessage("CLOSE");
 			mS.close();
 		} catch (Exception e) {
