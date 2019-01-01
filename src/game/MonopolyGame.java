@@ -4,10 +4,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import game.card.ActionCards;
@@ -28,13 +28,13 @@ public class MonopolyGame implements Runnable {
 	private Board board;
 	private boolean destroy = false;
 
-	private Hashtable<String, ArrayList<Bot>> bots;
+	private ConcurrentHashMap<String, LinkedList<Bot>> bots;
 
 	public MonopolyGame() {
 		board = new Board();
 		players = new ConcurrentLinkedDeque<Player>();
 		checkedPlayers = new ConcurrentLinkedDeque<Player>();
-		bots = new Hashtable<String, ArrayList<Bot>>();
+		bots = new ConcurrentHashMap<String, LinkedList<Bot>>();
 		isNewGame = true;
 		NetworkFacade.getInstance().startNetwork();
 		new Thread(this, "Game").start();
@@ -236,7 +236,7 @@ public class MonopolyGame implements Runnable {
 				if (bots.containsKey(parsed[1]))
 					bots.get(parsed[1]).add(b);
 				else {
-					bots.put(parsed[1], new ArrayList<Bot>());
+					bots.put(parsed[1], new LinkedList<Bot>());
 					bots.get(parsed[1]).add(b);
 				}
 			}
@@ -253,6 +253,13 @@ public class MonopolyGame implements Runnable {
 					if (!checkedPlayers.contains(p) && !p.isBot()) {
 						p.endGame();
 						players.remove(p);
+						if (bots.containsKey(p.getName())) {
+							for (Bot b : bots.get(p.getName())) {
+								b.getPlayer().endGame();
+								players.remove(b.getPlayer());
+							}
+							bots.remove(p.getName());
+						}
 					}
 				checkedPlayers.clear();
 				if (players.peekLast() != currentPlayer) {
@@ -300,11 +307,13 @@ public class MonopolyGame implements Runnable {
 		case "ENDGAME":
 			currentPlayer.endGame();
 			players.remove(currentPlayer);
-			if (bots.containsKey(currentPlayer.getName()))
+			if (bots.containsKey(currentPlayer.getName())) {
 				for (Bot b : bots.get(currentPlayer.getName())) {
 					b.getPlayer().endGame();
 					players.remove(b.getPlayer());
 				}
+				bots.remove(currentPlayer.getName());
+			}
 			break;
 		}
 	}
