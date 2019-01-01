@@ -65,8 +65,10 @@ public class NetworkFacade implements Runnable {
 			return discovery.getNumberOfPlayers();
 		} else {
 			String message = p2p.receiveMessage();
-			if (message.equals(connectivityCheckMessage))
+			if (message.equals(connectivityCheckMessage)) {
 				isChecking = false;
+				return receiveMessage();
+			}
 			return message;
 		}
 	}

@@ -195,8 +195,6 @@ public class MonopolyGame implements Runnable {
 			players.add(currentPlayer);
 			informCurrentPlayer();
 			return;
-		case "CONNECTIVITYCHECK":
-			return;
 		case "PLAYERCHECK":
 			NetworkFacade.getInstance().sendMessage("CHECK/" + myName);
 			return;
