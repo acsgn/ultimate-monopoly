@@ -1,6 +1,8 @@
 package game.bot;
 
+import java.awt.Color;
 import java.io.Serializable;
+import java.util.Random;
 
 import game.Controller;
 import game.Player;
@@ -11,7 +13,11 @@ public class Bot implements Runnable, Serializable {
 	private Player player;
 	private botStrategy strategy;
 	private boolean destroy = false;
+
 	private static int botCounter = 0;
+	private static Random random = new Random();
+	private static final float saturation = 0.9f;
+	private static final float luminance = 0.9f;
 
 	public Bot(Player player) {
 		this.player = player;
@@ -36,7 +42,8 @@ public class Bot implements Runnable, Serializable {
 
 	public static void createBot() {
 		botCounter++;
-		Controller.getInstance().dispatchMessage("BOT/CREATEBOT/Bot_" + botCounter);
+		int color = Color.getHSBColor(random.nextFloat(), saturation, luminance).getRGB();
+		Controller.getInstance().dispatchMessage("BOT/CREATEBOT/Bot_" + botCounter + "/" + color);
 	}
 
 	public Player getPlayer() {
@@ -54,7 +61,7 @@ public class Bot implements Runnable, Serializable {
 			}
 			if (destroy)
 				break;
-			
+
 			// Roll the dice
 			String message = "BOT/ROLLDICE/" + player.getName();
 			Controller.getInstance().dispatchMessage(message);
