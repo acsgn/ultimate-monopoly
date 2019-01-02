@@ -56,4 +56,8 @@ public class Animator implements Runnable {
 		}
 	}
 
+	public boolean isStopped() {
+		return stop;
+	}
+
 }

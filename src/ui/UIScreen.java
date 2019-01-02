@@ -98,7 +98,7 @@ public class UIScreen extends JFrame implements GameListener {
 		playerArea.setLayout(null);
 		playerArea.setOpaque(true);
 		playerArea.setBounds(controlPaneXSpace, controlPaneYSpace, controlPaneAreaWidth, controlPaneAreaHeight);
-		
+
 		playerText = new JTextArea();
 		playerText.setEditable(false);
 		JScrollPane playerScroll = new JScrollPane(playerText);
@@ -148,7 +148,7 @@ public class UIScreen extends JFrame implements GameListener {
 		endTurnButton.setBounds(controlPaneXSpace, getButtonY(1), controlPaneButtonWidth, controlPaneButtonHeight);
 		controlPanel.add(endTurnButton);
 		endTurnButton.setEnabled(false);
-		
+
 		getContentPane().add(controlPanel);
 		getContentPane().setBackground(Color.BLACK);
 
@@ -237,7 +237,7 @@ public class UIScreen extends JFrame implements GameListener {
 			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
 			pieces.get(parsed[1]).path = path;
 			pieces.get(parsed[1]).isActive = true;
-			animator.startAnimator();
+			board.repaint();
 			break;
 		case "JUMP":
 			int[] point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
@@ -264,7 +264,8 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 			break;
 		case "REMOVEPIECE":
-			pieces.remove(parsed[1]);
+			if (pieces.remove(parsed[1]).isActive)
+				animator.stopAnimator();
 			board.repaint();
 			break;
 		}
@@ -287,6 +288,8 @@ public class UIScreen extends JFrame implements GameListener {
 			g.setColor(color);
 			g.fillRect(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (isActive) {
+				if (animator.isStopped())
+					animator.startAnimator();
 				if (path != null && path.hasMoreSteps())
 					lastPoint = path.nextPosition();
 				else {
