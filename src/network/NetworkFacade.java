@@ -17,6 +17,7 @@ public class NetworkFacade implements Runnable {
 	private volatile boolean someoneDisconnected = false;
 	private String disconnectedMesssage = "DISCONNECTED";
 	private String connectivityCheckMessage = "CONNECTIVITYCHECK";
+	private String checkDoneMessage = "CHECKDONE";
 	private String playerCountMessage = "CONNECTIVITYPLAYERCOUNT/";
 	private String playerCheckMessage = "PLAYERCHECK";
 
@@ -68,6 +69,10 @@ public class NetworkFacade implements Runnable {
 				isChecking = false;
 				return receiveMessage();
 			}
+			if (message.equals(checkDoneMessage)) {
+				isChecking = true;
+				return receiveMessage();
+			}
 			return message;
 		}
 	}
@@ -103,8 +108,8 @@ public class NetworkFacade implements Runnable {
 						sendMessage(playerCheckMessage);
 						someoneDisconnected = false;
 					}
+					sendMessage(checkDoneMessage);
 				}
-				isChecking = true;
 			} catch (InterruptedException e) {
 			}
 		}
