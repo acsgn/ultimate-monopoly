@@ -12,7 +12,7 @@ public class CommunityChest extends Action {
 	@Override
 	public void executeWhenLanded(Player player) {
 		game.card.CommunityChest card = ActionCards.getInstance().getCommunityChestCard();
-		player.pickCard(card);
+		//player.pickCard(card);
 		NetworkFacade.getInstance().sendMessage(player.getName()+"/CARD/"+card.getCardType().ordinal());
 	}
 

@@ -52,7 +52,7 @@ public class CommunityChest extends Card {
 
 						ArrayList<Building> updateBuildings = property.getBuildings();
 						updateBuildings.remove(building);
-						property.setBuildings(updateBuildings);
+						//property.setBuildings(updateBuildings);
 
 						break;
 					}
@@ -79,7 +79,7 @@ public class CommunityChest extends Card {
 			// Repeated payRent if the square is owned, because double the 
 			// rent should be paid.
 			if (player.getLocation().isOwned()) {
-				player.payRent(player.getLocation());
+				//player.payRent(player.getLocation());
 			}
 			
 		}

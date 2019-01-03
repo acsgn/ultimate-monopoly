@@ -13,7 +13,7 @@ public class Chance extends Action {
 	@Override
 	public void executeWhenLanded(Player player) {
 		game.card.Chance card = ActionCards.getInstance().getChanceCard();
-		player.pickCard(card);
+		//player.pickCard(card);
 		NetworkFacade.getInstance().sendMessage(player.getName()+"/CARD/"+card.getCardType().ordinal());
 	}
 

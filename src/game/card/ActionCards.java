@@ -1,6 +1,7 @@
 package game.card;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ActionCards {
 	
@@ -69,14 +70,14 @@ public class ActionCards {
 		CommunityChest tornadoHits = new CommunityChest("Tornado Hits!");
 		CommunityChest theInsidersEdge = new CommunityChest("The Insider's Edge");
 		
-		communityChest.add(happyBirthday);
+		/*communityChest.add(happyBirthday);
 		communityChest.add(gameNight);
 		communityChest.add(aMovingExperience);
-		communityChest.add(houseCondemned);
+		communityChest.add(houseCondemned);*/
 		
-		communityChest.add(beKindRewind);
+		//communityChest.add(beKindRewind);
 		communityChest.add(payHospitalBills);
-		communityChest.add(tornadoHits);
+		//communityChest.add(tornadoHits);
 		communityChest.add(theInsidersEdge);
 	
 	}
@@ -107,19 +108,19 @@ public class ActionCards {
 		Chance changingLanesAbove = new Chance("Changin Lanes Above", true);
 		Chance changingLanesBelow = new Chance("Changin Lanes Below", true);
 		
-		chance.add(advanceToThePayCorner);
+		/*chance.add(advanceToThePayCorner);
 		chance.add(advanceToTheNearestRailroad);
 		chance.add(getOutOfJailFree);
 		chance.add(advanceToSaintCharlesPlace);
 		chance.add(goToJail);
-		chance.add(makeGeneralRepairsToAllYourProperties);
+		chance.add(makeGeneralRepairsToAllYourProperties);*/
 		chance.add(holidayBonus);
-		chance.add(buyersmarket);
+		/*chance.add(buyersmarket);
 		chance.add(ForeclosedPropertySale);
 		chance.add(SeeYouInCourt);
-		chance.add(forwardThinker);
+		chance.add(forwardThinker);*/
 		chance.add(propertyTaxes);
-		chance.add(getRollin);
+		/*chance.add(getRollin);
 		chance.add(hurricaneMakesLandfall);
 		chance.add(rideTheSubway);
 		chance.add(socialMediaFail);
@@ -128,15 +129,17 @@ public class ActionCards {
 		chance.add(GPSisNotWorking);
 		chance.add(zeroDollarsDown);
 		chance.add(changingLanesAbove);
-		chance.add(changingLanesBelow);
+		chance.add(changingLanesBelow);*/
 	}
 	public CommunityChest getCommunityChestCard(){
-		CommunityChest tmp = communityChest.remove(0);
+		Random d = new Random();
+		CommunityChest tmp = communityChest.remove(d.nextInt(communityChest.size()));
 		communityChest.add(tmp);
 		return tmp;
 	}
 	public Chance getChanceCard(){
-		Chance tmp = chance.remove(0);
+		Random d = new Random();
+		Chance tmp = chance.remove(d.nextInt(communityChest.size()));
 		chance.add(tmp);
 		return tmp;
 	}
