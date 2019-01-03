@@ -6,6 +6,7 @@ import java.util.Random;
 
 import game.Controller;
 import game.Player;
+import game.square.Square;
 
 public class Bot implements Runnable, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -67,8 +68,9 @@ public class Bot implements Runnable, Serializable {
 			Controller.getInstance().dispatchMessage(message);
 
 			// Do some Action
-			strategy = botStrategyFactory.getInstance().getbotStrategy(player.getLocation());
-			String message_1 = strategy.getActionMessage(player.getLocation(), player);
+			Square location = player.getLocation();
+			strategy = botStrategyFactory.getInstance().getbotStrategy(location);
+			String message_1 = strategy.getActionMessage(location, player);
 			Controller.getInstance().dispatchMessage(message_1);
 
 			// End your Turn.
