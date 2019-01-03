@@ -11,13 +11,14 @@ import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import game.Controller;
@@ -183,7 +184,7 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				String squareName = (String) propertiesList.getSelectedItem();
-				message = "UISCREEN/BUYBUILDING," + squareName;
+				message = "UISCREEN/BUYBUILDING/" + squareName;
 				controller.dispatchMessage(message);
 			}
 		});
@@ -267,6 +268,39 @@ public class UIScreen extends JFrame implements GameListener {
 			if (pieces.remove(parsed[1]).isActive)
 				animator.stopAnimator();
 			board.repaint();
+			break;
+		case "BUILDING":
+			if (parsed[1].equals("YES")) {
+				ArrayList<Object> possibilities = new ArrayList<>();
+				for (int i = 2; i < parsed.length; i++) {
+					possibilities.add(parsed[i]);
+				}
+				String s = (String) JOptionPane.showInputDialog(null,
+						"Complete the sentence:\n" + "\"Green eggs and...\"", "Customized Dialog",
+						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
+				Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
+			} else {
+				JOptionPane.showMessageDialog(null, "You don't have any monopoly or majority ownership",
+						"A plain message", JOptionPane.PLAIN_MESSAGE);
+			}
+
+			break;
+		case "BUILDING2":
+			ArrayList<Object> possibilities = new ArrayList<>();
+			if (parsed[1].equals("NO")) {
+				JOptionPane.showMessageDialog(null, parsed[2],
+						"A plain message", JOptionPane.PLAIN_MESSAGE);
+			} else {
+				for (int i = 1; i < parsed.length - 1; i++) {
+					possibilities.add(parsed[i]);
+				}
+				String s = (String) JOptionPane.showInputDialog(null,
+						"Complete the sentence:\n" + "\"Green eggs and...\"", "Customized Dialog",
+						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
+				Controller.getInstance()
+						.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1] + "/");
+				System.out.println(s);
+			}
 			break;
 		}
 	}

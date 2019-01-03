@@ -27,7 +27,7 @@ public class MonopolyGame implements Runnable {
 	private boolean isNewGame;
 	private Board board;
 	private boolean destroy = false;
-
+	
 	private ConcurrentHashMap<String, LinkedList<Bot>> bots;
 
 	public MonopolyGame() {
@@ -90,6 +90,15 @@ public class MonopolyGame implements Runnable {
 				synchronized (this) {
 					notify();
 				}
+				break;
+			case "BUYBUILDING":
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING");
+				break;
+			case "BUYBUILDING2":
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING2/"+parsed[2]);
+				break;
+			case "BUYBUILDING3":
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING3/"+parsed[2]+"/"+parsed[3]);
 				break;
 			}
 			break;
@@ -312,6 +321,20 @@ public class MonopolyGame implements Runnable {
 				}
 				bots.remove(currentPlayer.getName());
 			}
+			break;
+		case "BUYBUILDING":
+			currentPlayer.buyBuildingAction();
+			break;
+		case "BUYBUILDING2":
+			currentPlayer.buyBuildingChooseSquare(parsed[2]);
+			break;
+		case "BUYBUILDING3":
+			currentPlayer.buyBuilding(parsed[2]+"/"+parsed[3]);
+			break;
+		case "PAYRENT":
+			int rent = currentPlayer.payRent();
+			Player owner = findPlayer(parsed[2]);
+			owner.increaseMoney(rent);
 			break;
 		}
 	}

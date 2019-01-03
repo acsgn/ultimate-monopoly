@@ -21,6 +21,31 @@ public class Board {
 	private CommunityChest communityChest;
 	private FreeParking freeParking;
 
+
+	private ColorGroup WHITE_GROUP;
+	private ColorGroup BLACK_GROUP;
+	private ColorGroup GRAY_GROUP;
+	private ColorGroup BROWN_GROUP;
+	
+	private ColorGroup DARK_PURPLE_GROUP;
+	private ColorGroup INDIGO_GROUP;
+	private ColorGroup PINK_GROUP;
+	private ColorGroup ORANGE_GROUP;
+	private ColorGroup RED_GROUP;
+	private ColorGroup YELLOW_GROUP;
+	private ColorGroup GREEN_GROUP;
+	private ColorGroup BLUE_GROUP;
+	
+	private ColorGroup LIGHT_PINK_GROUP;
+	private ColorGroup LIGHT_GREEN_GROUP;
+	private ColorGroup LIGHT_YELLOW_GROUP;
+	private ColorGroup TEAL_GREEN_GROUP;
+	private ColorGroup BURGUNDY_GROUP;
+	private ColorGroup GOLDEN_GROUP;
+	private ColorGroup TAN_GROUP;
+	private ColorGroup DARK_BROWN_GROUP;
+	
+	
 	public Board() {
 		outerTrack = new Track(TrackType.OUTER_TRACK);
 		middleTrack = new Track(TrackType.MIDDLE_TRACK);
@@ -37,11 +62,38 @@ public class Board {
 		communityChest = new CommunityChest();
 		freeParking = new FreeParking();
 
+		constructColorGroups();
+
 		constructOuterTrack();
 		constructMiddleTrack();
 		constructInnerTrack();
+		
 	}
-
+	
+	private void constructColorGroups(){
+		WHITE_GROUP = new ColorGroup(PropertyColor.WHITE);
+		BLACK_GROUP = new ColorGroup(PropertyColor.BLACK);
+		GRAY_GROUP  = new ColorGroup(PropertyColor.GRAY);
+		BROWN_GROUP = new ColorGroup(PropertyColor.BROWN);
+		
+		DARK_PURPLE_GROUP  = new ColorGroup(PropertyColor.DARK_PURPLE);
+		INDIGO_GROUP  = new ColorGroup(PropertyColor.INDIGO);
+		PINK_GROUP  = new ColorGroup(PropertyColor.PINK);
+		ORANGE_GROUP  = new ColorGroup(PropertyColor.ORANGE);
+		RED_GROUP  = new ColorGroup(PropertyColor.RED);
+		YELLOW_GROUP  = new ColorGroup(PropertyColor.YELLOW);
+		GREEN_GROUP  = new ColorGroup(PropertyColor.GREEN);
+		BLUE_GROUP  = new ColorGroup(PropertyColor.BLUE);
+		
+		LIGHT_PINK_GROUP = new ColorGroup(PropertyColor.LIGHT_PINK);
+		LIGHT_GREEN_GROUP = new ColorGroup(PropertyColor.LIGHT_GREEN);
+		LIGHT_YELLOW_GROUP = new ColorGroup(PropertyColor.LIGHT_YELLOW);
+		TEAL_GREEN_GROUP = new ColorGroup(PropertyColor.TEAL_GREEN);
+		BURGUNDY_GROUP = new ColorGroup(PropertyColor.BURGUNDY);
+		GOLDEN_GROUP = new ColorGroup(PropertyColor.GOLDEN);
+		TAN_GROUP = new ColorGroup(PropertyColor.TAN);
+		DARK_BROWN_GROUP = new ColorGroup(PropertyColor.DARK_BROWN);
+	}
 	public Square getSquare(int index, TrackType type) {
 		return getTrack(type).getSquare(index);
 	}
@@ -96,7 +148,21 @@ public class Board {
 		Property miamiAve = new Property("Miami Avenue", 130, miamiAveTD);
 		Property biscayneAve = new Property("Biscayne Avenue", 150, biscayneAveTD);
 		Property lombardSt = new Property("Lombard Street", 210, lombardStTD);
+		
+		WHITE_GROUP.addPropertySquare(theEmbarcadero);
+		WHITE_GROUP.addPropertySquare(fishermansWharf);
+		WHITE_GROUP.addPropertySquare(lombardSt);
+		BLACK_GROUP.addPropertySquare(beaconSt);
+		BLACK_GROUP.addPropertySquare(boylstonSt);
+		BLACK_GROUP.addPropertySquare(newburySt);
+		GRAY_GROUP.addPropertySquare(fifthAve);
+		GRAY_GROUP.addPropertySquare(madisonAve);
+		GRAY_GROUP.addPropertySquare(wallSt);
+		RED_GROUP.addPropertySquare(floridaAve);
+		RED_GROUP.addPropertySquare(miamiAve);
+		RED_GROUP.addPropertySquare(biscayneAve);
 
+		
 		Utility telephoneCompany = new Utility("Telephone Company");
 		Utility gasCompany = new Utility("Gas Company");
 
@@ -183,7 +249,34 @@ public class Board {
 		Property pennsylvaniaAve = new Property("Pennsylvania Avenue", 320, pennsylvaniaAveTD);
 		Property parkPlace = new Property("Park Place", 350, parkPlaceTD);
 		Property boardwalk = new Property("Boardwalk", 400, boardwalkTD);
+		
+		DARK_PURPLE_GROUP.addPropertySquare(mediterraneanAve);
+		DARK_PURPLE_GROUP.addPropertySquare(balticAve);
+		INDIGO_GROUP.addPropertySquare(orientalAve);
+		INDIGO_GROUP.addPropertySquare(vermontAve);
+		INDIGO_GROUP.addPropertySquare(connecticutAve);
+		PINK_GROUP.addPropertySquare(stCharlesPlace);
+		PINK_GROUP.addPropertySquare(statesAve);
+		PINK_GROUP.addPropertySquare(virginiaAve);
+		ORANGE_GROUP.addPropertySquare(stJamesPlace);
+		ORANGE_GROUP.addPropertySquare(tennesseeAve);
+		ORANGE_GROUP.addPropertySquare(newYorkAve);
+		RED_GROUP.addPropertySquare(kentuckyAve);
+		RED_GROUP.addPropertySquare(indianaAve);
+		RED_GROUP.addPropertySquare(illinoisAve);
+		YELLOW_GROUP.addPropertySquare(atlanticAve);
+		YELLOW_GROUP.addPropertySquare(ventnorAve);
+		YELLOW_GROUP.addPropertySquare(marvinGardens);
+		GREEN_GROUP.addPropertySquare(pacificAve);
+		GREEN_GROUP.addPropertySquare(noCarolinaAve);
+		GREEN_GROUP.addPropertySquare(pennsylvaniaAve);
+		BLUE_GROUP.addPropertySquare(parkPlace);
+		BLUE_GROUP.addPropertySquare(boardwalk);
 
+
+
+		
+		
 		Utility electricCompany = new Utility("Electric Company");
 		Utility waterWorks = new Utility("Water Works");
 
@@ -306,6 +399,47 @@ public class Board {
 		Property venturaBlvd = new Property("Ventura Boulevard", 480, venturaBlvdTD);
 		Property rodeoDr = new Property("Rodeo Drive", 510, rodeoDrTD);
 
+		//LIGHT_PINK, LIGHT_GREEN, LIGHT_YELLOW, TEAL_GREEN, BURGUNDY, GOLDEN, TAN, DARK_BROWN, 
+
+		LIGHT_PINK_GROUP.addPropertySquare(lakeStreet);
+		LIGHT_PINK_GROUP.addPropertySquare(nicolletAve);
+		LIGHT_PINK_GROUP.addPropertySquare(hennepinAve);
+
+		LIGHT_GREEN_GROUP.addPropertySquare(esplanadeAve);
+		LIGHT_GREEN_GROUP.addPropertySquare(canalStreet);
+		LIGHT_GREEN_GROUP.addPropertySquare(magazineStreet);
+		LIGHT_GREEN_GROUP.addPropertySquare(bourbonStreet);
+
+		LIGHT_YELLOW_GROUP.addPropertySquare(katyFreeway);
+		LIGHT_YELLOW_GROUP.addPropertySquare(westheimerRoad);
+		LIGHT_YELLOW_GROUP.addPropertySquare(kirbyDr);
+		LIGHT_YELLOW_GROUP.addPropertySquare(cullenBlvd);
+		
+		TEAL_GREEN_GROUP.addPropertySquare(dekalbAve);
+		TEAL_GREEN_GROUP.addPropertySquare(andrewYoungIntlBlvd);
+		TEAL_GREEN_GROUP.addPropertySquare(decaturSt);
+		TEAL_GREEN_GROUP.addPropertySquare(peachtreeSt);
+
+		BURGUNDY_GROUP.addPropertySquare(randolphSt);
+		BURGUNDY_GROUP.addPropertySquare(lakeShoreDr);
+		BURGUNDY_GROUP.addPropertySquare(wackerDr);
+		BURGUNDY_GROUP.addPropertySquare(michiganAve);
+		
+		GOLDEN_GROUP.addPropertySquare(southTemple);
+		GOLDEN_GROUP.addPropertySquare(westTemple);
+		GOLDEN_GROUP.addPropertySquare(northTemple);
+		GOLDEN_GROUP.addPropertySquare(templeSquare);
+		
+		TAN_GROUP.addPropertySquare(southSt);
+		TAN_GROUP.addPropertySquare(broadSt);
+		TAN_GROUP.addPropertySquare(walnutSt);
+		TAN_GROUP.addPropertySquare(marketSt);
+		
+		DARK_BROWN_GROUP.addPropertySquare(mulhollandDr);
+		DARK_BROWN_GROUP.addPropertySquare(venturaBlvd);
+		DARK_BROWN_GROUP.addPropertySquare(rodeoDr);
+
+		
 		Utility cableCompany = new Utility("Cable Company");
 		Utility internetServiceProvider = new Utility("Internet Service Provider");
 		Utility trashCollector = new Utility("Trash Collector");
@@ -371,6 +505,9 @@ public class Board {
 		outerTrack.addSquare(venturaBlvd);
 		outerTrack.addSquare(chance);
 		outerTrack.addSquare(rodeoDr);
+	}
+	public ColorGroup getTestColorGroup(){
+		return WHITE_GROUP;
 	}
 	
 	public boolean repOk(){
