@@ -5,6 +5,7 @@ import java.io.Serializable;
 import game.Player;
 
 public abstract class Square implements Serializable{
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @overview This function is executed when the player passes

@@ -3,6 +3,7 @@ package game.square.action;
 import game.Player;
 
 public class Go extends Action{
+	private static final long serialVersionUID = 1L;
 	
 	private static final int amount = 200;
 

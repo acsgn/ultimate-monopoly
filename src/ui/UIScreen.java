@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;

@@ -4,6 +4,7 @@ import game.Player;
 import game.Pool;
 
 public class LuxuryTax extends Action {
+	private static final long serialVersionUID = 1L;
 	
 	private static final int amount = 75;
 

@@ -3,6 +3,7 @@ package game.square.estate;
 import game.strategy.RentStrategyFactory;
 
 public class Utility extends Estate {
+	private static final long serialVersionUID = 1L;
 	
 	private static final EstateSquareType type = EstateSquareType.UTILITY;
 	private static final int UTILITY_PRICE = 150;

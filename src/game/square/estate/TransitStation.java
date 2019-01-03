@@ -3,6 +3,7 @@ package game.square.estate;
 import game.TrackType;
 
 public class TransitStation extends Estate {
+	private static final long serialVersionUID = 1L;
 
 	private static final EstateSquareType type = EstateSquareType.TRANSITSTATION;
 	private static final int TRANSIT_STATION_PRICE = 200;

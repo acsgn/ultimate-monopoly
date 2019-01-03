@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import game.building.Building;
-import game.building.Hotel;
 import game.building.Skyscraper;
 
 public class ColorGroup {
+	
 	private PropertyColor color; 
 	private ArrayList<Property> propertyColorSquares;
 	private PropertyLevel level;
@@ -113,6 +113,7 @@ public class ColorGroup {
 		updateMonopolyAndMajority();
 		return monopolyOwnerName;
 	}
+	
 	public String getMajorityOwnerName() {
 		updateMonopolyAndMajority();
 		return majorityOwnerName;
@@ -146,6 +147,4 @@ public class ColorGroup {
 		this.monopolyOwnerName = monopolyOwnerName;
 	}
 
-	
-	
 }

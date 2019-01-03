@@ -1,7 +1,6 @@
 package game.bot;
 
 import game.square.Square;
-import game.square.action.FreeParking;
 import game.square.estate.Property;
 
 public class botStrategyFactory {

@@ -4,6 +4,7 @@ import game.Player;
 import game.dice.SingletonDice;
 
 public class PayDay extends Action {
+	private static final long serialVersionUID = 1L;
 	
 	private static final int evenAmount = 400;
 	private static final int oddAmount = 300;

@@ -5,6 +5,7 @@ import game.card.ActionCards;
 import network.NetworkFacade;
 
 public class Chance extends Action {
+	private static final long serialVersionUID = 1L;
 	
 	
 	public Chance() {

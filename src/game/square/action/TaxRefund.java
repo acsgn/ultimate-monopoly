@@ -4,6 +4,7 @@ import game.Player;
 import game.Pool;
 
 public class TaxRefund extends Action {
+	private static final long serialVersionUID = 1L;
 
 	public TaxRefund() {
 	}

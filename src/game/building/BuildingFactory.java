@@ -3,9 +3,10 @@ package game.building;
 public class BuildingFactory {
 	
 	private static BuildingFactory self;
+	
 	private BuildingFactory(){
-		
 	}
+	
 	public static synchronized BuildingFactory factoryBuilding(){
 		if(self==null){
 			self = new BuildingFactory();

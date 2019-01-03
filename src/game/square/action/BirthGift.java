@@ -3,6 +3,8 @@ package game.square.action;
 import game.Player;
 
 public class BirthGift extends Action{
+	private static final long serialVersionUID = 1L;
+	
 	private static final int giftAmount = 100;
 	public BirthGift() {
 	}
