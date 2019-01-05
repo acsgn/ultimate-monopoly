@@ -446,7 +446,7 @@ public class UIScreen extends JFrame implements GameListener {
 		case "CARD":
 			Image cardImage = new ImageIcon(cardImagePath + parsed[1] + ".png").getImage()
 			.getScaledInstance(screenWidth/3, -1, Image.SCALE_SMOOTH);
-			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "Card",
+			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "",
 					JOptionPane.PLAIN_MESSAGE);
 			break;
 		case "BUILDING":
@@ -455,25 +455,25 @@ public class UIScreen extends JFrame implements GameListener {
 				for (int i = 2; i < parsed.length; i++) {
 					possibilities.add(parsed[i]);
 				}
-				String s = (String) JOptionPane.showInputDialog(null, "Choose a color group!", "Customized Dialog",
+				String s = (String) JOptionPane.showInputDialog(null, "Choose a color group!", "",
 						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
 				Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
 			} else {
 				JOptionPane.showMessageDialog(null, "You don't have any monopoly or majority ownership",
-						"A plain message", JOptionPane.PLAIN_MESSAGE);
+						"", JOptionPane.ERROR_MESSAGE);
 			}
 
 			break;
 		case "BUILDING2":
 			ArrayList<Object> possibilities = new ArrayList<>();
 			if (parsed[1].equals("NO")) {
-				JOptionPane.showMessageDialog(null, parsed[2], "A plain message", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.PLAIN_MESSAGE);
 			} else {
 				for (int i = 1; i < parsed.length - 1; i++) {
 					possibilities.add(parsed[i]);
 				}
 				String s = (String) JOptionPane.showInputDialog(null,
-						"Complete the sentence:\n" + "\"Green eggs and...\"", "Customized Dialog",
+						"Choose a square", "",
 						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
 				Controller.getInstance()
 						.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1] + "/");
