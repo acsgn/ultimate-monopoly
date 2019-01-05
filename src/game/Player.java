@@ -2,6 +2,8 @@ package game;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 import game.building.Building;
 import game.building.Hotel;
@@ -370,6 +372,17 @@ public class Player implements Serializable {
 			}
 		}
 		publishGameEvent(message);
+		
+		// To be deleted. Just for testing.
+		//ColorGroup c = board.getTestColorGroup();
+		//int i = 0;
+		//for (Property k : c.getPropertyColorSquares()) {
+		//	i++;
+		//	if (i == 4)
+		//		break;
+		//	k.setOwner(this);
+		//}
+		//
 	}
 
 	public void addHouse() {
@@ -597,8 +610,30 @@ public class Player implements Serializable {
 		Controller.getInstance().dispatchMessage("PLAYER/" + mess);
 	}
 
-	public void doHurricaneAction() {
+	public ArrayList<ColorGroup> getMonopolyColorGroups() {
+		return monopolyColorGroups;
+	}
 
+	public void doHurricaneAction(Hashtable<String, ArrayList<String>> data) {
+		message = "CARD/HURRICANE/CHOOSEPLAYER/";
+		for (String name : data.keySet()) {
+			message += name + "/";
+			for (String val : data.get(name)) {
+				message += val + "/";
+			}
+			message += "END/";
+		}
+		publishGameEvent(message);
+	}
+
+	public void executeHurricaneAction(Player player, String color) {
+		for (ColorGroup c : player.getMonopolyColorGroups()) {
+			if (c.getColor().toString().equals(color)) {
+				c.decreaseLevel();
+				message = "ACTION/Color Group " + color + " level was decreased";
+				publishGameEvent(message);
+			}
+		}
 	}
 
 }

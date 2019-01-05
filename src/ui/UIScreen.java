@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import game.Controller;
@@ -274,7 +275,8 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
+				message = "UISCREEN/SELLBUILDING";
+				controller.dispatchMessage(message);
 			}
 		});
 
@@ -443,7 +445,7 @@ public class UIScreen extends JFrame implements GameListener {
 		case "DEED":
 			deedComboBox.addItem(parsed[1]);
 			break;
-		case "CARD":
+		case "CARD2":
 			Image cardImage = new ImageIcon(cardImagePath + parsed[1] + ".png").getImage()
 			.getScaledInstance(screenWidth/3, -1, Image.SCALE_SMOOTH);
 			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "",
@@ -457,7 +459,8 @@ public class UIScreen extends JFrame implements GameListener {
 				}
 				String s = (String) JOptionPane.showInputDialog(null, "Choose a color group!", "",
 						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
-				Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
+				if (s != null)
+					Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
 			} else {
 				JOptionPane.showMessageDialog(null, "You don't have any monopoly or majority ownership",
 						"", JOptionPane.ERROR_MESSAGE);
@@ -475,11 +478,45 @@ public class UIScreen extends JFrame implements GameListener {
 				String s = (String) JOptionPane.showInputDialog(null,
 						"Choose a square", "",
 						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
-				Controller.getInstance()
-						.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1] + "/");
-				System.out.println(s);
+				if (s != null)
+					Controller.getInstance()
+							.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1] + "/");
 			}
 			break;
+		case "CARD":
+			if (parsed[1].equals("HURRICANE")) {
+				switch (parsed[2]) {
+				case "CHOOSEPLAYER":
+					HashMap<Object, ArrayList<Object>> possibilities1 = new HashMap<>();
+					//
+					int i = 3;
+					while (i < parsed.length) {
+						ArrayList<Object> groups = new ArrayList<>();
+						String playerName = parsed[i];
+						i++;
+						while (!parsed[i].equals("END")) {
+							groups.add(parsed[i]);
+							i++;
+						}
+						possibilities1.put(playerName, groups);
+						i++;
+					}
+					//
+					String player = (String) JOptionPane.showInputDialog(null, "Choose a player from the following:\n",
+							"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(),
+							null);
+					if (player != null) {
+						String group = (String) JOptionPane.showInputDialog(null, "Choose a groups for that player:\n",
+								"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null,
+								possibilities1.get(player).toArray(), null);
+						if (group != null) {
+							message = "UISCREEN/HURRICANE/EXECUTE/" + player + "/" + group + "/";
+							Controller.getInstance().dispatchMessage(message);
+						}
+					}
+					break;
+				}
+			}
 		}
 	}
 

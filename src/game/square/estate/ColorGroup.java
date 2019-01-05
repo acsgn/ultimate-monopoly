@@ -43,10 +43,13 @@ public class ColorGroup {
 			upgradeLevel();
 		}
 	}
-
-	public void decreaseLevel() {
-		level = level.previous();
-		for (Property p : propertyColorSquares) {
+	public void decreaseLevel(){
+		if(level!=PropertyLevel.ZERO_HOUSE_LEVEL)
+			level = level.previous();
+		else{
+			squaresUpgraded = 0;
+		}
+		for(Property p : propertyColorSquares){
 			ArrayList<Building> buildings = p.getBuildings();
 			switch (buildings.size()) {
 			case 0:
@@ -67,9 +70,9 @@ public class ColorGroup {
 				break;
 			default:
 				buildings.remove(0);
+				break;
 			}
-
-		}
+		}	
 	}
 
 	public ArrayList<Property> getAvailableSquares() {
