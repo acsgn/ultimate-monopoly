@@ -4,6 +4,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -321,9 +322,10 @@ public class UIScreen extends JFrame implements GameListener {
 		saveGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String input = JOptionPane.showInputDialog(UIScreen.this, "Please enter name of the file: ",
-						"Save Game", JOptionPane.QUESTION_MESSAGE);
-				message = "UISCREEN/SAVEGAME/" + input;
+				JFileChooser fc = new JFileChooser();
+				fc.showSaveDialog(null);
+				String saveFile = fc.getSelectedFile().getPath();
+				message = "UISCREEN/SAVEGAME/" + saveFile;
 				Controller.getInstance().dispatchMessage(message);
 			}
 		});

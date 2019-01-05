@@ -1,6 +1,9 @@
 package network;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -27,6 +30,8 @@ public class P2PServer implements Runnable {
 					mS.close();
 					break;
 				}
+				if(message.equals("LOAD")) 
+					receiveFile(s);
 				messages.add(message);
 				synchronized (this) {
 					notify();
@@ -36,6 +41,22 @@ public class P2PServer implements Runnable {
 			server.close();
 		} catch (IOException e) {
 			System.err.println("Server Setup Error");
+		}
+	}
+
+	private void receiveFile(Socket s) {
+		try {
+			int bytesRead;
+			long current = 0;
+			InputStream is = s.getInputStream();
+			while () {
+				is.re
+				bytesRead = is.read(buffer);
+				fos.write(buffer, 0,bytesRead);
+				current += bytesRead;
+			}
+			fos.close();
+		} catch (IOException e) {
 		}
 	}
 

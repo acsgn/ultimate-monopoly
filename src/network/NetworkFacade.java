@@ -1,5 +1,6 @@
 package network;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -113,5 +114,15 @@ public class NetworkFacade implements Runnable {
 			} catch (InterruptedException e) {
 			}
 		}
+	}
+
+	public void sendSavedGameFile(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public File receiveSavedGameFile() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

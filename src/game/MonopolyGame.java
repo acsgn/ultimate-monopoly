@@ -1,5 +1,6 @@
 package game;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -141,17 +142,20 @@ public class MonopolyGame implements Runnable {
 			case "CREATE":
 				NetworkFacade.getInstance().startGame();
 				myName = parsed[2];
-				int numOfBots = toInt(parsed[4]);
-				for (int i = 0; i < numOfBots; i++)
-					Bot.createBot();
-				NetworkFacade.getInstance().sendMessage("CREATEPLAYER/" + parsed[2] + "/" + parsed[3]);
-				SingletonDice.getInstance().rollDice();
-				int[] dice = SingletonDice.getInstance().getFaceValues();
-				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
+				if (isNewGame) {
+					int numOfBots = toInt(parsed[4]);
+					for (int i = 0; i < numOfBots; i++)
+						Bot.createBot();
+					NetworkFacade.getInstance().sendMessage("CREATEPLAYER/" + parsed[2] + "/" + parsed[3]);
+					SingletonDice.getInstance().rollDice();
+					int[] dice = SingletonDice.getInstance().getFaceValues();
+					NetworkFacade.getInstance().sendMessage(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
+				}
 				break;
-			case "LOADGAME":
-				loadGame(parsed[2]);
-				isNewGame = false;
+			case "LOAD":
+				NetworkFacade.getInstance().sendSavedGameFile(parsed[3]);
+				NetworkFacade.getInstance().startGame();
+				myName = parsed[2];
 				break;
 			}
 			break;
@@ -204,6 +208,11 @@ public class MonopolyGame implements Runnable {
 
 	public void executeNetworkMessage(String message) {
 		switch (message) {
+		case "LOAD":
+			isNewGame = false;
+			File saveGame = NetworkFacade.getInstance().receiveSavedGameFile();
+			loadGame(saveGame);
+			return;
 		case "ENDTURN":
 			currentPlayer = players.poll();
 			players.add(currentPlayer);
@@ -374,43 +383,23 @@ public class MonopolyGame implements Runnable {
 		return null;
 	}
 
-	public void saveGame(String savedGameFileName) {
-		// Create the SavedGame Object.
-
-		SavedGame saved = new SavedGame(players, currentPlayer, bots);
+	public void saveGame(String saveGameFile) {
+		SaveGame saved = new SaveGame(players, bots);
 		try {
-			// create a new file with an ObjectOutputStream
-			FileOutputStream out = new FileOutputStream(savedGameFileName + ".txt");
-			ObjectOutputStream oout = new ObjectOutputStream(out);
-
-			// write something in the file
+			FileOutputStream fout = new FileOutputStream(new File(saveGameFile + ".umsf"));
+			ObjectOutputStream oout = new ObjectOutputStream(fout);
 			oout.writeObject(saved);
-
-			// close the stream
 			oout.close();
-
 		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 
-	public void loadGame(String path) {
+	public void loadGame(File file) {
 		try {
-			// create an ObjectInputStream for the file we created before
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
-
-			// read and print what we wrote before
-			SavedGame saved = (SavedGame) ois.readObject();
-			players = saved.getPlayers();
-			/*
-			 * for (Player p : players) { if (p.getName().equals(saved.getCurreentPlayer()))
-			 * { currentPlayer = p; break; } }
-			 */
-			// Who is the first player to play will be handled by server
-			// (Instead of sending him the original order, we can send it modified
-			// a bit.
-			currentPlayer = players.poll();
-			bots = saved.getBots();
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+			SaveGame save = (SaveGame) ois.readObject();
+			players = save.getPlayers();
+			bots = save.getBots();
 			ois.close();
 		} catch (Exception ex) {
 		}
