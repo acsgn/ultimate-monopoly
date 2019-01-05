@@ -29,6 +29,8 @@ import game.GameListener;
 public class UIScreen extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
 	private static final String boardImagePath = "resources/board.png";
+	private static final String deedImagePath = "resources/deeds/";
+	private static final String cardImagePath = "resources/cards/";
 
 	private Controller controller;
 	private Animator animator;
@@ -51,6 +53,11 @@ public class UIScreen extends JFrame implements GameListener {
 	private JButton saveGameButton;
 	private JButton endGameButton;
 	private JPanel pauseResumePanel;
+
+	private JTextArea deedInformation;
+	private JLabel deed;
+	private JComboBox<String> deedComboBox;
+	private JComboBox<String> playerComboBox;
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -102,26 +109,23 @@ public class UIScreen extends JFrame implements GameListener {
 		leftControlPanel.setBounds(0, 0, controlPaneWidth, controlPaneHeight);
 		leftControlPanel.setLayout(null);
 
-		JLabel deed = new JLabel();
+		deed = new JLabel();
 		deed.setBounds(0, 0, controlPaneWidth, 6 * controlPaneComponentHeight);
-		Image x = new ImageIcon("resources/title_deeds/Boardwalk.png").getImage().getScaledInstance(controlPaneWidth,
-				-1, Image.SCALE_SMOOTH);
-		deed.setIcon(new ImageIcon(x));
 		deed.setVerticalAlignment(JLabel.CENTER);
 		leftControlPanel.add(deed);
 
-		JTextArea deedInformation = new JTextArea();
-		deedInformation.setLineWrap(true);
+		deedInformation = new JTextArea();
 		deedInformation.setEditable(false);
 		deedInformation.setBounds(controlPaneXMargin, controlPaneYMargin + 6 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				2 * controlPaneComponentHeight - 2 * controlPaneYMargin);
 		leftControlPanel.add(deedInformation);
 
-		JComboBox<String> deedComboBox = new JComboBox<String>();
+		deedComboBox = new JComboBox<String>();
 		deedComboBox.setBounds(controlPaneXMargin, controlPaneYMargin + 8 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
+
 		leftControlPanel.add(deedComboBox);
 
 		buyBuildingButton = new JButton("Buy Building");
@@ -194,7 +198,7 @@ public class UIScreen extends JFrame implements GameListener {
 		playerArea.add(playerScroll);
 		rightPanel.add(playerArea);
 
-		JComboBox<String> playerComboBox = new JComboBox<String>();
+		playerComboBox = new JComboBox<String>();
 		playerComboBox.setBounds(controlPaneXMargin, controlPaneYMargin + 5 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
@@ -334,6 +338,25 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 		});
 
+		deedComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String name = (String) deedComboBox.getSelectedItem();
+				Image deedImage = new ImageIcon(deedImagePath + name + ".png").getImage()
+						.getScaledInstance(controlPaneWidth, -1, Image.SCALE_SMOOTH);
+				deed.setIcon(new ImageIcon(deedImage));
+				controller.dispatchMessage("UISCREEN/DEEDINFO/" + name);
+			}
+		});
+
+		playerComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String name = (String) playerComboBox.getSelectedItem();
+				controller.dispatchMessage("UISCREEN/PLAYERINFO/" + name);
+			}
+		});
+
 	}
 
 	private void disableButtons() {
@@ -413,6 +436,18 @@ public class UIScreen extends JFrame implements GameListener {
 		case "RESUME":
 			enableButtons();
 			pauseResumePanel.setVisible(false);
+			break;
+		case "PLAYER":
+			playerComboBox.addItem(parsed[1]);
+			break;
+		case "DEED":
+			deedComboBox.addItem(parsed[1]);
+			break;
+		case "CARD":
+			Image cardImage = new ImageIcon(cardImagePath + parsed[1] + ".png").getImage()
+			.getScaledInstance(screenWidth/3, -1, Image.SCALE_SMOOTH);
+			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "Card",
+					JOptionPane.PLAIN_MESSAGE);
 			break;
 		case "BUILDING":
 			if (parsed[1].equals("YES")) {

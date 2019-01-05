@@ -6,6 +6,8 @@ import game.square.estate.*;
 
 public class Board {
 
+	private static Board self;
+
 	private Track outerTrack;
 	private Track middleTrack;
 	private Track innerTrack;
@@ -21,7 +23,7 @@ public class Board {
 	private CommunityChest communityChest;
 	private FreeParking freeParking;
 
-	public Board() {
+	private Board() {
 		outerTrack = new Track(TrackType.OUTER_TRACK);
 		middleTrack = new Track(TrackType.MIDDLE_TRACK);
 		innerTrack = new Track(TrackType.INNER_TRACK);
@@ -37,9 +39,15 @@ public class Board {
 		communityChest = new CommunityChest();
 		freeParking = new FreeParking();
 
-		constructOuterTrack();
-		constructMiddleTrack();
 		constructInnerTrack();
+		constructMiddleTrack();
+		constructOuterTrack();
+	}
+
+	public static synchronized Board getInstance() {
+		if (self == null)
+			self = new Board();
+		return self;
 	}
 
 	public Square getSquare(int index, TrackType type) {

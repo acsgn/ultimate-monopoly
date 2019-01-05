@@ -1,5 +1,6 @@
 package game.square.estate;
 
+import game.Controller;
 import game.Player;
 import game.square.Square;
 import game.square.SquareType;
@@ -18,6 +19,7 @@ public abstract class Estate extends Square {
 		this.name = name;
 		this.price = price;
 		this.estateSquareType = type;
+		Controller.getInstance().publishGameEvent("DEED/"+name);
 	}
 	
 	public String getName() {

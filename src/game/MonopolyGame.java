@@ -25,13 +25,11 @@ public class MonopolyGame implements Runnable {
 	private int numOfPlayers = 0;
 	private int numOfDiceReceived = 0;
 	private boolean isNewGame;
-	private Board board;
 	private boolean destroy = false;
-	
+
 	private ConcurrentHashMap<String, LinkedList<Bot>> bots;
 
 	public MonopolyGame() {
-		board = new Board();
 		players = new ConcurrentLinkedDeque<Player>();
 		checkedPlayers = new ConcurrentLinkedDeque<Player>();
 		bots = new ConcurrentHashMap<String, LinkedList<Bot>>();
@@ -80,6 +78,13 @@ public class MonopolyGame implements Runnable {
 			case "BUYPROPERTY":
 				NetworkFacade.getInstance().sendMessage(myName + "/BUYESTATE");
 				break;
+			case "PLAYERINFO":
+				Player p = findPlayer(parsed[2]);
+				if (p != null)
+					p.updateState();
+				break;
+			case "DEEDINFO":
+				break;
 			case "ENDTURN":
 				NetworkFacade.getInstance().sendMessage("ENDTURN");
 				break;
@@ -95,10 +100,10 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING");
 				break;
 			case "BUYBUILDING2":
-				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING2/"+parsed[2]);
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING2/" + parsed[2]);
 				break;
 			case "BUYBUILDING3":
-				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING3/"+parsed[2]+"/"+parsed[3]);
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING3/" + parsed[2] + "/" + parsed[3]);
 				break;
 			}
 			break;
@@ -225,7 +230,7 @@ public class MonopolyGame implements Runnable {
 			return;
 		case "CREATEPLAYER":
 			if (isNewGame) {
-				Player newPlayer = new Player(board, parsed[1], parsed[2]);
+				Player newPlayer = new Player(parsed[1], parsed[2]);
 				newPlayer.createPiece();
 				players.add(newPlayer);
 			} else {
@@ -233,7 +238,7 @@ public class MonopolyGame implements Runnable {
 			return;
 		case "CREATEBOT":
 			if (isNewGame) {
-				Player newPlayer = new Player(board, parsed[2], parsed[3]);
+				Player newPlayer = new Player(parsed[2], parsed[3]);
 				newPlayer.setBot();
 				newPlayer.createPiece();
 				Bot b = new Bot(newPlayer);
@@ -329,7 +334,7 @@ public class MonopolyGame implements Runnable {
 			currentPlayer.buyBuildingChooseSquare(parsed[2]);
 			break;
 		case "BUYBUILDING3":
-			currentPlayer.buyBuilding(parsed[2]+"/"+parsed[3]);
+			currentPlayer.buyBuilding(parsed[2] + "/" + parsed[3]);
 			break;
 		case "PAYRENT":
 			int rent = currentPlayer.payRent();
