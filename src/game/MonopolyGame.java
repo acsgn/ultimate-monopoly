@@ -5,14 +5,20 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import game.card.ActionCards;
 import game.card.Card;
+import game.card.Chance;
 import game.dice.SingletonDice;
+import game.square.estate.ColorGroup;
+import game.square.estate.Property;
 import network.NetworkFacade;
 import game.bot.Bot;
 
@@ -27,7 +33,7 @@ public class MonopolyGame implements Runnable {
 	private boolean isNewGame;
 	private Board board;
 	private boolean destroy = false;
-	
+
 	private ConcurrentHashMap<String, LinkedList<Bot>> bots;
 
 	public MonopolyGame() {
@@ -95,10 +101,17 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING");
 				break;
 			case "BUYBUILDING2":
-				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING2/"+parsed[2]);
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING2/" + parsed[2]);
 				break;
 			case "BUYBUILDING3":
-				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING3/"+parsed[2]+"/"+parsed[3]);
+				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING3/" + parsed[2] + "/" + parsed[3]);
+				break;
+			case "SELLBUILDING":
+				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING");
+				break;
+			case "HURRICANE":
+				NetworkFacade.getInstance()
+						.sendMessage(myName + "/HURRICANE/" + parsed[2] + "/" + parsed[3] + "/" + parsed[4]);
 				break;
 			}
 			break;
@@ -166,18 +179,26 @@ public class MonopolyGame implements Runnable {
 				Player p = findPlayer(parsed[3]);
 				p.increaseMoney(money);
 				break;
+			case "HURRICANE":
+				switch (parsed[2]) {
+				case "GETNAMES":
+					NetworkFacade.getInstance().sendMessage(myName + "/HURRICANE/GETNAMES");
+					break;
+				}
+				break;
 			}
 			break;
 		}
 	}
 
 	/**
-	 * @overview This function parses the given string and creates an integer based
-	 *           on the string
+	 * @overview This function parses the given string and creates an integer
+	 *           based on the string
 	 * @requires the input to be a string of integers.
 	 * @modifies input string.
 	 * @effects
-	 * @param string the input to turn into integer
+	 * @param string
+	 *            the input to turn into integer
 	 * @return the integer created from the string
 	 */
 	public int toInt(String string) {
@@ -298,6 +319,34 @@ public class MonopolyGame implements Runnable {
 				card = ActionCards.getInstance().getCommunityChestCard();
 			currentPlayer.pickCard(card);
 			break;
+		case "HURRICANE":
+			if (parsed[2].equals("GETNAMES")) {
+				Hashtable<String, ArrayList<String>> playersData = new Hashtable<>();
+				for (Player p : players) {
+					if (!p.getName().equals(currentPlayer.getName())) {
+						ArrayList<String> colorGroups = new ArrayList<>();
+						for (ColorGroup c : p.getMonopolyColorGroups()) {
+							boolean test = false;
+							for (Property property : c.getPropertyColorSquares()) {
+								if (property.getBuildings().size() > 0) {
+									test = true;
+									break;
+								}
+							}
+							if (test)
+								colorGroups.add(c.getColor().toString());
+						}
+						if (p.getMonopolyColorGroups().size() != 0)
+							playersData.put(p.getName(), colorGroups);
+					}
+				}
+				currentPlayer.doHurricaneAction(playersData);
+			} else if (parsed[2].equals("EXECUTE")) {
+				String player = parsed[3];
+				String group = parsed[4];
+				currentPlayer.executeHurricaneAction(findPlayer(player), group);
+			}
+			break;
 		case "RECEIVEDICE":
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
 			if (!currentPlayer.isBot())
@@ -329,7 +378,12 @@ public class MonopolyGame implements Runnable {
 			currentPlayer.buyBuildingChooseSquare(parsed[2]);
 			break;
 		case "BUYBUILDING3":
-			currentPlayer.buyBuilding(parsed[2]+"/"+parsed[3]);
+			currentPlayer.buyBuilding(parsed[2] + "/" + parsed[3]);
+			break;
+		case "SELLBUILDING":
+			// to be deleted
+			currentPlayer.pickCard(new Chance("Hurricane", true));
+			//
 			break;
 		case "PAYRENT":
 			int rent = currentPlayer.payRent();
@@ -398,11 +452,13 @@ public class MonopolyGame implements Runnable {
 			SavedGame saved = (SavedGame) ois.readObject();
 			players = saved.getPlayers();
 			/*
-			 * for (Player p : players) { if (p.getName().equals(saved.getCurreentPlayer()))
-			 * { currentPlayer = p; break; } }
+			 * for (Player p : players) { if
+			 * (p.getName().equals(saved.getCurreentPlayer())) { currentPlayer =
+			 * p; break; } }
 			 */
 			// Who is the first player to play will be handled by server
-			// (Instead of sending him the original order, we can send it modified
+			// (Instead of sending him the original order, we can send it
+			// modified
 			// a bit.
 			currentPlayer = players.poll();
 			bots = saved.getBots();

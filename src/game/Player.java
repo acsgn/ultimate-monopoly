@@ -2,6 +2,8 @@ package game;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 import game.building.Building;
 import game.building.Hotel;
@@ -79,7 +81,6 @@ public class Player implements Serializable {
 		if (!exist)
 			monopolyColorGroups.add(colorGroup);
 	}
-
 
 	public String getName() {
 		return name;
@@ -228,9 +229,9 @@ public class Player implements Serializable {
 	 *         success of the transaction
 	 */
 	public int payRent() {
-		int rent = ((Estate)location).getRent();
+		int rent = ((Estate) location).getRent();
 		reduceMoney(rent);
-		message = "ACTION/"+ name +"paid rent: "+ rent + " to player "+ ((Estate)location).getOwner().getName();
+		message = "ACTION/" + name + "paid rent: " + rent + " to player " + ((Estate) location).getOwner().getName();
 		publishGameEvent(message);
 		return rent;
 	}
@@ -319,7 +320,7 @@ public class Player implements Serializable {
 			targetedSquare.addBuilding(new Hotel());
 			reduceMoney(targetedSquare.getTitleDeed().getHotelCost());
 			message = "ACTION/";
-			message += "Hotel is built on Property: "+ targetedSquare.getName() +" owned by "+ this.getName();
+			message += "Hotel is built on Property: " + targetedSquare.getName() + " owned by " + this.getName();
 			publishGameEvent(message);
 			break;
 		case "HOTEL_LEVEL":
@@ -327,14 +328,14 @@ public class Player implements Serializable {
 			targetedSquare.addBuilding(new Skyscraper());
 			reduceMoney(targetedSquare.getTitleDeed().getSkyscrapperCost());
 			message = "ACTION/";
-			message += "Skyscraper is built on Property: "+ targetedSquare.getName() +" owned by "+ this.getName();
+			message += "Skyscraper is built on Property: " + targetedSquare.getName() + " owned by " + this.getName();
 			publishGameEvent(message);
 			break;
 		default:
 			targetedSquare.addBuilding(new House());
 			reduceMoney(targetedSquare.getTitleDeed().getHouseCost());
 			message = "ACTION/";
-			message += "House is built on Property: "+ targetedSquare.getName() +" owned by "+ this.getName();
+			message += "House is built on Property: " + targetedSquare.getName() + " owned by " + this.getName();
 			publishGameEvent(message);
 			break;
 		}
@@ -356,7 +357,7 @@ public class Player implements Serializable {
 				message += p.getName() + "/";
 			}
 			message += currentColorGroup.getLevel().toString();
-		}else{
+		} else {
 			message += "NO/This color Group has reached its maximum capacity. You may choose another one";
 		}
 		publishGameEvent(message);
@@ -375,14 +376,15 @@ public class Player implements Serializable {
 		}
 		publishGameEvent(message);
 		// To be deleted. Just for testing.
-		ColorGroup c = board.getTestColorGroup();
-		int i = 0;
-		for (Property k : c.getPropertyColorSquares()) {
-			i++;
-			if(i==3)
-				break;
-			k.setOwner(this);
-		}
+		//ColorGroup c = board.getTestColorGroup();
+		//int i = 0;
+		//for (Property k : c.getPropertyColorSquares()) {
+		//	i++;
+		//	if (i == 4)
+		//		break;
+		//	k.setOwner(this);
+		//}
+		//
 	}
 
 	public void addHouse() {
@@ -612,8 +614,32 @@ public class Player implements Serializable {
 	public void delegateTask(String mess) {
 		Controller.getInstance().dispatchMessage("PLAYER/" + mess);
 	}
-	public void doHurricaneAction(){
-		
+
+	public ArrayList<ColorGroup> getMonopolyColorGroups() {
+		return monopolyColorGroups;
+	}
+
+	public void doHurricaneAction(Hashtable<String, ArrayList<String>> data) {
+		message = "CARD/HURRICANE/CHOOSEPLAYER/";
+		for (String name : data.keySet()) {
+			message += name + "/";
+			for (String val : data.get(name)) {
+				message += val + "/";
+			}
+			message += "END/";
+		}
+		publishGameEvent(message);
+	}
+
+	public void executeHurricaneAction(Player player, String color) {
+		for (ColorGroup c : player.getMonopolyColorGroups()) {
+			if (c.getColor().toString().equals(color)) {
+				c.decreaseLevel();
+				message = "ACTION/Color Group " + color + " level was decreased";
+				publishGameEvent(message);
+			}
+		}
+
 	}
 
 }

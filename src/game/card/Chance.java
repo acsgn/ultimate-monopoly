@@ -152,7 +152,7 @@ public class Chance extends Card {
 				player.increaseMoney(300);
 			}
 		}else if(name.equalsIgnoreCase("Hurricane")){
-			
+			player.delegateTask("HURRICANE/GETNAMES");
 		}
 	}
 	}
