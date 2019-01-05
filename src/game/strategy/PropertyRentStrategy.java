@@ -41,9 +41,6 @@ public class PropertyRentStrategy implements RentStrategy{
 			if(((Property)square).getOwner().getName().equals(((Property)square).getColorGroup().getMonopolyOwnerName())){
 				rent = rent * 3;
 			}
-			if(((Property)square).getOwner().getName().equals(((Property)square).getColorGroup().getMajorityOwnerName())){
-				rent = rent * 2;
-			}
 			return rent;
 		}
 	}

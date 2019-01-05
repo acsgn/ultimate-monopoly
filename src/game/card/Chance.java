@@ -151,6 +151,8 @@ public class Chance extends Card {
 				player.goTo(TrackType.INNER_TRACK, 0);
 				player.increaseMoney(300);
 			}
+		}else if(name.equalsIgnoreCase("Hurricane")){
+			
 		}
 	}
 	}

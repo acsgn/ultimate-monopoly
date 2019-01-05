@@ -35,7 +35,6 @@ public class Player implements Serializable {
 	private ArrayList<Utility> utilities;
 
 	private ArrayList<ColorGroup> monopolyColorGroups;
-	private ArrayList<ColorGroup> majorityColorGroups;
 
 	private int totalHouses = 0;
 	private int totalHotels = 0;
@@ -68,7 +67,6 @@ public class Player implements Serializable {
 		utilities = new ArrayList<>();
 
 		monopolyColorGroups = new ArrayList<>();
-		majorityColorGroups = new ArrayList<>();
 	}
 
 	public void addMonopolyGroup(ColorGroup colorGroup) {
@@ -78,32 +76,10 @@ public class Player implements Serializable {
 				exist = true;
 			}
 		}
-		int deleted = -1;
-		int i = 0;
-		for (ColorGroup c : majorityColorGroups) {
-			if (c.getColor() == colorGroup.getColor()) {
-				deleted = i;
-			}
-			i++;
-		}
-		if (deleted != -1) {
-			majorityColorGroups.remove(deleted);
-		}
-
 		if (!exist)
 			monopolyColorGroups.add(colorGroup);
 	}
 
-	public void addMajorityGroup(ColorGroup colorGroup) {
-		boolean exist = false;
-		for (ColorGroup c : majorityColorGroups) {
-			if (c.getColor() == colorGroup.getColor()) {
-				exist = true;
-			}
-		}
-		if (!exist)
-			majorityColorGroups.add(colorGroup);
-	}
 
 	public String getName() {
 		return name;
@@ -337,15 +313,6 @@ public class Player implements Serializable {
 				}
 			}
 		}
-		for (ColorGroup c : majorityColorGroups) {
-			for (Property p : c.getPropertyColorSquares()) {
-				if (p.getName().equals(parsed[0])) {
-					targetedSquare = p;
-					colorGroup = c;
-					break;
-				}
-			}
-		}
 		switch (parsed[1]) {
 		case "FOUR_HOUSE_LEVEL":
 			targetedSquare.dropBuildings();
@@ -382,11 +349,6 @@ public class Player implements Serializable {
 				currentColorGroup = c;
 			}
 		}
-		for (ColorGroup c : majorityColorGroups) {
-			if (c.getColor().toString().equals(parsed[0])) {
-				currentColorGroup = c;
-			}
-		}
 		ArrayList<Property> availableProperties = currentColorGroup.getAvailableSquares();
 		message = "BUILDING2/";
 		if (availableProperties.size() != 0) {
@@ -402,7 +364,7 @@ public class Player implements Serializable {
 
 	public void buyBuildingAction() {
 		message = "BUILDING/";
-		if (monopolyColorGroups.size() == 0 && majorityColorGroups.size() == 0) {
+		if (monopolyColorGroups.size() == 0) {
 			message += "NO/";
 			message += "There are no monopoloes or majorities you have";
 		} else {
@@ -410,16 +372,17 @@ public class Player implements Serializable {
 			for (ColorGroup c : monopolyColorGroups) {
 				message += c.getColor() + " GROUP. Level: " + c.getLevel() + "/";
 			}
-			for (ColorGroup c : majorityColorGroups) {
-				message += c.getColor() + " GROUP. Level: " + c.getLevel() + "/";
-			}
 		}
 		publishGameEvent(message);
 		// To be deleted. Just for testing.
-		//ColorGroup c = board.getTestColorGroup();
-		//for (Property k : c.getPropertyColorSquares()) {
-		//	k.setOwner(this);
-		//}
+		ColorGroup c = board.getTestColorGroup();
+		int i = 0;
+		for (Property k : c.getPropertyColorSquares()) {
+			i++;
+			if(i==3)
+				break;
+			k.setOwner(this);
+		}
 	}
 
 	public void addHouse() {
@@ -648,6 +611,9 @@ public class Player implements Serializable {
 
 	public void delegateTask(String mess) {
 		Controller.getInstance().dispatchMessage("PLAYER/" + mess);
+	}
+	public void doHurricaneAction(){
+		
 	}
 
 }

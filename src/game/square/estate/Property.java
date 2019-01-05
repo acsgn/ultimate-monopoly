@@ -45,12 +45,9 @@ public class Property extends Estate {
 	@Override
 	public void setOwner(Player owner){
 		super.setOwner(owner);
-		colorGroup.updateMonopolyAndMajority();
+		colorGroup.updateMonopoly();
 		if(owner.getName().equals(colorGroup.getMonopolyOwnerName())){
 			owner.addMonopolyGroup(colorGroup);
-		}
-		if(owner.getName().equals(colorGroup.getMajorityOwnerName())){
-			owner.addMajorityGroup(colorGroup);
 		}
 	}
 

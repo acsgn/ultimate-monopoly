@@ -130,6 +130,10 @@ public class ActionCards {
 		chance.add(zeroDollarsDown);
 		chance.add(changingLanesAbove);
 		chance.add(changingLanesBelow);*/
+		
+		// Hurricane card. 
+		Chance hurricane = new Chance("Hurricane", true);
+		chance.add(hurricane);
 	}
 	public CommunityChest getCommunityChestCard(){
 		Random d = new Random();

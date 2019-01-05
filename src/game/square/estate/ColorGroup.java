@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import game.building.Building;
+import game.building.Hotel;
+import game.building.House;
 import game.building.Skyscraper;
 
 public class ColorGroup {
@@ -13,7 +15,6 @@ public class ColorGroup {
 	private ArrayList<Property> propertyColorSquares;
 	private PropertyLevel level;
 	private String monopolyOwnerName = ""; 
-	private String majorityOwnerName = "";
 	private int squaresUpgraded = 0;
 	
 	public ColorGroup(PropertyColor color){
@@ -37,6 +38,32 @@ public class ColorGroup {
 		if(squaresUpgraded == propertyColorSquares.size()){
 			squaresUpgraded = 0;
 			upgradeLevel();
+		}
+	}
+	public void decreaseLevel(){
+		level = level.previous();
+		for(Property p : propertyColorSquares){
+			ArrayList<Building> buildings = p.getBuildings();
+			switch(buildings.size()){
+			case 0: break;
+			case 1:
+				if(buildings.get(0) instanceof House){
+					buildings.remove(0);
+				}else if(buildings.get(0) instanceof Hotel){
+					buildings.remove(0);
+					buildings.add(new House());
+					buildings.add(new House());
+					buildings.add(new House());
+					buildings.add(new House());
+				}else{
+					buildings.remove(0);
+					buildings.add(new Hotel());
+				}
+				break;
+			default: 
+				buildings.remove(0);
+			}
+			
 		}
 	}
 	public ArrayList<Property> getAvailableSquares(){
@@ -86,7 +113,7 @@ public class ColorGroup {
 		return properties;
 	}
 	
-	public void updateMonopolyAndMajority(){
+	public void updateMonopoly(){
 		ArrayList<String> ownerNames = new ArrayList<>();
 		for(Property p : propertyColorSquares){
 			if(p.getOwner()!=null){
@@ -101,23 +128,15 @@ public class ColorGroup {
 		int max_freq = Collections.max(commonOwners.keySet());
 		String mostCommonPlayer = commonOwners.get(max_freq);
 		if(max_freq == propertyColorSquares.size()){
-			majorityOwnerName = "";
 			monopolyOwnerName = mostCommonPlayer;
-		}
-		if(max_freq == propertyColorSquares.size()-1){
-			majorityOwnerName = mostCommonPlayer;
 		}
 	}
 
 	public String getMonopolyOwnerName() {
-		updateMonopolyAndMajority();
+		updateMonopoly();
 		return monopolyOwnerName;
 	}
 	
-	public String getMajorityOwnerName() {
-		updateMonopolyAndMajority();
-		return majorityOwnerName;
-	}
 
 	public ArrayList<Property> getPropertyColorSquares() {
 		return propertyColorSquares;
@@ -134,11 +153,6 @@ public class ColorGroup {
 	public void setLevel(PropertyLevel level) {
 		this.level = level;
 	}
-
-	public void setMajorityOwnerName(String majorityOwnerName) {
-		this.majorityOwnerName = majorityOwnerName;
-	}
-
 	public void setColor(PropertyColor color) {
 		this.color = color;
 	}

@@ -13,6 +13,9 @@ public enum PropertyLevel {
     {
         return vals[(this.ordinal()+1) % vals.length];
     }
+    public PropertyLevel previous(){
+    	return vals[(this.ordinal()-1 + vals.length) % vals.length];
+    }
 	
 	
 	
