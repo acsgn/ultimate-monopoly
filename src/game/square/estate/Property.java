@@ -11,47 +11,47 @@ public class Property extends Estate {
 	private static final long serialVersionUID = 1L;
 
 	private static final EstateSquareType type = EstateSquareType.PROPERTY;
-	
+
 	private int rent;
 	private ArrayList<Building> buildings;
 	private TitleDeed titleDeed;
 	private ColorGroup colorGroup;
-	
+
 	public Property(String name, int price, TitleDeed titleDeed) {
 		super(name, price, type);
 		this.titleDeed = titleDeed;
 		buildings = new ArrayList<>();
 	}
-	
-	public void setColorGroup(ColorGroup colorGroup){
-		this.colorGroup =  colorGroup;
+
+	public void setColorGroup(ColorGroup colorGroup) {
+		this.colorGroup = colorGroup;
 	}
+
 	@Override
 	public void executeWhenLanded(Player player) {
-		// TODO
-		if(this.getOwner()!=null){
-			if(this.getOwner().getName().equals(player.getName())){
+		if (this.getOwner() != null) {
+			if (this.getOwner().getName().equals(player.getName())) {
 				String message = "ACTION/You landed on your owned property Haha!";
 				player.publishGameEvent(message);
-			}else{
-				NetworkFacade.getInstance().sendMessage(player.getName()+"/PAYRENT/"+this.getOwner().getName());
+			} else {
+				NetworkFacade.getInstance().sendMessage(player.getName() + "/PAYRENT/" + this.getOwner().getName());
 			}
-		}else{
+		} else {
 			String message = "ACTION/You can buy this property!";
 			player.publishGameEvent(message);
 		}
 	}
 
 	@Override
-	public void setOwner(Player owner){
+	public void setOwner(Player owner) {
 		super.setOwner(owner);
 		colorGroup.updateMonopoly();
-		if(owner.getName().equals(colorGroup.getMonopolyOwnerName())){
+		if (owner.getName().equals(colorGroup.getMonopolyOwnerName())) {
 			owner.addMonopolyGroup(colorGroup);
 		}
 	}
 
-	//The rent system is prone to change
+	// The rent system is prone to change
 	public int getRent() {
 		rent = RentStrategyFactory.getInstance().getStrategy(this).getRent(this);
 		return rent;
@@ -65,17 +65,20 @@ public class Property extends Estate {
 		return buildings;
 	}
 
-	public void addBuilding(Building b){
+	public void addBuilding(Building b) {
 		buildings.add(b);
 	}
-	public void dropBuildings(){
+
+	public void dropBuildings() {
 		buildings = new ArrayList<>();
 	}
-	public TitleDeed getTitleDeed(){
+
+	public TitleDeed getTitleDeed() {
 		return titleDeed;
 	}
-	public ColorGroup getColorGroup(){
+
+	public ColorGroup getColorGroup() {
 		return colorGroup;
 	}
-	
+
 }

@@ -10,124 +10,130 @@ import game.building.House;
 import game.building.Skyscraper;
 
 public class ColorGroup {
-	
-	private PropertyColor color; 
+
+	private PropertyColor color;
 	private ArrayList<Property> propertyColorSquares;
 	private PropertyLevel level;
-	private String monopolyOwnerName = ""; 
+	private String monopolyOwnerName = "";
 	private int squaresUpgraded = 0;
-	
-	public ColorGroup(PropertyColor color){
+
+	public ColorGroup(PropertyColor color) {
 		propertyColorSquares = new ArrayList<>();
-		this.color = color; 
+		this.color = color;
 		this.level = PropertyLevel.ZERO_HOUSE_LEVEL;
 	}
-	
-	public void addPropertySquare(Property s){
+
+	public void addPropertySquare(Property s) {
 		propertyColorSquares.add(s);
 		s.setColorGroup(this);
 	}
-	public PropertyColor getColor(){
-		return color; 
+
+	public PropertyColor getColor() {
+		return color;
 	}
-	public void upgradeLevel(){
+
+	public void upgradeLevel() {
 		level = level.next();
 	}
-	public void updateLevel(){
-		squaresUpgraded++; 
-		if(squaresUpgraded == propertyColorSquares.size()){
+
+	public void updateLevel() {
+		squaresUpgraded++;
+		if (squaresUpgraded == propertyColorSquares.size()) {
 			squaresUpgraded = 0;
 			upgradeLevel();
 		}
 	}
-	public void decreaseLevel(){
+
+	public void decreaseLevel() {
 		level = level.previous();
-		for(Property p : propertyColorSquares){
+		for (Property p : propertyColorSquares) {
 			ArrayList<Building> buildings = p.getBuildings();
-			switch(buildings.size()){
-			case 0: break;
+			switch (buildings.size()) {
+			case 0:
+				break;
 			case 1:
-				if(buildings.get(0) instanceof House){
+				if (buildings.get(0) instanceof House) {
 					buildings.remove(0);
-				}else if(buildings.get(0) instanceof Hotel){
+				} else if (buildings.get(0) instanceof Hotel) {
 					buildings.remove(0);
 					buildings.add(new House());
 					buildings.add(new House());
 					buildings.add(new House());
 					buildings.add(new House());
-				}else{
+				} else {
 					buildings.remove(0);
 					buildings.add(new Hotel());
 				}
 				break;
-			default: 
+			default:
 				buildings.remove(0);
 			}
-			
+
 		}
 	}
-	public ArrayList<Property> getAvailableSquares(){
+
+	public ArrayList<Property> getAvailableSquares() {
 		ArrayList<Property> properties = new ArrayList<>();
-		if(level == PropertyLevel.ZERO_HOUSE_LEVEL){
-			for(Property p : propertyColorSquares){
-				if(p.getBuildings().size()==0){
+		if (level == PropertyLevel.ZERO_HOUSE_LEVEL) {
+			for (Property p : propertyColorSquares) {
+				if (p.getBuildings().size() == 0) {
 					properties.add(p);
 				}
 			}
-		}else if(level == PropertyLevel.ONE_HOUSE_LEVEL){
-			for(Property p : propertyColorSquares){
-				if(p.getBuildings().size()==1){
+		} else if (level == PropertyLevel.ONE_HOUSE_LEVEL) {
+			for (Property p : propertyColorSquares) {
+				if (p.getBuildings().size() == 1) {
 					properties.add(p);
 				}
 			}
-		}else if(level == PropertyLevel.TWO_HOUSE_LEVEL){
-			for(Property p : propertyColorSquares){
-				if(p.getBuildings().size()==2){
+		} else if (level == PropertyLevel.TWO_HOUSE_LEVEL) {
+			for (Property p : propertyColorSquares) {
+				if (p.getBuildings().size() == 2) {
 					properties.add(p);
 				}
 			}
-		}else if(level == PropertyLevel.THREE_HOUSE_LEVEL){
-			for(Property p : propertyColorSquares){
-				if(p.getBuildings().size()==3){
+		} else if (level == PropertyLevel.THREE_HOUSE_LEVEL) {
+			for (Property p : propertyColorSquares) {
+				if (p.getBuildings().size() == 3) {
 					properties.add(p);
 				}
 			}
-		}else if(level == PropertyLevel.FOUR_HOUSE_LEVEL){
-			for(Property p : propertyColorSquares){
-				if(p.getBuildings().size()==4){
+		} else if (level == PropertyLevel.FOUR_HOUSE_LEVEL) {
+			for (Property p : propertyColorSquares) {
+				if (p.getBuildings().size() == 4) {
 					properties.add(p);
 				}
 			}
-		}else if(level == PropertyLevel.HOTEL_LEVEL){
-			for(Property p : propertyColorSquares){
+		} else if (level == PropertyLevel.HOTEL_LEVEL) {
+			for (Property p : propertyColorSquares) {
 				boolean noSkyscraper = true;
-				for(Building b : p.getBuildings()){
-					if(b instanceof Skyscraper){
+				for (Building b : p.getBuildings()) {
+					if (b instanceof Skyscraper) {
 						noSkyscraper = false;
 					}
 				}
-				if(noSkyscraper)
+				if (noSkyscraper)
 					properties.add(p);
 			}
 		}
 		return properties;
 	}
-	
-	public void updateMonopoly(){
+
+	public void updateMonopoly() {
 		ArrayList<String> ownerNames = new ArrayList<>();
-		for(Property p : propertyColorSquares){
-			if(p.getOwner()!=null){
+		for (Property p : propertyColorSquares) {
+			if (p.getOwner() != null) {
 				ownerNames.add(p.getOwner().getName());
 			}
 		}
 		HashMap<Integer, String> commonOwners = new HashMap<>();
-		for(String name : ownerNames){
+		for (String name : ownerNames) {
 			int freq = Collections.frequency(ownerNames, name);
 			commonOwners.put(freq, name);
 		}
 		int max_freq = Collections.max(commonOwners.keySet());
 		String mostCommonPlayer = commonOwners.get(max_freq);
-		if(max_freq == propertyColorSquares.size()){
+		if (max_freq == propertyColorSquares.size()) {
 			monopolyOwnerName = mostCommonPlayer;
 		}
 	}
@@ -136,7 +142,6 @@ public class ColorGroup {
 		updateMonopoly();
 		return monopolyOwnerName;
 	}
-	
 
 	public ArrayList<Property> getPropertyColorSquares() {
 		return propertyColorSquares;
@@ -153,6 +158,7 @@ public class ColorGroup {
 	public void setLevel(PropertyLevel level) {
 		this.level = level;
 	}
+
 	public void setColor(PropertyColor color) {
 		this.color = color;
 	}
