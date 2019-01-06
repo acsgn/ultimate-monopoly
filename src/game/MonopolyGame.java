@@ -376,6 +376,7 @@ public class MonopolyGame implements Runnable {
 			break;
 		case "BUYESTATE":
 			currentPlayer.buySquare();
+			//((Estate) currentPlayer.getLocation()).information();
 			break;
 		case "CARD":
 			// This should be picked by executeMessage

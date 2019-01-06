@@ -41,12 +41,11 @@ public abstract class Estate extends Square {
 
 	@Override
 	public void executeWhenLanded(Player player) {
-		// TODO
 		if (owner != null) {
 			if (!owner.getName().equals(player.getName()))
-				player.delegateTask("PAYRENT/" + player.getName() +"/"+ owner.getName());
+				player.delegateTask("PAYRENT/" + player.getName() + "/" + owner.getName());
 		} else {
-			Controller.getInstance().publishGameEvent("ESTATE");
+			Controller.getInstance().publishGameEvent("ESTATE/" + name);
 		}
 		Controller.getInstance().publishGameEvent(information());
 	}
