@@ -14,7 +14,8 @@ public class CommunityChest extends Action {
 	public void executeWhenLanded(Player player) {
 		game.card.CommunityChest card = ActionCards.getInstance().getCommunityChestCard();
 		//player.pickCard(card);
-		NetworkFacade.getInstance().sendMessage(player.getName()+"/CARD/"+card.getCardType().ordinal());
+		player.delegateTask("CARD/"+player.getName()+"/"+card.getCardType().ordinal());
+		//NetworkFacade.getInstance().sendMessage(player.getName()+"/CARD/"+card.getCardType().ordinal());
 	}
 
 	@Override

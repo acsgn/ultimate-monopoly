@@ -70,8 +70,10 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
+				//NetworkFacade.getInstance()
+					//	.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				NetworkFacade.getInstance()
-						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
+				.sendMessage(myName + "/PLAY/" + 4 + "/" + 3 + "/" + diceRolls[2]);
 				if (diceRolls[0] == diceRolls[1])
 					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
@@ -207,7 +209,8 @@ public class MonopolyGame implements Runnable {
 			case "HURRICANE":
 				switch (parsed[2]) {
 				case "GETNAMES":
-					NetworkFacade.getInstance().sendMessage(parsed[3] + "/HURRICANE/GETNAMES");
+					if(parsed[3].equals(myName))
+							NetworkFacade.getInstance().sendMessage(parsed[3] + "/HURRICANE/GETNAMES");
 					break;
 				case "EXECUTE":
 					NetworkFacade.getInstance()
