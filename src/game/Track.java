@@ -41,10 +41,12 @@ public class Track implements Serializable {
 		return squares.size();
 	}
 
-	public void informUI() {
+	public String squareInformations() {
+		String info = "";
 		for (Square s : squares)
 			if (s.getType() == SquareType.ESTATE)
-				((Estate) s).informUI();
+				info += "/"+(((Estate) s).getName() + "/" + squares.indexOf(s)) + "/" + type.ordinal();
+		return info;
 	}
 
 	public TrackType getTrackType() {

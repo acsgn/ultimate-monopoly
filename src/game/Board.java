@@ -495,9 +495,11 @@ public class Board implements Serializable {
 	}
 
 	public void informUI() {
-		innerTrack.informUI();
-		middleTrack.informUI();
-		outerTrack.informUI();
+		String info = "DEED";
+		info += innerTrack.squareInformations();
+		info += middleTrack.squareInformations();
+		info += outerTrack.squareInformations();
+		Controller.getInstance().publishGameEvent(info);
 	}
 
 }

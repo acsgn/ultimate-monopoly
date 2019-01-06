@@ -16,9 +16,11 @@ import game.card.Card;
 import game.card.Chance;
 import game.dice.SingletonDice;
 import game.square.estate.ColorGroup;
+import game.square.estate.Estate;
 import game.square.estate.Property;
 import network.NetworkFacade;
 import game.bot.Bot;
+import game.building.BuildingType;
 
 public class MonopolyGame implements Runnable {
 
@@ -94,6 +96,8 @@ public class MonopolyGame implements Runnable {
 					p.updateState();
 				break;
 			case "DEEDINFO":
+				Estate s = (Estate) board.getSquare(toInt(parsed[2]), TrackType.getType(toInt(parsed[3])));
+				Controller.getInstance().publishGameEvent(s.information());
 				break;
 			case "ENDTURN":
 				NetworkFacade.getInstance().sendMessage("ENDTURN");
@@ -193,7 +197,7 @@ public class MonopolyGame implements Runnable {
 			case "CARD":
 				if (parsed[2].equals(myName)) {
 					Player curr = findPlayer(parsed[2]);
-					//Card card;
+					// Card card;
 					int index = 0;
 					if (toInt(parsed[3]) == 0) {
 						ActionCards.getInstance().getChanceCard();

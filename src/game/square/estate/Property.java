@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import game.Player;
 import game.building.Building;
 import game.strategy.RentStrategyFactory;
-import network.NetworkFacade;
 
 public class Property extends Estate {
 	private static final long serialVersionUID = 1L;
@@ -25,21 +24,6 @@ public class Property extends Estate {
 
 	public void setColorGroup(ColorGroup colorGroup) {
 		this.colorGroup = colorGroup;
-	}
-
-	@Override
-	public void executeWhenLanded(Player player) {
-		if (this.getOwner() != null) {
-			if (this.getOwner().getName().equals(player.getName())) {
-				String message = "ACTION/You landed on your owned property Haha!";
-				player.publishGameEvent(message);
-			} else {
-				NetworkFacade.getInstance().sendMessage(player.getName() + "/PAYRENT/" + this.getOwner().getName());
-			}
-		} else {
-			String message = "ACTION/You can buy this property!";
-			player.publishGameEvent(message);
-		}
 	}
 
 	@Override
@@ -79,6 +63,22 @@ public class Property extends Estate {
 
 	public ColorGroup getColorGroup() {
 		return colorGroup;
+	}
+
+	@Override
+	public String information() {
+		String information;
+		if (getOwner() != null) {
+			information = "PROPERTY/" + getOwner().getName() + "/";
+			if (!buildings.isEmpty()) {
+				information += buildings.get(0).getBuildingType().ordinal() + "/";
+				information += buildings.size();
+			} else
+				information += "NOBUILDING";
+		} else {
+			information = "NOOWNER";
+		}
+		return information;
 	}
 
 }

@@ -25,8 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 import game.Controller;
 import game.GameListener;
@@ -41,12 +40,20 @@ public class UIScreen extends JFrame implements GameListener {
 	private Controller controller;
 	private Animator animator;
 	private PathFinder pathFinder;
-	private Hashtable<String, Piece> pieces;
+	private ConcurrentHashMap<String, Piece> pieces;
+	private ArrayList<String> deeds;
+	private ArrayList<JButton> willBeActivetedButtons;
+	private boolean isRolled = false;
+	private boolean active;
+	private final Object[] jailOptions = { "Roll for Doubles", "Pay Bail" };
 
 	private String message;
+	private JTextArea deedInformation;
 	private JTextArea infoText;
 	private JTextArea playerText;
 	private JPanel playerArea;
+	private JPanel pauseResumePanel;
+	private JPanel jail;
 	private JBoard board;
 	private JButton buyBuildingButton;
 	private JButton sellBuildingButton;
@@ -58,16 +65,9 @@ public class UIScreen extends JFrame implements GameListener {
 	private JButton endTurnButton;
 	private JButton saveGameButton;
 	private JButton endGameButton;
-	private JPanel pauseResumePanel;
-	private JPanel jail;
-
-	private JTextArea deedInformation;
 	private JLabel deed;
 	private JComboBox<String> deedComboBox;
 	private JComboBox<String> playerComboBox;
-
-	private boolean isRolled = false;
-	private final Object[] jailOptions = { "Roll for Doubles", "Pay Bail" };
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -94,14 +94,15 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private final int unscaledPieceSize = 80;
 	private int pieceSize = (int) (scaleFactor * unscaledPieceSize);
-	private boolean active;
 
 	/**
 	 * Create the panel.
 	 */
 	public UIScreen() {
 		controller = Controller.getInstance();
-		pieces = new Hashtable<String, Piece>();
+		pieces = new ConcurrentHashMap<String, Piece>();
+		deeds = new ArrayList<String>();
+		willBeActivetedButtons = new ArrayList<JButton>();
 		animator = new Animator();
 		pathFinder = new PathFinder(scaleFactor);
 
@@ -361,8 +362,8 @@ public class UIScreen extends JFrame implements GameListener {
 					enableButtons();
 					if (isRolled) {
 						endTurnButton.setEnabled(true);
-						buySquareButton.setEnabled(true);// TODO check if its
-															// buyable
+						buySquareButton.setEnabled(true);
+						// TODO check if its buyable
 					} else
 						rollDiceButton.setEnabled(true);
 					pauseResumeButton.setText("Pause");
@@ -402,7 +403,8 @@ public class UIScreen extends JFrame implements GameListener {
 				Image deedImage = new ImageIcon(deedImagePath + name + ".png").getImage()
 						.getScaledInstance(controlPaneWidth, -1, Image.SCALE_SMOOTH);
 				deed.setIcon(new ImageIcon(deedImage));
-				controller.dispatchMessage("UISCREEN/DEEDINFO/" + name);
+				String info = deeds.get(deedComboBox.getSelectedIndex());
+				controller.dispatchMessage("UISCREEN/DEEDINFO/" + info);
 			}
 		});
 
@@ -499,6 +501,38 @@ public class UIScreen extends JFrame implements GameListener {
 				endTurnButton.setEnabled(true);
 			}
 			break;
+		case "ESTATE":
+			if (active)
+				willBeActivetedButtons.add(buySquareButton);
+		case "NOOWNER":
+			deedInformation.setText("There is no owner of this square!");
+			break;
+		case "PROPERTY":
+			String infop = "Owner: " + parsed[1] + "\n";
+			infop += "This square has ";
+			if (parsed[2].equals("NOBUILDING"))
+				infop += "no buildings!";
+			else {
+				if (parsed[2].equals("0"))
+					infop += parsed[3] + " houses!";
+				else if (parsed[2].equals("1"))
+					infop += "a hotel!";
+				else if (parsed[2].equals("2"))
+					infop += "a skyscraper";
+			}
+			deedInformation.setText(infop);
+			break;
+		case "TRASNIT":
+			String infot = "Owner: " + parsed[1] + "\n";
+			infot += parsed[1] + " has " + parsed[2] + " transit stations!";
+			infot += "This station has " + parsed[2] + " train depots!";
+			deedInformation.setText(infot);
+			break;
+		case "UTILITY":
+			String infou = "Owner: " + parsed[1] + "\n";
+			infou += parsed[1] + " has " + parsed[2] + " utility squares!";
+			deedInformation.setText(infou);
+			break;
 		case "JAILACTION":
 			if (active) {
 				int n = JOptionPane.showOptionDialog(null, jail, "", JOptionPane.YES_NO_OPTION,
@@ -519,7 +553,10 @@ public class UIScreen extends JFrame implements GameListener {
 			pieces.put(parsed[1], piece);
 			break;
 		case "DEED":
-			deedComboBox.addItem(parsed[1]);
+			for (int i = 1; i < parsed.length; i += 3) {
+				deeds.add(parsed[i + 1] + "/" + parsed[i + 2]);
+				deedComboBox.addItem(parsed[i]);
+			}
 			break;
 		case "CARD2":
 			Image cardImage = new ImageIcon(cardImagePath + parsed[1] + ".png").getImage()
@@ -556,7 +593,7 @@ public class UIScreen extends JFrame implements GameListener {
 							JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
 					if (s != null)
 						Controller.getInstance()
-								.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1] + "/");
+								.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1]);
 				}
 			}
 			break;
@@ -564,8 +601,7 @@ public class UIScreen extends JFrame implements GameListener {
 			if (parsed[1].equals("HURRICANE")) {
 				switch (parsed[2]) {
 				case "CHOOSEPLAYER":
-					HashMap<Object, ArrayList<Object>> possibilities1 = new HashMap<>();
-					//
+					ConcurrentHashMap<Object, ArrayList<Object>> possibilities1 = new ConcurrentHashMap<>();
 					int i = 3;
 					while (i < parsed.length) {
 						ArrayList<Object> groups = new ArrayList<>();
@@ -578,14 +614,12 @@ public class UIScreen extends JFrame implements GameListener {
 						possibilities1.put(playerName, groups);
 						i++;
 					}
-					//
+
 					String player = (String) JOptionPane.showInputDialog(null, "Choose a player from the following:\n",
-							"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(),
-							null);
+							"", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(), null);
 					if (player != null) {
 						String group = (String) JOptionPane.showInputDialog(null, "Choose a groups for that player:\n",
-								"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null,
-								possibilities1.get(player).toArray(), null);
+								"", JOptionPane.PLAIN_MESSAGE, null, possibilities1.get(player).toArray(), null);
 						if (group != null) {
 							message = "UISCREEN/HURRICANE/EXECUTE/" + player + "/" + group + "/";
 							Controller.getInstance().dispatchMessage(message);
@@ -624,9 +658,9 @@ public class UIScreen extends JFrame implements GameListener {
 					isActive = false;
 					controller.dispatchMessage("UISCREEN/ANIMATIONEND");
 
-					// TODO move this to gameEvent, only for buyable squares
-					if (active)
-						buySquareButton.setEnabled(true);
+					for (JButton button : willBeActivetedButtons)
+						button.setEnabled(true);
+					willBeActivetedButtons.clear();
 				}
 			}
 		}

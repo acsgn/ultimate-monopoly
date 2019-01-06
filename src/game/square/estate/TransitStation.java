@@ -51,4 +51,15 @@ public class TransitStation extends Estate {
 		return track == track1 ? index2 : index1;
 	}
 
+	@Override
+	public String information() {
+		String information;
+		if (getOwner() != null) {
+			information = "TRANSIT/" + getOwner().getName() + "/";
+			information += getOwner().getTransitStations().size() + "/" + trainDepot;
+		} else
+			information = "NOOWNER";
+		return information;
+	}
+
 }

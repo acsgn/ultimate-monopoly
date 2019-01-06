@@ -4,6 +4,7 @@ import game.Controller;
 import game.Player;
 import game.square.Square;
 import game.square.SquareType;
+import network.NetworkFacade;
 
 public abstract class Estate extends Square {
 	private static final long serialVersionUID = 1L;
@@ -19,10 +20,6 @@ public abstract class Estate extends Square {
 		this.name = name;
 		this.price = price;
 		this.estateSquareType = type;
-	}
-
-	public void informUI() {
-		Controller.getInstance().publishGameEvent("DEED/" + name);
 	}
 
 	public String getName() {
@@ -46,6 +43,13 @@ public abstract class Estate extends Square {
 	@Override
 	public void executeWhenLanded(Player player) {
 		// TODO
+		if (owner != null) {
+			if (!owner.getName().equals(player.getName()))
+				NetworkFacade.getInstance().sendMessage(player.getName() + "/PAYRENT/" + owner.getName());
+		} else {
+			Controller.getInstance().publishGameEvent("ESTATE");
+		}
+		Controller.getInstance().publishGameEvent(information());
 	}
 
 	@Override
@@ -65,4 +69,7 @@ public abstract class Estate extends Square {
 	public boolean isOwned() {
 		return (owner != null);
 	}
+
+	public abstract String information();
+
 }
