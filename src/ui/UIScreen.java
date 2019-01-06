@@ -66,6 +66,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private JComboBox<String> deedComboBox;
 	private JComboBox<String> playerComboBox;
 
+	private boolean isRolled = false;
 	private final Object[] jailOptions = { "Roll for Doubles", "Pay Bail" };
 
 	/// UI constants
@@ -83,6 +84,8 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private int controlPaneComponentWidth = controlPaneWidth / 2;
 	private int controlPaneComponentHeight = controlPaneHeight / 12;
+
+	private Font font = new Font("Tahoma", Font.PLAIN, screenWidth / 80);
 
 	private Image boardImage = new ImageIcon(boardImagePath).getImage().getScaledInstance(screenHeight, -1,
 			Image.SCALE_SMOOTH);
@@ -126,14 +129,14 @@ public class UIScreen extends JFrame implements GameListener {
 
 		deedInformation = new JTextArea();
 		deedInformation.setEditable(false);
-		deedInformation.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		deedInformation.setFont(font);
 		deedInformation.setBounds(controlPaneXMargin, controlPaneYMargin + 6 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				2 * controlPaneComponentHeight - 2 * controlPaneYMargin);
 		leftControlPanel.add(deedInformation);
 
 		deedComboBox = new JComboBox<String>();
-		deedComboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		deedComboBox.setFont(font);
 		deedComboBox.setBounds(controlPaneXMargin, controlPaneYMargin + 8 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
@@ -151,7 +154,7 @@ public class UIScreen extends JFrame implements GameListener {
 		sellBuildingButton.setBounds(controlPaneXMargin + controlPaneComponentWidth,
 				controlPaneYMargin + 9 * controlPaneComponentHeight, controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		sellBuildingButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		sellBuildingButton.setFont(font);
 		sellBuildingButton.setEnabled(false);
 		leftControlPanel.add(sellBuildingButton);
 
@@ -159,7 +162,7 @@ public class UIScreen extends JFrame implements GameListener {
 		mortgageButton.setBounds(controlPaneXMargin, controlPaneYMargin + 10 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		mortgageButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		mortgageButton.setFont(font);
 		mortgageButton.setEnabled(false);
 		leftControlPanel.add(mortgageButton);
 
@@ -168,7 +171,7 @@ public class UIScreen extends JFrame implements GameListener {
 				controlPaneYMargin + 10 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		unmortgageButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		unmortgageButton.setFont(font);
 		unmortgageButton.setEnabled(false);
 		leftControlPanel.add(unmortgageButton);
 
@@ -176,7 +179,7 @@ public class UIScreen extends JFrame implements GameListener {
 		buySquareButton.setBounds(controlPaneXMargin, controlPaneYMargin + 11 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		buySquareButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		buySquareButton.setFont(font);
 		buySquareButton.setEnabled(false);
 		leftControlPanel.add(buySquareButton);
 
@@ -190,7 +193,7 @@ public class UIScreen extends JFrame implements GameListener {
 		endGameButton.setBounds(controlPaneXMargin, controlPaneYMargin,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		endGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		endGameButton.setFont(font);
 		rightPanel.add(endGameButton);
 
 		playerArea = new JPanel();
@@ -202,7 +205,7 @@ public class UIScreen extends JFrame implements GameListener {
 
 		playerText = new JTextArea();
 		playerText.setEditable(false);
-		playerText.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerText.setFont(font);
 		JScrollPane playerScroll = new JScrollPane(playerText);
 		playerScroll.setBounds(controlPaneXMargin, 2 * controlPaneYMargin,
 				2 * controlPaneComponentWidth - 4 * controlPaneXMargin,
@@ -211,7 +214,7 @@ public class UIScreen extends JFrame implements GameListener {
 		rightPanel.add(playerArea);
 
 		playerComboBox = new JComboBox<String>();
-		playerComboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerComboBox.setFont(font);
 		playerComboBox.setBounds(controlPaneXMargin, controlPaneYMargin + 5 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
@@ -219,7 +222,7 @@ public class UIScreen extends JFrame implements GameListener {
 
 		infoText = new JTextArea();
 		infoText.setEditable(false);
-		infoText.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		infoText.setFont(font);
 		JScrollPane infoArea = new JScrollPane(infoText);
 		infoArea.setBounds(controlPaneXMargin, controlPaneYMargin + 6 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
@@ -230,7 +233,7 @@ public class UIScreen extends JFrame implements GameListener {
 		pauseResumeButton.setBounds(controlPaneXMargin, controlPaneYMargin + 10 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		pauseResumeButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		pauseResumeButton.setFont(font);
 		pauseResumeButton.setEnabled(false);
 		rightPanel.add(pauseResumeButton);
 
@@ -239,7 +242,7 @@ public class UIScreen extends JFrame implements GameListener {
 				controlPaneYMargin + 10 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		saveGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		saveGameButton.setFont(font);
 		saveGameButton.setEnabled(false);
 		rightPanel.add(saveGameButton);
 
@@ -247,7 +250,7 @@ public class UIScreen extends JFrame implements GameListener {
 		rollDiceButton.setBounds(controlPaneXMargin, controlPaneYMargin + 11 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		rollDiceButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		rollDiceButton.setFont(font);
 		rollDiceButton.setEnabled(false);
 		rightPanel.add(rollDiceButton);
 
@@ -256,7 +259,7 @@ public class UIScreen extends JFrame implements GameListener {
 				controlPaneYMargin + 11 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		endTurnButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		endTurnButton.setFont(font);
 		endTurnButton.setEnabled(false);
 		rightPanel.add(endTurnButton);
 
@@ -267,7 +270,7 @@ public class UIScreen extends JFrame implements GameListener {
 		pauseResumePanel.setBackground(Color.WHITE);
 		pauseResumePanel.setLayout(new GridBagLayout());
 		JLabel pauseResumeLabel = new JLabel("PAUSED");
-		pauseResumeLabel.setFont(new Font("Tahoma", Font.PLAIN, 48));
+		pauseResumeLabel.setFont(new Font(font.getFontName(), Font.PLAIN, font.getSize() * 2));
 		pauseResumePanel.setVisible(false);
 		pauseResumePanel.add(pauseResumeLabel);
 		board.add(pauseResumePanel);
@@ -285,6 +288,7 @@ public class UIScreen extends JFrame implements GameListener {
 		rollDiceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				isRolled = true;
 				rollDiceButton.setEnabled(false);
 				endTurnButton.setEnabled(true);
 				message = "UISCREEN/ROLLDICE";
@@ -336,6 +340,7 @@ public class UIScreen extends JFrame implements GameListener {
 		endTurnButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				endTurnButton.setEnabled(false);
 				active = false;
 				disableButtons();
 				message = "UISCREEN/ENDTURN";
@@ -347,10 +352,19 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (pauseResumeButton.getText().equals("Pause")) {
+					disableButtons();
+					pauseResumeButton.setEnabled(true);
 					pauseResumeButton.setText("Resume");
 					message = "UISCREEN/PAUSE";
 					Controller.getInstance().dispatchMessage(message);
 				} else {
+					enableButtons();
+					if (isRolled) {
+						endTurnButton.setEnabled(true);
+						buySquareButton.setEnabled(true);//TODO check if its buyable
+					}
+					else
+						rollDiceButton.setEnabled(true);
 					pauseResumeButton.setText("Pause");
 					message = "UISCREEN/RESUME";
 					Controller.getInstance().dispatchMessage(message);
@@ -411,6 +425,7 @@ public class UIScreen extends JFrame implements GameListener {
 		pauseResumeButton.setEnabled(false);
 		rollDiceButton.setEnabled(false);
 		endTurnButton.setEnabled(false);
+		saveGameButton.setEnabled(false);
 	}
 
 	private void enableButtons() {
@@ -419,7 +434,7 @@ public class UIScreen extends JFrame implements GameListener {
 		mortgageButton.setEnabled(true);
 		unmortgageButton.setEnabled(true);
 		pauseResumeButton.setEnabled(true);
-		rollDiceButton.setEnabled(true);
+		saveGameButton.setEnabled(true);
 	}
 
 	@Override
@@ -457,6 +472,8 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PLAY":
 			active = true;
+			isRolled = false;
+			rollDiceButton.setEnabled(true);
 			enableButtons();
 			break;
 		case "REMOVEPIECE":
@@ -464,17 +481,10 @@ public class UIScreen extends JFrame implements GameListener {
 				animator.stopAnimator();
 			board.repaint();
 			break;
-		case "PAUSET":
-			disableButtons();
-			pauseResumePanel.setVisible(true);
-			pauseResumeButton.setEnabled(true);
-			break;
-		case "PAUSEF":
-			disableButtons();
+		case "PAUSE":
 			pauseResumePanel.setVisible(true);
 			break;
 		case "RESUME":
-			enableButtons();
 			pauseResumePanel.setVisible(false);
 			break;
 		case "DOUBLE":
@@ -610,12 +620,10 @@ public class UIScreen extends JFrame implements GameListener {
 					animator.stopAnimator();
 					isActive = false;
 					controller.dispatchMessage("UISCREEN/ANIMATIONEND");
-					
+
 					// TODO move this to gameEvent, only for buyable squares
-					if (active) {
+					if (active) 
 						buySquareButton.setEnabled(true);
-						saveGameButton.setEnabled(true);
-					}
 				}
 			}
 		}

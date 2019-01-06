@@ -98,8 +98,6 @@ public class Player implements Serializable {
 	}
 
 	public void play(int[] diceRolls) {
-		sendColor();
-		updateState();
 		message = "ACTION/";
 		message += name + " rolled:\n";
 		message += "Regular Die 1: " + diceRolls[0] + "\n";

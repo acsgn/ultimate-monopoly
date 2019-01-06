@@ -62,7 +62,7 @@ public class MonopolyGame implements Runnable {
 		case "UISCREEN":
 			switch (parsed[1]) {
 			case "PAUSE":
-				NetworkFacade.getInstance().sendMessage("PAUSE/" + myName);
+				NetworkFacade.getInstance().sendMessage("PAUSE");
 				break;
 			case "RESUME":
 				NetworkFacade.getInstance().sendMessage("RESUME");
@@ -262,6 +262,9 @@ public class MonopolyGame implements Runnable {
 		case "DISCONNECTED":
 			Controller.getInstance().publishGameEvent("YOUDISCONNECTED");
 			return;
+		case "PAUSE":
+			Controller.getInstance().publishGameEvent("PAUSE");
+			return;
 		case "RESUME":
 			Controller.getInstance().publishGameEvent("RESUME");
 			return;
@@ -323,12 +326,6 @@ public class MonopolyGame implements Runnable {
 					informCurrentPlayer();
 				}
 			}
-			return;
-		case "PAUSE":
-			if (parsed[1].equals(myName))
-				Controller.getInstance().publishGameEvent("PAUSET");
-			else
-				Controller.getInstance().publishGameEvent("PAUSEF");
 			return;
 		}
 		currentPlayer = findPlayer(parsed[0]);
@@ -434,6 +431,8 @@ public class MonopolyGame implements Runnable {
 	}
 
 	private void informCurrentPlayer() {
+		currentPlayer.sendColor();
+		currentPlayer.updateState();
 		if (currentPlayer.getName().equals(myName))
 			Controller.getInstance().publishGameEvent("PLAY");
 		else if (bots.containsKey(myName))

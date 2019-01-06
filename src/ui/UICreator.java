@@ -43,6 +43,9 @@ public class UICreator extends JFrame implements GameListener {
 
 	private int width = Toolkit.getDefaultToolkit().getScreenSize().width / 3;
 	private int height = Toolkit.getDefaultToolkit().getScreenSize().height / 2;
+	
+	private Font font = new Font("Tahoma", Font.PLAIN, width * 3 / 80);
+	private Font labelFont = new Font("Tahoma", Font.PLAIN, width * 3 / 96);
 
 	private Image ultimateMonopolyImage = new ImageIcon(ultimateMonopolyImagePath).getImage().getScaledInstance(width,
 			-1, Image.SCALE_SMOOTH);
@@ -75,7 +78,7 @@ public class UICreator extends JFrame implements GameListener {
 		playerCountPanel.setLayout(null);
 
 		JLabel playerCountLabel = new JLabel("Number of Players Found:");
-		playerCountLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerCountLabel.setFont(labelFont);
 		playerCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		playerCountLabel.setBounds(0, 0, 11 * width / 25,
 				3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
@@ -83,7 +86,7 @@ public class UICreator extends JFrame implements GameListener {
 
 		playerCountTextField = new JTextField();
 		playerCountTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		playerCountTextField.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		playerCountTextField.setFont(font);
 		playerCountTextField.setBounds(0, 3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
 				11 * width / 25, 4 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		playerCountTextField.setEditable(false);
@@ -100,7 +103,7 @@ public class UICreator extends JFrame implements GameListener {
 		JLabel botLabel = new JLabel("Number of Bots:");
 		botLabel.setBounds(0, 0, 11 * width / 25, 2 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		botLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		botLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		botLabel.setFont(labelFont);
 		botPanel.add(botLabel);
 
 		Hashtable<Integer, JLabel> labelTable = createLabelTable();
@@ -121,7 +124,7 @@ public class UICreator extends JFrame implements GameListener {
 		gamePanel.add(botPanel);
 
 		JButton loadGameButton = new JButton("Load Game");
-		loadGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		loadGameButton.setFont(font);
 		loadGameButton.setBounds(width / 25, 17 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
 				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		gamePanel.add(loadGameButton);
@@ -148,20 +151,20 @@ public class UICreator extends JFrame implements GameListener {
 		playerNameLabel.setBounds(0, 0, 11 * width / 25,
 				3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		playerNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		playerNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		playerNameLabel.setFont(labelFont);
 		playerNamePanel.add(playerNameLabel);
 
 		JTextField playerNameField = new JTextField();
 		playerNameField.setBounds(0, 3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
 				11 * width / 25, 4 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		playerNameField.setHorizontalAlignment(SwingConstants.CENTER);
-		playerNameField.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		playerNameField.setFont(font);
 		playerNamePanel.add(playerNameField);
 
 		gamePanel.add(playerNamePanel);
 
 		JButton colorButton = new JButton("Choose a color");
-		colorButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		colorButton.setFont(font);
 		colorButton.setBounds(13 * width / 25, 9 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
 				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		gamePanel.add(colorButton);
@@ -175,7 +178,7 @@ public class UICreator extends JFrame implements GameListener {
 		});
 
 		JButton startGameButton = new JButton("Start Game");
-		startGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		startGameButton.setFont(font);
 		startGameButton.setBounds(13 * width / 25, 17 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
 				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
 		gamePanel.add(startGameButton);
