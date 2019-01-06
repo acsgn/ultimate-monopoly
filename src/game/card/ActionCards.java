@@ -117,12 +117,12 @@ public class ActionCards {
 		chance.add(advanceToSaintCharlesPlace);
 		chance.add(goToJail);
 		chance.add(makeGeneralRepairsToAllYourProperties);*/
-		//chance.add(holidayBonus);
+		chance.add(holidayBonus);
 		/*chance.add(buyersmarket);
 		chance.add(ForeclosedPropertySale);
 		chance.add(SeeYouInCourt);
 		chance.add(forwardThinker);*/
-		//chance.add(propertyTaxes);
+		chance.add(propertyTaxes);
 		/*chance.add(getRollin);
 		chance.add(hurricaneMakesLandfall);
 		chance.add(rideTheSubway);
@@ -130,7 +130,7 @@ public class ActionCards {
 		chance.add(payBack);
 		chance.add(mardiGras);
 		chance.add(GPSisNotWorking);*/
-		//chance.add(zeroDollarsDown);
+		chance.add(zeroDollarsDown);
 		/*chance.add(changingLanesAbove);
 		chance.add(changingLanesBelow);*/
 		
@@ -138,21 +138,19 @@ public class ActionCards {
 		Chance hurricane = new Chance("Hurricane", true);
 		chance.add(hurricane);
 	}
-	public CommunityChest getCommunityChestCard(){
+	public void getCommunityChestCard(){
 		Random d = new Random();
 		int k = d.nextInt(communityChest.size());
 		communityLastIndex = k;
-		CommunityChest tmp = communityChest.remove(k);
-		communityChest.add(tmp);
-		return tmp;
+		//CommunityChest tmp = communityChest.remove(k);
+		//communityChest.add(tmp);
 	}
-	public Chance getChanceCard(){
+	public void getChanceCard(){
 		Random d = new Random();
 		int k = d.nextInt(chance.size());
 		chanceLastIndex = k;
-		Chance tmp = chance.remove(k);
-		chance.add(tmp);
-		return tmp;
+		//Chance tmp = chance.remove(k);
+		//chance.add(tmp);
 	}
 	public int getIndexChanceCard(){
 		return chanceLastIndex;
@@ -161,10 +159,14 @@ public class ActionCards {
 		return communityLastIndex;
 	}
 	public Card getChanceCardByIndex(int i){
-		return chance.get(i);
+		Chance tmp = chance.remove(i);
+		chance.add(tmp);
+		return tmp;
 	}
 	public Card getCommunityCardByIndex(int i){
-		return communityChest.get(i);
+		CommunityChest tmp = communityChest.remove(i);
+		communityChest.add(tmp);
+		return tmp;
 	}
 	
 	public void putTheCardBack(Card card) {

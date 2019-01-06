@@ -2,6 +2,7 @@ package game.square.action;
 
 import game.Player;
 import game.card.ActionCards;
+import game.card.CardType;
 import network.NetworkFacade;
 
 public class Chance extends Action {
@@ -13,9 +14,9 @@ public class Chance extends Action {
 
 	@Override
 	public void executeWhenLanded(Player player) {
-		game.card.Chance card = ActionCards.getInstance().getChanceCard();
+		//game.card.Chance card = ActionCards.getInstance().getChanceCard();
 		//player.pickCard(card);
-		player.delegateTask("CARD/"+player.getName()+"/"+card.getCardType().ordinal());
+		player.delegateTask("CARD/"+player.getName()+"/"+CardType.CHANCE.ordinal());
 		//NetworkFacade.getInstance().sendMessage(player.getName()+"/CARD/"+card.getCardType().ordinal());
 	}
 
