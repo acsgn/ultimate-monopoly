@@ -229,6 +229,11 @@ public class MonopolyGame implements Runnable {
 				// NetworkFacade.getInstance().sendMessage(parsed[2] + "/" +
 				// parsed[1]);
 				break;
+			case "PAYRENT":
+				if(parsed[2].equals(myName)){
+					NetworkFacade.getInstance().sendMessage(parsed[2]+"/PAYRENT/"+parsed[3]);
+				}
+				break;
 			}
 			break;
 		}

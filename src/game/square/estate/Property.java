@@ -31,10 +31,10 @@ public class Property extends Estate {
 	public void executeWhenLanded(Player player) {
 		if (this.getOwner() != null) {
 			if (this.getOwner().getName().equals(player.getName())) {
-				String message = "ACTION/You landed on your owned property Haha!";
+				String message = "ACTION/"+ player.getName()+"landed on his owned property Haha!";
 				player.publishGameEvent(message);
 			} else {
-				NetworkFacade.getInstance().sendMessage(player.getName() + "/PAYRENT/" + this.getOwner().getName());
+				player.delegateTask("PAYRENT/" + player.getName() + this.getOwner().getName());
 			}
 		} else {
 			String message = "ACTION/You can buy this property!";
