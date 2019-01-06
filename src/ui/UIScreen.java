@@ -43,6 +43,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private ConcurrentHashMap<String, Piece> pieces;
 	private ArrayList<String> deeds;
 	private ArrayList<JButton> willBeActivetedButtons;
+	private String willBeShowedDeed = "The Embarcadero";
 	private boolean isRolled = false;
 	private boolean active;
 	private final Object[] jailOptions = { "Roll for Doubles", "Pay Bail" };
@@ -504,6 +505,7 @@ public class UIScreen extends JFrame implements GameListener {
 		case "ESTATE":
 			if (active)
 				willBeActivetedButtons.add(buySquareButton);
+			willBeShowedDeed = parsed[1];
 		case "NOOWNER":
 			deedInformation.setText("There is no owner of this square!");
 			break;
@@ -660,6 +662,7 @@ public class UIScreen extends JFrame implements GameListener {
 
 					for (JButton button : willBeActivetedButtons)
 						button.setEnabled(true);
+					deedComboBox.setSelectedItem(willBeShowedDeed);
 					willBeActivetedButtons.clear();
 				}
 			}

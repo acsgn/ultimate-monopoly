@@ -257,7 +257,7 @@ public class Player implements Serializable {
 		return reduceMoney(jailBail);
 	}
 
-	public boolean buySquare() {
+	public void buySquare() {
 		if (location instanceof Estate) {
 			Estate estate = (Estate) location;
 			if (estate.getOwner() == null) {
@@ -271,17 +271,9 @@ public class Player implements Serializable {
 					utilities.add((Utility) estate);
 				message = "ACTION/" + estate.getName() + " is bought by " + name;
 				publishGameEvent(message);
+				publishGameEvent(estate.information());
 				updateState();
-				return true;
-			} else {
-				message = "ACTION/" + "This square is owned by " + estate.getOwner().name;
-				publishGameEvent(message);
-				return false;
 			}
-		} else {
-			message = "ACTION/" + "You can not own this square!";
-			publishGameEvent(message);
-			return false;
 		}
 	}
 
