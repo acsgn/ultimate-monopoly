@@ -13,6 +13,7 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -31,12 +32,14 @@ public class UICreator extends JFrame implements GameListener {
 	private static final String ultimateMonopolyImagePath = "resources/ultimate_monopoly.jpg";
 
 	private String message = "UICREATOR/";
+	private String file;
+	
 	private JTextField playerCountTextField;
 	private JSlider botSlider;
 	private int playerCount = 0;
 	private int botCount = 0;
+	
 	private Color choosenColor;
-	private int chooserVal = -1;
 
 	private int width = Toolkit.getDefaultToolkit().getScreenSize().width / 3;
 	private int height = Toolkit.getDefaultToolkit().getScreenSize().height / 2;
@@ -124,16 +127,15 @@ public class UICreator extends JFrame implements GameListener {
 		gamePanel.add(loadGameButton);
 
 		JFileChooser chooser = new JFileChooser();
-		// We are going to filter file options.
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        "Ultimate Monopoly Save Files", "umsf");
+		chooser.setFileFilter(filter);
 
 		loadGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				chooserVal = chooser.showOpenDialog(UICreator.this);
-				if (chooserVal == JFileChooser.APPROVE_OPTION) {
-					String fileMessage = message + "LOADGAME/" + chooser.getSelectedFile().getPath();
-					Controller.getInstance().dispatchMessage(fileMessage);
-				}
+				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
+					file = chooser.getSelectedFile().getPath();
 			}
 		});
 
@@ -182,13 +184,13 @@ public class UICreator extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (playerCount + botCount > 1) {
-					if (chooserVal != JFileChooser.APPROVE_OPTION) {
-						String name = playerNameField.getText();
-						if (name.isEmpty()) {
-							JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
-									JOptionPane.ERROR_MESSAGE);
-							return;
-						}
+					String name = playerNameField.getText();
+					if (name.isEmpty()) {
+						JOptionPane.showMessageDialog(UICreator.this, "Please enter a name!", "Error",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					if (file == null) {
 						if (choosenColor == null) {
 							JOptionPane.showMessageDialog(UICreator.this, "Please choose a color!", "Error",
 									JOptionPane.ERROR_MESSAGE);
@@ -196,8 +198,10 @@ public class UICreator extends JFrame implements GameListener {
 						}
 						Controller.getInstance().dispatchMessage(
 								message + "CREATE/" + name + "/" + choosenColor.getRGB() + "/" + botCount);
+					}else {
+						Controller.getInstance().dispatchMessage(
+								message + "LOAD/" + name + "/" + file);
 					}
-					// Should handle load game in here
 				} else
 					JOptionPane.showMessageDialog(UICreator.this, "You need at least 2 players to play!", "Error",
 							JOptionPane.ERROR_MESSAGE);

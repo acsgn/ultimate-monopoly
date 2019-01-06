@@ -1,5 +1,6 @@
 package game.square.estate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,8 +10,9 @@ import game.building.Hotel;
 import game.building.House;
 import game.building.Skyscraper;
 
-public class ColorGroup {
-
+public class ColorGroup implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private PropertyColor color;
 	private ArrayList<Property> propertyColorSquares;
 	private PropertyLevel level;

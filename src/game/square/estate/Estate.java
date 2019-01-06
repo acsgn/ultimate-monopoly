@@ -5,7 +5,7 @@ import game.Player;
 import game.square.Square;
 import game.square.SquareType;
 
-public abstract class Estate extends Square {
+public abstract class Estate extends Square{
 	private static final long serialVersionUID = 1L;
 
 	private static final SquareType type = SquareType.ESTATE;

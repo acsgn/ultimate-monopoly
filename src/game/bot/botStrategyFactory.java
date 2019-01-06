@@ -1,8 +1,5 @@
 package game.bot;
 
-import game.square.Square;
-import game.square.estate.Property;
-
 public class botStrategyFactory {
 	
 	private static botStrategyFactory factory;

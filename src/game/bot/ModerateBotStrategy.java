@@ -7,6 +7,7 @@ import game.square.Square;
 import game.square.estate.Property;
 
 public class ModerateBotStrategy implements botStrategy{
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public String getActionMessage(Square s, Player player) {

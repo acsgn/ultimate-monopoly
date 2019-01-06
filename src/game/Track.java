@@ -1,10 +1,12 @@
 package game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import game.square.*;
 
-public class Track {
+public class Track implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private TrackType type;
 
