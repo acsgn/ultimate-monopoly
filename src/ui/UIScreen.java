@@ -146,7 +146,7 @@ public class UIScreen extends JFrame implements GameListener {
 		buyBuildingButton.setBounds(controlPaneXMargin, controlPaneYMargin + 9 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		buyBuildingButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		buyBuildingButton.setFont(font);
 		buyBuildingButton.setEnabled(false);
 		leftControlPanel.add(buyBuildingButton);
 
@@ -361,9 +361,8 @@ public class UIScreen extends JFrame implements GameListener {
 					enableButtons();
 					if (isRolled) {
 						endTurnButton.setEnabled(true);
-						buySquareButton.setEnabled(true);//TODO check if its buyable
-					}
-					else
+						buySquareButton.setEnabled(true);// TODO check if its buyable
+					} else
 						rollDiceButton.setEnabled(true);
 					pauseResumeButton.setText("Pause");
 					message = "UISCREEN/RESUME";
@@ -622,7 +621,7 @@ public class UIScreen extends JFrame implements GameListener {
 					controller.dispatchMessage("UISCREEN/ANIMATIONEND");
 
 					// TODO move this to gameEvent, only for buyable squares
-					if (active) 
+					if (active)
 						buySquareButton.setEnabled(true);
 				}
 			}
