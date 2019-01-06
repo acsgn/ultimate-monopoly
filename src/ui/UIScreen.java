@@ -2,6 +2,7 @@ package ui;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -12,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -34,6 +36,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private static final String boardImagePath = "resources/board.png";
 	private static final String deedImagePath = "resources/deeds/";
 	private static final String cardImagePath = "resources/cards/";
+	private static final String jailImagePath = "resources/jail.png";
 
 	private Controller controller;
 	private Animator animator;
@@ -56,11 +59,14 @@ public class UIScreen extends JFrame implements GameListener {
 	private JButton saveGameButton;
 	private JButton endGameButton;
 	private JPanel pauseResumePanel;
+	private JPanel jail;
 
 	private JTextArea deedInformation;
 	private JLabel deed;
 	private JComboBox<String> deedComboBox;
 	private JComboBox<String> playerComboBox;
+
+	private final Object[] jailOptions = { "Roll for Doubles", "Pay Bail" };
 
 	/// UI constants
 	private int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -248,6 +254,16 @@ public class UIScreen extends JFrame implements GameListener {
 		pauseResumePanel.setVisible(false);
 		pauseResumePanel.add(pauseResumeLabel);
 		board.add(pauseResumePanel);
+
+		jail = new JPanel();
+		Image jailImage = new ImageIcon(jailImagePath).getImage().getScaledInstance(screenWidth / 3, -1,
+				Image.SCALE_SMOOTH);
+		jail.setLayout(new BorderLayout(0, 0));
+		jail.add(new JLabel(new ImageIcon(jailImage)), BorderLayout.CENTER);
+		JLabel jailLabel = new JLabel("You are in Jail!");
+		jailLabel.setFont(new Font("Dialog", Font.PLAIN, 36));
+		jailLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		jail.add(jailLabel, BorderLayout.SOUTH);
 
 		rollDiceButton.addActionListener(new ActionListener() {
 			@Override
@@ -457,6 +473,16 @@ public class UIScreen extends JFrame implements GameListener {
 				endTurnButton.setEnabled(true);
 			}
 			break;
+		case "JAILACTION":
+			if (active) {
+				int n = JOptionPane.showOptionDialog(null, jail, "", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, jailOptions, jailOptions[0]);
+				if (n == JOptionPane.DEFAULT_OPTION) {
+					// Rolled for doubles
+				} else {
+					// paid bail
+				}
+			}
 		case "PLAYER":
 			playerComboBox.addItem(parsed[1]);
 			Piece piece = new Piece();
@@ -551,7 +577,7 @@ public class UIScreen extends JFrame implements GameListener {
 		private Point lastPoint;
 		private Color color;
 		private boolean isActive = false;
-		
+
 		public Piece() {
 			path = new Path(scaleFactor);
 		}
