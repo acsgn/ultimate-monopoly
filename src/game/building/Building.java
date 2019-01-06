@@ -1,6 +1,9 @@
-package game.building; 
+package game.building;
 
-public abstract class Building {
+import java.io.Serializable;
+
+public abstract class Building implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	private BuildingType buildingType;
 	

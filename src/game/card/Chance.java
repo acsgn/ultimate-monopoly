@@ -8,7 +8,8 @@ import game.square.Square;
 import game.square.estate.ColorGroup;
 
 public class Chance extends Card {
-
+	private static final long serialVersionUID = 1L;
+	
 	private static final CardType type = CardType.CHANCE;
 	private String name;
 	private Boolean playImmediately;

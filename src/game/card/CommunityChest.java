@@ -11,6 +11,7 @@ import game.dice.SingletonDice;
 import game.square.estate.*;
 
 public class CommunityChest extends Card {
+	private static final long serialVersionUID = 1L;
 
 	private static final CardType type = CardType.COMMUNITY_CHEST;
 	private String name;

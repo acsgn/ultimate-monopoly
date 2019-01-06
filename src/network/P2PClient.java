@@ -16,8 +16,8 @@ public class P2PClient {
 		s.connect(sA, timeout);
 	}
 
-	protected MessageSocket getMessageSocket() {
-		return new MessageSocket(s);
+	protected Socket getSocket() {
+		return s;
 	}
 
 }

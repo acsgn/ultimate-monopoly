@@ -4,6 +4,7 @@ import game.Player;
 import game.dice.SingletonDice;
 
 public class RollThree extends Card {
+	private static final long serialVersionUID = 1L;
 
 	private static final CardType type = CardType.ROLL_THREE;
 
