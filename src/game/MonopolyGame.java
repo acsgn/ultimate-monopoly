@@ -380,7 +380,7 @@ public class MonopolyGame implements Runnable {
 			currentPlayer.pickCard(card);
 			break;
 		case "HURRICANE":
-			if (parsed[2].equals("GETNAMES")) {
+			if (parsed[2].equals("GETNAMES") && currentPlayer.getName().equals(myName)) {
 				Hashtable<String, ArrayList<String>> playersData = new Hashtable<>();
 				for (Player p : players) {
 					if (!p.getName().equals(currentPlayer.getName())) {
