@@ -188,6 +188,22 @@ public class MonopolyGame implements Runnable {
 				Player p = findPlayer(parsed[3]);
 				p.increaseMoney(money);
 				break;
+			case "CARD":
+				if (parsed[2].equals(myName)) {
+					Player curr = findPlayer(parsed[2]);
+					Card card;
+					int index = 0;
+					if (toInt(parsed[3]) == 0) {
+						card = ActionCards.getInstance().getChanceCard();
+						index = ActionCards.getInstance().getIndexChanceCard();
+					} else {
+						card = ActionCards.getInstance().getCommunityChestCard();
+						index = ActionCards.getInstance().getIndexCommunityCard();
+					}
+					NetworkFacade.getInstance().sendMessage(parsed[2]+"/"+"CARD"+"/"+index+"/"+parsed[3]);
+				}
+				// currentPlayer.pickCard(card);
+				break;
 			case "HURRICANE":
 				switch (parsed[2]) {
 				case "GETNAMES":
@@ -207,7 +223,8 @@ public class MonopolyGame implements Runnable {
 					String info = square + "/" + level + "/";
 					curr.buyBuilding(info, true);
 				}
-				//NetworkFacade.getInstance().sendMessage(parsed[2] + "/" + parsed[1]);
+				// NetworkFacade.getInstance().sendMessage(parsed[2] + "/" +
+				// parsed[1]);
 				break;
 			}
 			break;
@@ -215,12 +232,13 @@ public class MonopolyGame implements Runnable {
 	}
 
 	/**
-	 * @overview This function parses the given string and creates an integer based
-	 *           on the string
+	 * @overview This function parses the given string and creates an integer
+	 *           based on the string
 	 * @requires the input to be a string of integers.
 	 * @modifies input string.
 	 * @effects
-	 * @param string the input to turn into integer
+	 * @param string
+	 *            the input to turn into integer
 	 * @return the integer created from the string
 	 */
 	public int toInt(String string) {
@@ -353,11 +371,12 @@ public class MonopolyGame implements Runnable {
 			break;
 		case "CARD":
 			// This should be picked by executeMessage
+			int index = toInt(parsed[2]);
 			Card card;
-			if (toInt(parsed[2]) == 0)
-				card = ActionCards.getInstance().getChanceCard();
+			if (toInt(parsed[3]) == 0)
+				card = ActionCards.getInstance().getChanceCardByIndex(index);
 			else
-				card = ActionCards.getInstance().getCommunityChestCard();
+				card = ActionCards.getInstance().getCommunityCardByIndex(index);
 			currentPlayer.pickCard(card);
 			break;
 		case "HURRICANE":
