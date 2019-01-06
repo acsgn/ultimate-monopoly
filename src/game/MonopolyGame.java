@@ -244,6 +244,9 @@ public class MonopolyGame implements Runnable {
 			for (Player p : players)
 				p.informUI();
 			board.informUI();
+			if (bots.containsKey(myName))
+				for (Bot b : bots.get(myName))
+					b.start();
 			Controller.getInstance().publishGameEvent("START");
 			informCurrentPlayer();
 			return;
