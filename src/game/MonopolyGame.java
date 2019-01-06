@@ -193,8 +193,11 @@ public class MonopolyGame implements Runnable {
 					break;
 				case "EXECUTE":
 					NetworkFacade.getInstance()
-					.sendMessage(parsed[5] + "/HURRICANE/" + "EXECUTE" + "/" + parsed[3] + "/" + parsed[4]);
+							.sendMessage(parsed[5] + "/HURRICANE/" + "EXECUTE" + "/" + parsed[3] + "/" + parsed[4]);
 				}
+				break;
+			case "ZERODOLLARSDOWN":
+				NetworkFacade.getInstance().sendMessage(parsed[2] + "/" + parsed[1]);
 				break;
 			}
 			break;
@@ -357,6 +360,15 @@ public class MonopolyGame implements Runnable {
 				currentPlayer.executeHurricaneAction(findPlayer(player), group);
 			}
 			break;
+		case "ZERODOLLARSDOWN":
+			ArrayList<ColorGroup> cGroup = currentPlayer.getMonopolyColorGroups();
+			if(cGroup.size()!=0){
+				String level = cGroup.get(0).getLevel().toString();
+				String square = cGroup.get(0).getAvailableSquares().get(0).getName();
+				String info = square+ "/" + level + "/";
+				currentPlayer.buyBuilding(info, true);	
+			}
+			break;
 		case "RECEIVEDICE":
 			currentPlayer.setInitialDiceOrder(Integer.parseInt(parsed[2]));
 			if (!currentPlayer.isBot())
@@ -388,7 +400,7 @@ public class MonopolyGame implements Runnable {
 			currentPlayer.buyBuildingChooseSquare(parsed[2]);
 			break;
 		case "BUYBUILDING3":
-			currentPlayer.buyBuilding(parsed[2] + "/" + parsed[3]);
+			currentPlayer.buyBuilding(parsed[2] + "/" + parsed[3], false);
 			break;
 		case "SELLBUILDING":
 			currentPlayer.pickCard(new Chance("Hurricane", true));

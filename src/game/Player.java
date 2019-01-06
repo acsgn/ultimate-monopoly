@@ -302,7 +302,7 @@ public class Player implements Serializable {
 	 * @param Property
 	 *            the property that will get the building
 	 */
-	public void buyBuilding(String info) {
+	public void buyBuilding(String info, boolean free) {
 		String[] parsed = info.split("/");
 		// get the square
 		Property targetedSquare = null;
@@ -320,7 +320,8 @@ public class Player implements Serializable {
 		case "FOUR_HOUSE_LEVEL":
 			targetedSquare.dropBuildings();
 			targetedSquare.addBuilding(new Hotel());
-			reduceMoney(targetedSquare.getTitleDeed().getHotelCost());
+			if (!free)
+				reduceMoney(targetedSquare.getTitleDeed().getHotelCost());
 			message = "ACTION/";
 			message += "Hotel is built on Property: " + targetedSquare.getName() + " owned by " + this.getName();
 			publishGameEvent(message);
@@ -328,14 +329,16 @@ public class Player implements Serializable {
 		case "HOTEL_LEVEL":
 			targetedSquare.dropBuildings();
 			targetedSquare.addBuilding(new Skyscraper());
-			reduceMoney(targetedSquare.getTitleDeed().getSkyscrapperCost());
+			if (!free)
+				reduceMoney(targetedSquare.getTitleDeed().getSkyscrapperCost());
 			message = "ACTION/";
 			message += "Skyscraper is built on Property: " + targetedSquare.getName() + " owned by " + this.getName();
 			publishGameEvent(message);
 			break;
 		default:
 			targetedSquare.addBuilding(new House());
-			reduceMoney(targetedSquare.getTitleDeed().getHouseCost());
+			if (!free)
+				reduceMoney(targetedSquare.getTitleDeed().getHouseCost());
 			message = "ACTION/";
 			message += "House is built on Property: " + targetedSquare.getName() + " owned by " + this.getName();
 			publishGameEvent(message);
@@ -614,7 +617,7 @@ public class Player implements Serializable {
 
 	public void setBot() {
 		isBot = true;
-		System.out.println("Beginning Bot Test :"+this.isBot()+ "  "+this.getName());
+		System.out.println("Beginning Bot Test :" + this.isBot() + "  " + this.getName());
 
 	}
 
@@ -644,7 +647,7 @@ public class Player implements Serializable {
 				String playerName = (String) data.keySet().toArray()[k];
 				if (!data.get(playerName).isEmpty()) {
 					String color = data.get(playerName).get(r.nextInt(data.get(playerName).size()));
-					delegateTask("HURRICANE/EXECUTE/"+playerName+"/"+color+"/"+this.getName());
+					delegateTask("HURRICANE/EXECUTE/" + playerName + "/" + color + "/" + this.getName());
 				}
 			}
 		}

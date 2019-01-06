@@ -1,8 +1,11 @@
 package game.card;
 
+import java.util.ArrayList;
+
 import game.Player;
 import game.TrackType;
 import game.square.Square;
+import game.square.estate.ColorGroup;
 
 public class Chance extends Card {
 
@@ -153,6 +156,11 @@ public class Chance extends Card {
 			}
 		}else if(name.equalsIgnoreCase("Hurricane")){
 			player.delegateTask("HURRICANE/GETNAMES/"+player.getName());
+		}else if(name.equalsIgnoreCase("Zero Dollars Down")){
+			ArrayList<ColorGroup> colorGroup = player.getMonopolyColorGroups();
+			if(colorGroup.size()>0){
+				player.delegateTask("ZERODOLLARSDOWN/"+player.getName());
+			}
 		}
 	}
 	}

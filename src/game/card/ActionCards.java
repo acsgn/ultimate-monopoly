@@ -104,7 +104,7 @@ public class ActionCards {
 		Chance payBack = new Chance("Pay Back!", true);
 		Chance mardiGras = new Chance("Mardi Gras!", true);
 		Chance GPSisNotWorking = new Chance("GPS is not working", true);
-		Chance zeroDollarsDown = new Chance("zeroDollarsDown!", false);
+		Chance zeroDollarsDown = new Chance("Zero Dollars Down", true);
 		Chance changingLanesAbove = new Chance("Changin Lanes Above", true);
 		Chance changingLanesBelow = new Chance("Changin Lanes Below", true);
 		
@@ -114,26 +114,26 @@ public class ActionCards {
 		chance.add(advanceToSaintCharlesPlace);
 		chance.add(goToJail);
 		chance.add(makeGeneralRepairsToAllYourProperties);*/
-		chance.add(holidayBonus);
+		//chance.add(holidayBonus);
 		/*chance.add(buyersmarket);
 		chance.add(ForeclosedPropertySale);
 		chance.add(SeeYouInCourt);
 		chance.add(forwardThinker);*/
-		chance.add(propertyTaxes);
+		//chance.add(propertyTaxes);
 		/*chance.add(getRollin);
 		chance.add(hurricaneMakesLandfall);
 		chance.add(rideTheSubway);
 		chance.add(socialMediaFail);
 		chance.add(payBack);
 		chance.add(mardiGras);
-		chance.add(GPSisNotWorking);
+		chance.add(GPSisNotWorking);*/
 		chance.add(zeroDollarsDown);
-		chance.add(changingLanesAbove);
+		/*chance.add(changingLanesAbove);
 		chance.add(changingLanesBelow);*/
 		
 		// Hurricane card. 
 		Chance hurricane = new Chance("Hurricane", true);
-		chance.add(hurricane);
+		//chance.add(hurricane);
 	}
 	public CommunityChest getCommunityChestCard(){
 		Random d = new Random();
@@ -143,7 +143,7 @@ public class ActionCards {
 	}
 	public Chance getChanceCard(){
 		Random d = new Random();
-		Chance tmp = chance.remove(d.nextInt(communityChest.size()));
+		Chance tmp = chance.remove(d.nextInt(chance.size()));
 		chance.add(tmp);
 		return tmp;
 	}
