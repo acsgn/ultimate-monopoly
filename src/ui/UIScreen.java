@@ -427,10 +427,14 @@ public class UIScreen extends JFrame implements GameListener {
 				animator.stopAnimator();
 			board.repaint();
 			break;
-		case "PAUSE":
+		case "PAUSET":
 			disableButtons();
 			pauseResumePanel.setVisible(true);
 			pauseResumeButton.setEnabled(true);
+			break;
+		case "PAUSEF":
+			disableButtons();
+			pauseResumePanel.setVisible(true);
 			break;
 		case "RESUME":
 			enableButtons();
@@ -531,9 +535,6 @@ public class UIScreen extends JFrame implements GameListener {
 		private Color color;
 		private boolean isActive = false;
 
-		public Piece() {
-		}
-
 		public void paint(Graphics g) {
 			g.setColor(color);
 			g.fillOval(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
@@ -556,11 +557,10 @@ public class UIScreen extends JFrame implements GameListener {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void paint(Graphics g) {
-			super.paint(g);
-			for (Piece piece : pieces.values()) {
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			for (Piece piece : pieces.values()) 
 				piece.paint(g);
-			}
 		}
 	}
 
