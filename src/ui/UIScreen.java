@@ -126,53 +126,59 @@ public class UIScreen extends JFrame implements GameListener {
 
 		deedInformation = new JTextArea();
 		deedInformation.setEditable(false);
+		deedInformation.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		deedInformation.setBounds(controlPaneXMargin, controlPaneYMargin + 6 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				2 * controlPaneComponentHeight - 2 * controlPaneYMargin);
 		leftControlPanel.add(deedInformation);
 
 		deedComboBox = new JComboBox<String>();
+		deedComboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		deedComboBox.setBounds(controlPaneXMargin, controlPaneYMargin + 8 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-
 		leftControlPanel.add(deedComboBox);
 
 		buyBuildingButton = new JButton("Buy Building");
 		buyBuildingButton.setBounds(controlPaneXMargin, controlPaneYMargin + 9 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		leftControlPanel.add(buyBuildingButton);
+		buyBuildingButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		buyBuildingButton.setEnabled(false);
+		leftControlPanel.add(buyBuildingButton);
 
 		sellBuildingButton = new JButton("Sell Building");
 		sellBuildingButton.setBounds(controlPaneXMargin + controlPaneComponentWidth,
 				controlPaneYMargin + 9 * controlPaneComponentHeight, controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		leftControlPanel.add(sellBuildingButton);
+		sellBuildingButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		sellBuildingButton.setEnabled(false);
+		leftControlPanel.add(sellBuildingButton);
 
 		mortgageButton = new JButton("Mortgage");
 		mortgageButton.setBounds(controlPaneXMargin, controlPaneYMargin + 10 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		leftControlPanel.add(mortgageButton);
+		mortgageButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		mortgageButton.setEnabled(false);
+		leftControlPanel.add(mortgageButton);
 
 		unmortgageButton = new JButton("Unmortgage");
 		unmortgageButton.setBounds(controlPaneXMargin + controlPaneComponentWidth,
 				controlPaneYMargin + 10 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		leftControlPanel.add(unmortgageButton);
+		unmortgageButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		unmortgageButton.setEnabled(false);
+		leftControlPanel.add(unmortgageButton);
 
 		buySquareButton = new JButton("Buy Square");
 		buySquareButton.setBounds(controlPaneXMargin, controlPaneYMargin + 11 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		leftControlPanel.add(buySquareButton);
+		buySquareButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		buySquareButton.setEnabled(false);
+		leftControlPanel.add(buySquareButton);
 
 		getContentPane().add(leftControlPanel);
 
@@ -182,15 +188,10 @@ public class UIScreen extends JFrame implements GameListener {
 
 		endGameButton = new JButton("End Game");
 		endGameButton.setBounds(controlPaneXMargin, controlPaneYMargin,
-				controlPaneComponentWidth - 2 * controlPaneXMargin,
+				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
+		endGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		rightPanel.add(endGameButton);
-
-		saveGameButton = new JButton("Save Game");
-		saveGameButton.setBounds(controlPaneXMargin + controlPaneComponentWidth, controlPaneYMargin,
-				controlPaneComponentWidth - 2 * controlPaneXMargin,
-				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		rightPanel.add(saveGameButton);
 
 		playerArea = new JPanel();
 		playerArea.setLayout(null);
@@ -201,6 +202,7 @@ public class UIScreen extends JFrame implements GameListener {
 
 		playerText = new JTextArea();
 		playerText.setEditable(false);
+		playerText.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		JScrollPane playerScroll = new JScrollPane(playerText);
 		playerScroll.setBounds(controlPaneXMargin, 2 * controlPaneYMargin,
 				2 * controlPaneComponentWidth - 4 * controlPaneXMargin,
@@ -209,6 +211,7 @@ public class UIScreen extends JFrame implements GameListener {
 		rightPanel.add(playerArea);
 
 		playerComboBox = new JComboBox<String>();
+		playerComboBox.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		playerComboBox.setBounds(controlPaneXMargin, controlPaneYMargin + 5 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
@@ -216,6 +219,7 @@ public class UIScreen extends JFrame implements GameListener {
 
 		infoText = new JTextArea();
 		infoText.setEditable(false);
+		infoText.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		JScrollPane infoArea = new JScrollPane(infoText);
 		infoArea.setBounds(controlPaneXMargin, controlPaneYMargin + 6 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
@@ -224,24 +228,37 @@ public class UIScreen extends JFrame implements GameListener {
 
 		pauseResumeButton = new JButton("Pause");
 		pauseResumeButton.setBounds(controlPaneXMargin, controlPaneYMargin + 10 * controlPaneComponentHeight,
-				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
+				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
+		pauseResumeButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		pauseResumeButton.setEnabled(false);
 		rightPanel.add(pauseResumeButton);
+
+		saveGameButton = new JButton("Save Game");
+		saveGameButton.setBounds(controlPaneXMargin + controlPaneComponentWidth,
+				controlPaneYMargin + 10 * controlPaneComponentHeight,
+				controlPaneComponentWidth - 2 * controlPaneXMargin,
+				controlPaneComponentHeight - 2 * controlPaneYMargin);
+		saveGameButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		saveGameButton.setEnabled(false);
+		rightPanel.add(saveGameButton);
 
 		rollDiceButton = new JButton("Roll Dice");
 		rollDiceButton.setBounds(controlPaneXMargin, controlPaneYMargin + 11 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		rightPanel.add(rollDiceButton);
+		rollDiceButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		rollDiceButton.setEnabled(false);
+		rightPanel.add(rollDiceButton);
 
 		endTurnButton = new JButton("End Turn");
 		endTurnButton.setBounds(controlPaneXMargin + controlPaneComponentWidth,
 				controlPaneYMargin + 11 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		rightPanel.add(endTurnButton);
+		endTurnButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		endTurnButton.setEnabled(false);
+		rightPanel.add(endTurnButton);
 
 		getContentPane().add(rightPanel);
 
@@ -261,7 +278,7 @@ public class UIScreen extends JFrame implements GameListener {
 		jail.setLayout(new BorderLayout(0, 0));
 		jail.add(new JLabel(new ImageIcon(jailImage)), BorderLayout.CENTER);
 		JLabel jailLabel = new JLabel("You are in Jail!");
-		jailLabel.setFont(new Font("Dialog", Font.PLAIN, 36));
+		jailLabel.setFont(new Font("Tahoma", Font.PLAIN, 36));
 		jailLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		jail.add(jailLabel, BorderLayout.SOUTH);
 
@@ -278,6 +295,7 @@ public class UIScreen extends JFrame implements GameListener {
 		buySquareButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				buySquareButton.setEnabled(false);
 				message = "UISCREEN/BUYPROPERTY";
 				controller.dispatchMessage(message);
 			}
@@ -294,7 +312,6 @@ public class UIScreen extends JFrame implements GameListener {
 		sellBuildingButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				message = "UISCREEN/SELLBUILDING";
 				controller.dispatchMessage(message);
 			}
@@ -401,7 +418,6 @@ public class UIScreen extends JFrame implements GameListener {
 		sellBuildingButton.setEnabled(true);
 		mortgageButton.setEnabled(true);
 		unmortgageButton.setEnabled(true);
-		buySquareButton.setEnabled(true);
 		pauseResumeButton.setEnabled(true);
 		rollDiceButton.setEnabled(true);
 	}
@@ -594,6 +610,12 @@ public class UIScreen extends JFrame implements GameListener {
 					animator.stopAnimator();
 					isActive = false;
 					controller.dispatchMessage("UISCREEN/ANIMATIONEND");
+					
+					// TODO move this to gameEvent, only for buyable squares
+					if (active) {
+						buySquareButton.setEnabled(true);
+						saveGameButton.setEnabled(true);
+					}
 				}
 			}
 		}
