@@ -1,5 +1,7 @@
 package ui;
 
+import java.awt.Point;
+
 public class PathFinder {
 
 	private static final int OUTER_TRACK = 0;
@@ -29,8 +31,6 @@ public class PathFinder {
 	private static final int innerToMiddleFirstTransitLocation = 9;
 	private static final int innerToMiddleSecondTransitLocation = 21;
 
-	private double scaleFactor;
-
 	private Track outerTrack;
 	private Track middleTrack;
 	private Track innerTrack;
@@ -42,11 +42,12 @@ public class PathFinder {
 
 	public PathFinder(double scaleFactor) {
 
-		this.scaleFactor = scaleFactor;
-
-		outerTrack = new Track(outerTrackUpLeftCorner, outerTrackDownRightCorner, outerTrackCornerDifference);
-		middleTrack = new Track(middleTrackUpLeftCorner, middleTrackDownRightCorner, middleTrackCornerDifference);
-		innerTrack = new Track(innerTrackUpLeftCorner, innerTrackDownRightCorner, innerTrackCornerDifference);
+		outerTrack = new Track(outerTrackUpLeftCorner * scaleFactor, outerTrackDownRightCorner * scaleFactor,
+				outerTrackCornerDifference);
+		middleTrack = new Track(middleTrackUpLeftCorner * scaleFactor, middleTrackDownRightCorner * scaleFactor,
+				middleTrackCornerDifference);
+		innerTrack = new Track(innerTrackUpLeftCorner * scaleFactor, innerTrackDownRightCorner * scaleFactor,
+				innerTrackCornerDifference);
 
 		middleOuterFirst = new TransitStation(middleTrack, middleToOuterFirstTransitLocation, outerTrack,
 				outerToMiddleFirstTransitLocation);
@@ -58,41 +59,38 @@ public class PathFinder {
 				innerToMiddleSecondTransitLocation);
 	}
 
-	public int[] getLocation(int trackID, int location) {
-		Track track = getTrackByID(trackID);
-		return track.getLocation(location);
+	public void addPoint(Path path, int trackID, int location) {
+		int[] point = getTrackByID(trackID).getLocation(location);
+		path.addPoint(new Point(point[0], point[1]));
 	}
 
-	public Path findPath(int trackID, int location, int newTrackID, int newLocation) {
+	public void addPath(Path path, int trackID, int location, int newTrackID, int newLocation) {
 		if (trackID == newTrackID) {
 			Track track = getTrackByID(trackID);
-			Path path = findPathOnSameTrack(location, newLocation, track);
-			return path;
+			addPathOnSameTrack(path, location, newLocation, track);
 		} else if (Math.abs(trackID - newTrackID) == 1) {
 			Track track = getTrackByID(trackID);
 			Track newTrack = getTrackByID(newTrackID);
 			TransitStation transitStation = findTransitStation(track, location);
-			Path path = findPathOnSameTrack(location, transitStation.getIndexOnTrack(track), track);
-			path.mergePaths(transitStation.getPath(track));
-			path.mergePaths(findPathOnSameTrack(transitStation.getIndexOnTrack(newTrack), newLocation, newTrack));
+			addPathOnSameTrack(path, location, transitStation.getIndexOnTrack(track), track);
+			transitStation.addPath(path, track);
+			addPathOnSameTrack(path, transitStation.getIndexOnTrack(newTrack), newLocation, newTrack);
 			trackID = newTrackID;
 			location = newLocation;
-			return path;
 		} else {
 			Track track = getTrackByID(trackID);
 			Track newTrack = getTrackByID(newTrackID);
 			TransitStation transitStation = findTransitStation(track, location);
 			TransitStation secondTransitStation = findTransitStation(middleTrack,
 					transitStation.getIndexOnTrack(middleTrack));
-			Path path = findPathOnSameTrack(location, transitStation.getIndexOnTrack(track), track);
-			path.mergePaths(transitStation.getPath(track));
-			path.mergePaths(findPathOnSameTrack(transitStation.getIndexOnTrack(middleTrack),
-					secondTransitStation.getIndexOnTrack(middleTrack), middleTrack));
-			path.mergePaths(secondTransitStation.getPath(middleTrack));
-			path.mergePaths(findPathOnSameTrack(secondTransitStation.getIndexOnTrack(newTrack), newLocation, newTrack));
+			addPathOnSameTrack(path, location, transitStation.getIndexOnTrack(track), track);
+			transitStation.addPath(path, track);
+			addPathOnSameTrack(path, transitStation.getIndexOnTrack(middleTrack),
+					secondTransitStation.getIndexOnTrack(middleTrack), middleTrack);
+			secondTransitStation.addPath(path, middleTrack);
+			addPathOnSameTrack(path, secondTransitStation.getIndexOnTrack(newTrack), newLocation, newTrack);
 			trackID = newTrackID;
 			location = newLocation;
-			return path;
 		}
 	}
 
@@ -107,8 +105,7 @@ public class PathFinder {
 			return null;
 	}
 
-	private Path findPathOnSameTrack(int location, int newLocation, Track track) {
-		Path path = new Path(scaleFactor);
+	private void addPathOnSameTrack(Path path, int location, int newLocation, Track track) {
 		int[] point = track.getLocation(location);
 		while (location != newLocation) {
 			location = (location + 1) % (4 * track.cornerDifference);
@@ -116,7 +113,6 @@ public class PathFinder {
 			path.addLine(point[0], point[1], nextPoint[0], nextPoint[1]);
 			point = nextPoint;
 		}
-		return path;
 	}
 
 	private TransitStation findTransitStation(Track track, int location) {
@@ -154,11 +150,11 @@ public class PathFinder {
 		private int cornerDifference;
 		private double stepDistance;
 
-		public Track(int upLeftCorner, int downRightCorner, int cornerDifference) {
-			this.upLeftCorner = getScaled(upLeftCorner);
-			this.downRightCorner = getScaled(downRightCorner);
+		public Track(double upLeftCorner, double downRightCorner, int cornerDifference) {
+			this.upLeftCorner = upLeftCorner;
+			this.downRightCorner = downRightCorner;
 			this.cornerDifference = cornerDifference;
-			this.stepDistance = (this.downRightCorner - this.upLeftCorner) / this.cornerDifference;
+			this.stepDistance = (downRightCorner - upLeftCorner) / cornerDifference;
 		}
 
 		public int[] getLocation(int location) {
@@ -199,8 +195,7 @@ public class PathFinder {
 			return track == track1 ? index1 : index2;
 		}
 
-		public Path getPath(Track track) {
-			Path path = new Path(scaleFactor);
+		public void addPath(Path path, Track track) {
 			int[] transitPoint;
 			int[] nextTransitPoint;
 			if (track == track1) {
@@ -211,13 +206,8 @@ public class PathFinder {
 				nextTransitPoint = track1.getLocation(index1);
 			}
 			path.addLine(transitPoint[0], transitPoint[1], nextTransitPoint[0], nextTransitPoint[1]);
-			return path;
 		}
 
-	}
-
-	private double getScaled(int i) {
-		return i * scaleFactor;
 	}
 
 }

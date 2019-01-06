@@ -51,20 +51,16 @@ public class Path {
 		}
 	}
 
+	public void addPoint(Point point) {
+		path.add(point);
+	}
+
 	public boolean hasMoreSteps() {
 		return !path.isEmpty();
 	}
 
-	public Point nextPosition() {
+	public Point nextPoint() {
 		return path.remove(0);
-	}
-
-	public void mergePaths(Path otherPath) {
-		path.addAll(otherPath.path);
-	}
-
-	public void addPoint(Point point) {
-		path.add(point);
 	}
 
 }

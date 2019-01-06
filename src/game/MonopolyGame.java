@@ -72,6 +72,8 @@ public class MonopolyGame implements Runnable {
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
 				NetworkFacade.getInstance()
 						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
+				if (diceRolls[0] == diceRolls[1])
+					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
 			case "ENDGAME":
 				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");

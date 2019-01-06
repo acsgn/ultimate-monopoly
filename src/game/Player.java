@@ -53,8 +53,9 @@ public class Player implements Serializable {
 	private boolean goAnyWhere;
 	private boolean isBot = false;
 
-	private int jailCounter = 0;
 	private static final int jailBail = 50;
+	private int jailCounter = 0;
+	private int doubleCounter = 0;
 
 	public Player(String name, String color, Board board) {
 		this.board = board;
@@ -98,8 +99,9 @@ public class Player implements Serializable {
 
 	public void play(int[] diceRolls) {
 		sendColor();
+		updateState();
 		message = "ACTION/";
-		message += name + " rolled:";
+		message += name + " rolled:\n";
 		message += "Regular Die 1: " + diceRolls[0] + "\n";
 		message += "Regular Die 2: " + diceRolls[1] + "\n";
 		if (diceRolls[2] == 4) {
@@ -110,33 +112,36 @@ public class Player implements Serializable {
 			message += "Speed Die: " + diceRolls[2];
 		}
 		publishGameEvent(message);
+		boolean isDouble = diceRolls[0] == diceRolls[1];
 		if (!inJail) {
-			move(diceRolls);
-			updateState();
-			location.executeWhenLanded(this);
-		} else {
-			if (jailCounter < 3) {
-				jailCounter++;
-				if (diceRolls[0] == diceRolls[1]) {
-					jailCounter = 0;
-					inJail = false;
-					move(diceRolls);
-					updateState();
-					location.executeWhenLanded(this);
-					message = "ACTION/" + name + " rolled Doubles and got out of Jail";
-					publishGameEvent(message);
-				} else {
-					if (jailCounter == 3) {
-						this.payBail();
-						move(diceRolls);
-						updateState();
-						location.executeWhenLanded(this);
-						message = "ACTION/" + name + " paid Bail";
-						publishGameEvent(message);
-					}
+			if (isDouble) {
+				doubleCounter++;
+				if (doubleCounter == 3) {
+					sendToJail();
+					doubleCounter = 0;
+					return;
 				}
+			} else
+				doubleCounter = 0;
+			move(diceRolls);
+		} else {
+			jailCounter++;
+			if (isDouble) {
+				gotOutOfJail();
+				move(diceRolls);
+			} else if (jailCounter == 3) {
+				payBail();
+				gotOutOfJail();
+				move(diceRolls);
 			}
 		}
+	}
+
+	private void gotOutOfJail() {
+		jailCounter = 0;
+		inJail = false;
+		message = "ACTION/" + name + " got out of Jail!";
+		publishGameEvent(message);
 	}
 
 	public void move(int[] diceRolls) {
@@ -190,6 +195,8 @@ public class Player implements Serializable {
 		indexOnTrack = newIndex;
 		currentTrack = newTrack;
 		location = newLocation;
+		updateState();
+		location.executeWhenLanded(this);
 	}
 
 	public Square getLocation() {
@@ -541,8 +548,10 @@ public class Player implements Serializable {
 	}
 
 	public void sendToJail() {
-		this.inJail = true;
-		this.goTo(TrackType.MIDDLE_TRACK, 10);
+		inJail = true;
+		goTo(TrackType.MIDDLE_TRACK, 10);
+		publishGameEvent("ACTION/" + name + " went to Jail.");
+		publishGameEvent("JAIL");
 		updateState();
 	}
 

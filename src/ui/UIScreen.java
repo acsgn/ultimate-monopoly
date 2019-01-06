@@ -85,6 +85,7 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private final int unscaledPieceSize = 80;
 	private int pieceSize = (int) (scaleFactor * unscaledPieceSize);
+	private boolean active;
 
 	/**
 	 * Create the panel.
@@ -251,9 +252,10 @@ public class UIScreen extends JFrame implements GameListener {
 		rollDiceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				rollDiceButton.setEnabled(false);
+				endTurnButton.setEnabled(true);
 				message = "UISCREEN/ROLLDICE";
 				controller.dispatchMessage(message);
-				rollDiceButton.setEnabled(false);
 			}
 		});
 
@@ -301,6 +303,7 @@ public class UIScreen extends JFrame implements GameListener {
 		endTurnButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				active = false;
 				disableButtons();
 				message = "UISCREEN/ENDTURN";
 				controller.dispatchMessage(message);
@@ -385,7 +388,6 @@ public class UIScreen extends JFrame implements GameListener {
 		buySquareButton.setEnabled(true);
 		pauseResumeButton.setEnabled(true);
 		rollDiceButton.setEnabled(true);
-		endTurnButton.setEnabled(true);
 	}
 
 	@Override
@@ -403,14 +405,16 @@ public class UIScreen extends JFrame implements GameListener {
 			playerArea.setBackground(new Color(toInt(parsed[1]), true));
 			break;
 		case "MOVE":
-			Path path = pathFinder.findPath(toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
-			pieces.get(parsed[1]).path = path;
-			pieces.get(parsed[1]).isActive = true;
+			Piece piecem = pieces.get(parsed[1]);
+			pathFinder.addPath(piecem.path, toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
+			piecem.isActive = true;
 			board.repaint();
 			break;
 		case "JUMP":
-			int[] point = pathFinder.getLocation(toInt(parsed[2]), toInt(parsed[3]));
-			pieces.get(parsed[1]).path.addPoint(new Point(point[0], point[1]));
+			Piece piecej = pieces.get(parsed[1]);
+			pathFinder.addPoint(piecej.path, toInt(parsed[2]), toInt(parsed[3]));
+			piecej.lastPoint = piecej.path.nextPoint();
+			piecej.isActive = true;
 			board.repaint();
 			break;
 		case "PLAYERDATA":
@@ -420,6 +424,7 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 			break;
 		case "PLAY":
+			active = true;
 			enableButtons();
 			break;
 		case "REMOVEPIECE":
@@ -440,12 +445,24 @@ public class UIScreen extends JFrame implements GameListener {
 			enableButtons();
 			pauseResumePanel.setVisible(false);
 			break;
+		case "DOUBLE":
+			if (active) {
+				rollDiceButton.setEnabled(true);
+				endTurnButton.setEnabled(false);
+			}
+			break;
+		case "JAIL":
+			if (active) {
+				rollDiceButton.setEnabled(false);
+				endTurnButton.setEnabled(true);
+			}
+			break;
 		case "PLAYER":
 			playerComboBox.addItem(parsed[1]);
 			Piece piece = new Piece();
 			piece.color = new Color(toInt(parsed[2]), true);
-			int[] initialPoint = pathFinder.getLocation(toInt(parsed[3]), toInt(parsed[4]));
-			piece.lastPoint = new Point(initialPoint[0], initialPoint[1]);
+			pathFinder.addPoint(piece.path, toInt(parsed[3]), toInt(parsed[4]));
+			piece.lastPoint = piece.path.nextPoint();
 			board.repaint();
 			pieces.put(parsed[1], piece);
 			break;
@@ -534,6 +551,10 @@ public class UIScreen extends JFrame implements GameListener {
 		private Point lastPoint;
 		private Color color;
 		private boolean isActive = false;
+		
+		public Piece() {
+			path = new Path(scaleFactor);
+		}
 
 		public void paint(Graphics g) {
 			g.setColor(color);
@@ -542,7 +563,7 @@ public class UIScreen extends JFrame implements GameListener {
 				if (animator.isStopped())
 					animator.startAnimator();
 				if (path != null && path.hasMoreSteps())
-					lastPoint = path.nextPosition();
+					lastPoint = path.nextPoint();
 				else {
 					animator.stopAnimator();
 					isActive = false;
@@ -559,7 +580,7 @@ public class UIScreen extends JFrame implements GameListener {
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			for (Piece piece : pieces.values()) 
+			for (Piece piece : pieces.values())
 				piece.paint(g);
 		}
 	}
