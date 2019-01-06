@@ -193,13 +193,13 @@ public class MonopolyGame implements Runnable {
 			case "CARD":
 				if (parsed[2].equals(myName)) {
 					Player curr = findPlayer(parsed[2]);
-					Card card;
+					//Card card;
 					int index = 0;
 					if (toInt(parsed[3]) == 0) {
-						card = ActionCards.getInstance().getChanceCard();
+						ActionCards.getInstance().getChanceCard();
 						index = ActionCards.getInstance().getIndexChanceCard();
 					} else {
-						card = ActionCards.getInstance().getCommunityChestCard();
+						ActionCards.getInstance().getCommunityChestCard();
 						index = ActionCards.getInstance().getIndexCommunityCard();
 					}
 					NetworkFacade.getInstance().sendMessage(parsed[2] + "/" + "CARD" + "/" + index + "/" + parsed[3]);
