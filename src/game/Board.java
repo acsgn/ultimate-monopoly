@@ -6,8 +6,6 @@ import game.square.estate.*;
 
 public class Board {
 
-	private static Board self;
-
 	private Track outerTrack;
 	private Track middleTrack;
 	private Track innerTrack;
@@ -22,8 +20,11 @@ public class Board {
 	private Chance chance;
 	private CommunityChest communityChest;
 	private FreeParking freeParking;
+	
+	//to be deleted;
+	private ColorGroup WHITE_GROUP;
 
-	private Board() {
+	public Board() {
 		outerTrack = new Track(TrackType.OUTER_TRACK);
 		middleTrack = new Track(TrackType.MIDDLE_TRACK);
 		innerTrack = new Track(TrackType.INNER_TRACK);
@@ -43,13 +44,6 @@ public class Board {
 		constructMiddleTrack();
 		constructOuterTrack();
 	}
-
-	public static synchronized Board getInstance() {
-		if (self == null)
-			self = new Board();
-		return self;
-	}
-
 	public Square getSquare(int index, TrackType type) {
 		return getTrack(type).getSquare(index);
 	}
@@ -105,7 +99,7 @@ public class Board {
 		Property biscayneAve = new Property("Biscayne Avenue", 150, biscayneAveTD);
 		Property lombardSt = new Property("Lombard Street", 210, lombardStTD);
 
-		ColorGroup WHITE_GROUP = new ColorGroup(PropertyColor.WHITE);
+		WHITE_GROUP = new ColorGroup(PropertyColor.WHITE);
 		WHITE_GROUP.addPropertySquare(theEmbarcadero);
 		WHITE_GROUP.addPropertySquare(fishermansWharf);
 		WHITE_GROUP.addPropertySquare(lombardSt);
@@ -490,6 +484,9 @@ public class Board {
 		if (innerTrack == null || middleTrack == null || outerTrack == null)
 			return false;
 		return true;
+	}
+	public ColorGroup getTestColorGroup(){
+		return WHITE_GROUP;
 	}
 
 }

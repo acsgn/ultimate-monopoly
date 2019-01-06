@@ -27,6 +27,7 @@ public class MonopolyGame implements Runnable {
 	private ConcurrentLinkedDeque<Player> players;
 	private ConcurrentLinkedDeque<Player> checkedPlayers;
 	private Player currentPlayer;
+	private Board board;
 	private String myName;
 	private int numOfPlayers = 0;
 	private int numOfDiceReceived = 0;
@@ -40,6 +41,7 @@ public class MonopolyGame implements Runnable {
 		checkedPlayers = new ConcurrentLinkedDeque<Player>();
 		bots = new ConcurrentHashMap<String, LinkedList<Bot>>();
 		isNewGame = true;
+		board = new Board();
 		NetworkFacade.getInstance().startNetwork();
 		new Thread(this, "Game").start();
 	}
@@ -187,8 +189,11 @@ public class MonopolyGame implements Runnable {
 			case "HURRICANE":
 				switch (parsed[2]) {
 				case "GETNAMES":
-					NetworkFacade.getInstance().sendMessage(myName + "/HURRICANE/GETNAMES");
+					NetworkFacade.getInstance().sendMessage(parsed[3] + "/HURRICANE/GETNAMES");
 					break;
+				case "EXECUTE":
+					NetworkFacade.getInstance()
+					.sendMessage(parsed[5] + "/HURRICANE/" + "EXECUTE" + "/" + parsed[3] + "/" + parsed[4]);
 				}
 				break;
 			}
@@ -251,7 +256,7 @@ public class MonopolyGame implements Runnable {
 			return;
 		case "CREATEPLAYER":
 			if (isNewGame) {
-				Player newPlayer = new Player(parsed[1], parsed[2]);
+				Player newPlayer = new Player(parsed[1], parsed[2],board);
 				newPlayer.createPiece();
 				players.add(newPlayer);
 			} else {
@@ -259,7 +264,7 @@ public class MonopolyGame implements Runnable {
 			return;
 		case "CREATEBOT":
 			if (isNewGame) {
-				Player newPlayer = new Player(parsed[2], parsed[3]);
+				Player newPlayer = new Player(parsed[2], parsed[3],board);
 				newPlayer.setBot();
 				newPlayer.createPiece();
 				Bot b = new Bot(newPlayer);

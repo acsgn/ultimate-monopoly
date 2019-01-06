@@ -16,11 +16,13 @@ public class botStrategyFactory {
 		}
 		return factory;
 	}
-	public botStrategy getbotStrategy(Square location){
-		if(location instanceof Property){
-			return new PropertyBotStrategy();
+	public botStrategy getbotStrategy(BotType type){
+		if(type==BotType.DUMMY){
+			return new DummyBotStrategy();
+		}else if(type==BotType.Greedy){
+			return new GreedyBotStrategy();
 		}else{
-			return new GeneralBotStrategy();
+			return new ModerateBotStrategy();
 		}
 	}
 }

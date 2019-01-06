@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Random;
 
 import game.building.Building;
 import game.building.Hotel;
@@ -56,8 +57,8 @@ public class Player implements Serializable {
 	private int jailCounter = 0;
 	private static final int jailBail = 50;
 
-	public Player(String name, String color) {
-		board = Board.getInstance();
+	public Player(String name, String color, Board board) {
+		this.board = board;
 		this.name = name;
 		this.color = color;
 		money = BEGIN_MONEY;
@@ -219,12 +220,13 @@ public class Player implements Serializable {
 	}
 
 	/**
-	 * @overview This function gets the rent price of the estate square and reduces
-	 *           the player's money in that amount.
+	 * @overview This function gets the rent price of the estate square and
+	 *           reduces the player's money in that amount.
 	 * @requires input Square to be an Estate.
 	 * @modifies Player's money field, reduces it for the amount of rent.
 	 * @effects Player, input Square, and the Player who owns the square.
-	 * @param s the square the player lands on
+	 * @param s
+	 *            the square the player lands on
 	 * @return the reduceMoney function which returns a boolean depending on the
 	 *         success of the transaction
 	 */
@@ -242,7 +244,8 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Player's money and Pool's amount fields.
 	 * @effects Player, Pool.
-	 * @param amount the bail price to be paid
+	 * @param amount
+	 *            the bail price to be paid
 	 * @return the reduceMoney function which returns a boolean depending on the
 	 *         success of the transaction
 	 */
@@ -294,8 +297,10 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Property's buildings field by expanding it.
 	 * @effects Property, Property's owner Player if applicable.
-	 * @param building the building to be added to the property
-	 * @param Property the property that will get the building
+	 * @param building
+	 *            the building to be added to the property
+	 * @param Property
+	 *            the property that will get the building
 	 */
 	public void buyBuilding(String info) {
 		String[] parsed = info.split("/");
@@ -372,16 +377,16 @@ public class Player implements Serializable {
 			}
 		}
 		publishGameEvent(message);
-		
+
 		// To be deleted. Just for testing.
-		//ColorGroup c = board.getTestColorGroup();
-		//int i = 0;
-		//for (Property k : c.getPropertyColorSquares()) {
-		//	i++;
-		//	if (i == 4)
-		//		break;
-		//	k.setOwner(this);
-		//}
+		ColorGroup c = board.getTestColorGroup();
+		int i = 0;
+		for (Property k : c.getPropertyColorSquares()) {
+			i++;
+			if (i == 4)
+				break;
+			k.setOwner(this);
+		}
 		//
 	}
 
@@ -464,8 +469,10 @@ public class Player implements Serializable {
 	 *           buildings in the first place.
 	 * @modifies Property's buildings field, Property's owner's money field.
 	 * @effects Property, Property's owner
-	 * @param building the building that will be removed from the property
-	 * @param Property the property that will have its building removed
+	 * @param building
+	 *            the building that will be removed from the property
+	 * @param Property
+	 *            the property that will have its building removed
 	 */
 	public void sellBuilding(Building building, Property Property) {
 		Property.getBuildings().remove(building);
@@ -489,11 +496,13 @@ public class Player implements Serializable {
 	}
 
 	/**
-	 * @overview This function reduces the money of the player in the given amount
+	 * @overview This function reduces the money of the player in the given
+	 *           amount
 	 * @requires
 	 * @modifies Player's money field.
 	 * @effects Player.
-	 * @param m the input amount to be reduced from the money
+	 * @param m
+	 *            the input amount to be reduced from the money
 	 * @return true if the transaction if successful and false if not
 	 */
 	public boolean reduceMoney(int m) {
@@ -511,7 +520,8 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Player's money field.
 	 * @effects Player.
-	 * @param m the input amount to be added to the money
+	 * @param m
+	 *            the input amount to be added to the money
 	 */
 	public void increaseMoney(int m) {
 		this.money += m;
@@ -604,6 +614,8 @@ public class Player implements Serializable {
 
 	public void setBot() {
 		isBot = true;
+		System.out.println("Beginning Bot Test :"+this.isBot()+ "  "+this.getName());
+
 	}
 
 	public void delegateTask(String mess) {
@@ -615,15 +627,27 @@ public class Player implements Serializable {
 	}
 
 	public void doHurricaneAction(Hashtable<String, ArrayList<String>> data) {
-		message = "CARD/HURRICANE/CHOOSEPLAYER/";
-		for (String name : data.keySet()) {
-			message += name + "/";
-			for (String val : data.get(name)) {
-				message += val + "/";
+		if (!isBot()) {
+			message = "CARD/HURRICANE/CHOOSEPLAYER/";
+			for (String name : data.keySet()) {
+				message += name + "/";
+				for (String val : data.get(name)) {
+					message += val + "/";
+				}
+				message += "END/";
 			}
-			message += "END/";
+			publishGameEvent(message);
+		} else {
+			if (!data.keySet().isEmpty()) {
+				Random r = new Random();
+				int k = r.nextInt(data.keySet().size());
+				String playerName = (String) data.keySet().toArray()[k];
+				if (!data.get(playerName).isEmpty()) {
+					String color = data.get(playerName).get(r.nextInt(data.get(playerName).size()));
+					delegateTask("HURRICANE/EXECUTE/"+playerName+"/"+color+"/"+this.getName());
+				}
+			}
 		}
-		publishGameEvent(message);
 	}
 
 	public void executeHurricaneAction(Player player, String color) {

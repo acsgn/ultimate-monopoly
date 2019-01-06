@@ -3,7 +3,7 @@ package game.bot;
 import game.Player;
 import game.square.Square;
 
-public class GeneralBotStrategy implements botStrategy{
+public class DummyBotStrategy implements botStrategy{
 
 	@Override
 	public String getActionMessage(Square s, Player player) {

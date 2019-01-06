@@ -19,9 +19,13 @@ public class Bot implements Runnable, Serializable {
 	private static Random random = new Random();
 	private static final float saturation = 0.9f;
 	private static final float luminance = 0.9f;
+	
+	private BotType botType;
 
 	public Bot(Player player) {
 		this.player = player;
+		botType = BotType.randomStrategy();
+		strategy = botStrategyFactory.getInstance().getbotStrategy(botType);
 	}
 
 	public void start() {
@@ -69,7 +73,6 @@ public class Bot implements Runnable, Serializable {
 
 			// Do some Action
 			Square location = player.getLocation();
-			strategy = botStrategyFactory.getInstance().getbotStrategy(location);
 			String message_1 = strategy.getActionMessage(location, player);
 			Controller.getInstance().dispatchMessage(message_1);
 
