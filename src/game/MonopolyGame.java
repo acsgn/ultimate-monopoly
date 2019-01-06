@@ -78,11 +78,11 @@ public class MonopolyGame implements Runnable {
 					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
 			case "ENDGAME":
+				destroy = true;
 				if (bots.containsKey(myName))
 					for (Bot b : bots.get(myName))
 						b.destroy();
 				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");
-				destroy = true;
 				NetworkFacade.getInstance().endGame();
 				break;
 			case "BUYPROPERTY":
