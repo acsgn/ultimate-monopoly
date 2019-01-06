@@ -34,7 +34,7 @@ public class Property extends Estate {
 				String message = "ACTION/"+ player.getName()+"landed on his owned property Haha!";
 				player.publishGameEvent(message);
 			} else {
-				player.delegateTask("PAYRENT/" + player.getName() + this.getOwner().getName());
+				player.delegateTask("PAYRENT/" + player.getName() +"/"+ this.getOwner().getName());
 			}
 		} else {
 			String message = "ACTION/You can buy this property!";
