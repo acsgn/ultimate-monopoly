@@ -1,4 +1,5 @@
 package game.dice;
+
 import java.util.Random;
 
 public class RegularDie extends Dice {
@@ -12,14 +13,13 @@ public class RegularDie extends Dice {
 	 * {@inheritDoc}
 	 * 
 	 * @requires
-	 * @modifies a random value is created,
-	 * faceValue is changed
+	 * @modifies a random value is created, faceValue is changed
 	 * @effects value for a regular dice is determined
 	 */
 	@Override
 	public void roll() {
-		Random rand = new Random(System.nanoTime());
-		faceValue = rand.nextInt(NORMAL_MAX)+1;
+		Random rand = new Random();
+		faceValue = rand.nextInt(NORMAL_MAX) + 1;
 	}
 
 	@Override
