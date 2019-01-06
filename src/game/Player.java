@@ -385,7 +385,7 @@ public class Player implements Serializable {
 		int i = 0;
 		for (Property k : c.getPropertyColorSquares()) {
 			i++;
-			if (i == 4)
+			if (i == 5)
 				break;
 			k.setOwner(this);
 		}
