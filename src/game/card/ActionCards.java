@@ -11,6 +11,9 @@ public class ActionCards {
 	private ArrayList<CommunityChest> communityChest;
 	private ArrayList<RollThree> rollThree;
 	
+	private int chanceLastIndex;
+	private int communityLastIndex;
+	
 	private ActionCards(){
 		constructCommunityChestCards();
 		constructChanceCards();
@@ -137,15 +140,31 @@ public class ActionCards {
 	}
 	public CommunityChest getCommunityChestCard(){
 		Random d = new Random();
-		CommunityChest tmp = communityChest.remove(d.nextInt(communityChest.size()));
+		int k = d.nextInt(communityChest.size());
+		communityLastIndex = k;
+		CommunityChest tmp = communityChest.remove(k);
 		communityChest.add(tmp);
 		return tmp;
 	}
 	public Chance getChanceCard(){
 		Random d = new Random();
-		Chance tmp = chance.remove(d.nextInt(chance.size()));
+		int k = d.nextInt(chance.size());
+		chanceLastIndex = k;
+		Chance tmp = chance.remove(k);
 		chance.add(tmp);
 		return tmp;
+	}
+	public int getIndexChanceCard(){
+		return chanceLastIndex;
+	}
+	public int getIndexCommunityCard(){
+		return communityLastIndex;
+	}
+	public Card getChanceCardByIndex(int i){
+		return chance.get(i);
+	}
+	public Card getCommunityCardByIndex(int i){
+		return communityChest.get(i);
 	}
 	
 	public void putTheCardBack(Card card) {

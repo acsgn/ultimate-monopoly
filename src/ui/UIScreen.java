@@ -146,7 +146,7 @@ public class UIScreen extends JFrame implements GameListener {
 		buyBuildingButton.setBounds(controlPaneXMargin, controlPaneYMargin + 9 * controlPaneComponentHeight,
 				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		buyBuildingButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		buyBuildingButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		buyBuildingButton.setEnabled(false);
 		leftControlPanel.add(buyBuildingButton);
 
