@@ -2,6 +2,7 @@ package ui;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -324,9 +325,12 @@ public class UIScreen extends JFrame implements GameListener {
 		saveGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fc = new JFileChooser();
-				fc.showSaveDialog(null);
-				String saveFile = fc.getSelectedFile().getPath();
+				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				        "Ultimate Monopoly Save Files", "umsf");
+				chooser.setFileFilter(filter);
+				chooser.showSaveDialog(null);
+				String saveFile = chooser.getSelectedFile().getPath();
 				message = "UISCREEN/SAVEGAME/" + saveFile;
 				Controller.getInstance().dispatchMessage(message);
 			}
