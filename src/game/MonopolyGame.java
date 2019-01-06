@@ -76,12 +76,12 @@ public class MonopolyGame implements Runnable {
 					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
 			case "ENDGAME":
-				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");
-				destroy = true;
-				NetworkFacade.getInstance().endGame();
 				if (bots.containsKey(myName))
 					for (Bot b : bots.get(myName))
 						b.destroy();
+				NetworkFacade.getInstance().sendMessage(myName + "/ENDGAME");
+				destroy = true;
+				NetworkFacade.getInstance().endGame();
 				break;
 			case "BUYPROPERTY":
 				NetworkFacade.getInstance().sendMessage(myName + "/BUYESTATE");
@@ -407,11 +407,10 @@ public class MonopolyGame implements Runnable {
 			currentPlayer.endGame();
 			players.remove(currentPlayer);
 			if (bots.containsKey(currentPlayer.getName())) {
-				for (Bot b : bots.get(currentPlayer.getName())) {
+				for (Bot b : bots.remove(currentPlayer.getName())) {
 					b.getPlayer().endGame();
 					players.remove(b.getPlayer());
 				}
-				bots.remove(currentPlayer.getName());
 			}
 			break;
 		case "BUYBUILDING":
