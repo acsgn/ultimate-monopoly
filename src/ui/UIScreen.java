@@ -361,7 +361,8 @@ public class UIScreen extends JFrame implements GameListener {
 					enableButtons();
 					if (isRolled) {
 						endTurnButton.setEnabled(true);
-						buySquareButton.setEnabled(true);// TODO check if its buyable
+						buySquareButton.setEnabled(true);// TODO check if its
+															// buyable
 					} else
 						rollDiceButton.setEnabled(true);
 					pauseResumeButton.setText("Pause");
@@ -526,34 +527,37 @@ public class UIScreen extends JFrame implements GameListener {
 			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "", JOptionPane.PLAIN_MESSAGE);
 			break;
 		case "BUILDING":
-			if (parsed[1].equals("YES")) {
-				ArrayList<Object> possibilities = new ArrayList<>();
-				for (int i = 2; i < parsed.length; i++) {
-					possibilities.add(parsed[i]);
+			if (active) {
+				if (parsed[1].equals("YES")) {
+					ArrayList<Object> possibilities = new ArrayList<>();
+					for (int i = 2; i < parsed.length; i++) {
+						possibilities.add(parsed[i]);
+					}
+					String s = (String) JOptionPane.showInputDialog(null, "Choose a color group!", "",
+							JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
+					if (s != null)
+						Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
+				} else {
+					JOptionPane.showMessageDialog(null, "You don't have any monopoly or majority ownership", "",
+							JOptionPane.ERROR_MESSAGE);
 				}
-				String s = (String) JOptionPane.showInputDialog(null, "Choose a color group!", "",
-						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
-				if (s != null)
-					Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
-			} else {
-				JOptionPane.showMessageDialog(null, "You don't have any monopoly or majority ownership", "",
-						JOptionPane.ERROR_MESSAGE);
 			}
-
 			break;
 		case "BUILDING2":
-			ArrayList<Object> possibilities = new ArrayList<>();
-			if (parsed[1].equals("NO")) {
-				JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.PLAIN_MESSAGE);
-			} else {
-				for (int i = 1; i < parsed.length - 1; i++) {
-					possibilities.add(parsed[i]);
+			if (active) {
+				ArrayList<Object> possibilities = new ArrayList<>();
+				if (parsed[1].equals("NO")) {
+					JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.PLAIN_MESSAGE);
+				} else {
+					for (int i = 1; i < parsed.length - 1; i++) {
+						possibilities.add(parsed[i]);
+					}
+					String s = (String) JOptionPane.showInputDialog(null, "Choose a square", "",
+							JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
+					if (s != null)
+						Controller.getInstance()
+								.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1] + "/");
 				}
-				String s = (String) JOptionPane.showInputDialog(null, "Choose a square", "", JOptionPane.PLAIN_MESSAGE,
-						null, possibilities.toArray(), possibilities.get(0));
-				if (s != null)
-					Controller.getInstance()
-							.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1] + "/");
 			}
 			break;
 		case "CARD":
