@@ -4,7 +4,6 @@ import game.Controller;
 import game.Player;
 import game.square.Square;
 import game.square.SquareType;
-import network.NetworkFacade;
 
 public abstract class Estate extends Square {
 	private static final long serialVersionUID = 1L;
@@ -45,7 +44,7 @@ public abstract class Estate extends Square {
 		// TODO
 		if (owner != null) {
 			if (!owner.getName().equals(player.getName()))
-				NetworkFacade.getInstance().sendMessage(player.getName() + "/PAYRENT/" + owner.getName());
+				player.delegateTask("PAYRENT/" + player.getName() +"/"+ owner.getName());
 		} else {
 			Controller.getInstance().publishGameEvent("ESTATE");
 		}

@@ -26,7 +26,6 @@ public class Property extends Estate {
 		this.colorGroup = colorGroup;
 	}
 
-	@Override
 	public void setOwner(Player owner) {
 		super.setOwner(owner);
 		colorGroup.updateMonopoly();
