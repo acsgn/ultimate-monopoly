@@ -40,7 +40,7 @@ public class NetworkFacade implements Runnable {
 		discovery.destroy();
 		for (String IP : discovery.getIPAddresses())
 			IPAddresses.add(IP);
-		//new Thread(this, "Connection Control").start();
+		new Thread(this, "Connection Control").start();
 	}
 
 	public void sendMessage(String message) {

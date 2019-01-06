@@ -23,8 +23,8 @@ public class Board implements Serializable {
 	private Chance chance;
 	private CommunityChest communityChest;
 	private FreeParking freeParking;
-	
-	//to be deleted;
+
+	// to be deleted;
 	private ColorGroup WHITE_GROUP;
 
 	public Board() {
@@ -47,6 +47,7 @@ public class Board implements Serializable {
 		constructMiddleTrack();
 		constructOuterTrack();
 	}
+
 	public Square getSquare(int index, TrackType type) {
 		return getTrack(type).getSquare(index);
 	}
@@ -488,8 +489,15 @@ public class Board implements Serializable {
 			return false;
 		return true;
 	}
-	public ColorGroup getTestColorGroup(){
+
+	public ColorGroup getTestColorGroup() {
 		return WHITE_GROUP;
+	}
+
+	public void informUI() {
+		innerTrack.informUI();
+		middleTrack.informUI();
+		outerTrack.informUI();
 	}
 
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import game.square.*;
+import game.square.estate.Estate;
 
 public class Track implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -38,6 +39,12 @@ public class Track implements Serializable {
 
 	public int getSquareNumber() {
 		return squares.size();
+	}
+
+	public void informUI() {
+		for (Square s : squares)
+			if (s.getType() == SquareType.ESTATE)
+				((Estate) s).informUI();
 	}
 
 	public TrackType getTrackType() {

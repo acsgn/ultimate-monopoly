@@ -242,7 +242,8 @@ public class MonopolyGame implements Runnable {
 			players.add(currentPlayer);
 			currentPlayer.sendColor();
 			for (Player p : players)
-				p.createPiece();
+				p.informUI();
+			board.informUI();
 			Controller.getInstance().publishGameEvent("START");
 			informCurrentPlayer();
 			return;
@@ -273,7 +274,7 @@ public class MonopolyGame implements Runnable {
 		case "CREATEPLAYER":
 			if (isNewGame) {
 				Player newPlayer = new Player(parsed[1], parsed[2], board);
-				newPlayer.createPiece();
+				newPlayer.informUI();
 				players.add(newPlayer);
 			}
 			return;
@@ -281,7 +282,7 @@ public class MonopolyGame implements Runnable {
 			if (isNewGame) {
 				Player newPlayer = new Player(parsed[2], parsed[3], board);
 				newPlayer.setBot();
-				newPlayer.createPiece();
+				newPlayer.informUI();
 				Bot b = new Bot(newPlayer);
 				if (parsed[1].equals(myName))
 					b.start();
@@ -390,6 +391,7 @@ public class MonopolyGame implements Runnable {
 				currentPlayer = players.poll();
 				players.add(currentPlayer);
 				currentPlayer.sendColor();
+				board.informUI();
 				Controller.getInstance().publishGameEvent("START");
 				informCurrentPlayer();
 			}

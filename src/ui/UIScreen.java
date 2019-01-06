@@ -410,14 +410,6 @@ public class UIScreen extends JFrame implements GameListener {
 			pieces.get(parsed[1]).path.addPoint(new Point(point[0], point[1]));
 			board.repaint();
 			break;
-		case "PIECE":
-			Piece piece = new Piece();
-			piece.color = new Color(toInt(parsed[2]), true);
-			int[] initialPoint = pathFinder.getLocation(toInt(parsed[3]), toInt(parsed[4]));
-			piece.lastPoint = new Point(initialPoint[0], initialPoint[1]);
-			board.repaint();
-			pieces.put(parsed[1], piece);
-			break;
 		case "PLAYERDATA":
 			playerText.setText("");
 			for (int i = 1; i < parsed.length; i++) {
@@ -443,6 +435,12 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PLAYER":
 			playerComboBox.addItem(parsed[1]);
+			Piece piece = new Piece();
+			piece.color = new Color(toInt(parsed[2]), true);
+			int[] initialPoint = pathFinder.getLocation(toInt(parsed[3]), toInt(parsed[4]));
+			piece.lastPoint = new Point(initialPoint[0], initialPoint[1]);
+			board.repaint();
+			pieces.put(parsed[1], piece);
 			break;
 		case "DEED":
 			deedComboBox.addItem(parsed[1]);
