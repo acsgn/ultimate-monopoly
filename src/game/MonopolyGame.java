@@ -20,7 +20,6 @@ import game.square.estate.Estate;
 import game.square.estate.Property;
 import network.NetworkFacade;
 import game.bot.Bot;
-import game.building.BuildingType;
 
 public class MonopolyGame implements Runnable {
 
@@ -235,14 +234,14 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "PAYRENT":
 				boolean test = false;
-				for(Bot b : bots.get(myName)){
-					if(b.getPlayer().getName().equals(parsed[2])){
+				for (Bot b : bots.get(myName)) {
+					if (b.getPlayer().getName().equals(parsed[2])) {
 						test = true;
 						break;
 					}
 				}
-				if(parsed[2].equals(myName) || test){
-					NetworkFacade.getInstance().sendMessage(parsed[2]+"/PAYRENT/"+parsed[3]);
+				if (parsed[2].equals(myName) || test) {
+					NetworkFacade.getInstance().sendMessage(parsed[2] + "/PAYRENT/" + parsed[3]);
 				}
 				break;
 			}
@@ -383,7 +382,7 @@ public class MonopolyGame implements Runnable {
 			break;
 		case "BUYESTATE":
 			currentPlayer.buySquare();
-			//((Estate) currentPlayer.getLocation()).information();
+			// ((Estate) currentPlayer.getLocation()).information();
 			break;
 		case "CARD":
 			// This should be picked by executeMessage
@@ -477,8 +476,7 @@ public class MonopolyGame implements Runnable {
 	}
 
 	private void informCurrentPlayer() {
-		currentPlayer.sendColor();
-		currentPlayer.updateState();
+		Controller.getInstance().publishGameEvent("PLAYERINFO/" + currentPlayer.getName());
 		if (currentPlayer.getName().equals(myName))
 			Controller.getInstance().publishGameEvent("PLAY");
 		else if (bots.containsKey(myName))
