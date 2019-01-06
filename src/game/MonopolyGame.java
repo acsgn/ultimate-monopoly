@@ -234,7 +234,14 @@ public class MonopolyGame implements Runnable {
 				// parsed[1]);
 				break;
 			case "PAYRENT":
-				if(parsed[2].equals(myName)){
+				boolean test = false;
+				for(Bot b : bots.get(myName)){
+					if(b.getPlayer().getName().equals(parsed[2])){
+						test = true;
+						break;
+					}
+				}
+				if(parsed[2].equals(myName) || test){
 					NetworkFacade.getInstance().sendMessage(parsed[2]+"/PAYRENT/"+parsed[3]);
 				}
 				break;
