@@ -199,7 +199,15 @@ public class MonopolyGame implements Runnable {
 				}
 				break;
 			case "ZERODOLLARSDOWN":
-				NetworkFacade.getInstance().sendMessage(parsed[2] + "/" + parsed[1]);
+				Player curr = findPlayer(parsed[2]);
+				ArrayList<ColorGroup> cGroup = curr.getMonopolyColorGroups();
+				if (cGroup.size() != 0) {
+					String level = cGroup.get(0).getLevel().toString();
+					String square = cGroup.get(0).getAvailableSquares().get(0).getName();
+					String info = square + "/" + level + "/";
+					curr.buyBuilding(info, true);
+				}
+				//NetworkFacade.getInstance().sendMessage(parsed[2] + "/" + parsed[1]);
 				break;
 			}
 			break;
