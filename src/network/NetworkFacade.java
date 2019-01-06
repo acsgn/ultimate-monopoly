@@ -2,7 +2,8 @@ package network;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -119,24 +120,22 @@ public class NetworkFacade implements Runnable {
 	}
 
 	public void sendSavedGameFile(String path) {
-		File file = new File(path);
 		try {
-			FileInputStream fis = new FileInputStream(file);
-			byte[] buffer = new byte[(int) file.length()];
-			fis.read(buffer);
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(path)));
+			Object o = ois.readObject();
 			for (String IP : IPAddresses) {
 				MessageSocket mS = new P2PClient(IP).getMessageSocket();
-				OutputStream os = mS.getSocket().getOutputStream();
-				os.write(buffer);
-				os.flush();
+				ObjectOutputStream oos = new ObjectOutputStream(mS.getSocket().getOutputStream());
+				oos.writeObject(o);
+				oos.close();
 				mS.close();
 			}
-			fis.close();
+			ois.close();
 		} catch (Exception e) {
 		}
 	}
 
-	public byte[] receiveSavedGameFile() {
+	public Object receiveSavedGameFile() {
 		return p2p.getSaveFile();
 	}
 }

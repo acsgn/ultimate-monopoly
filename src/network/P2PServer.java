@@ -1,6 +1,7 @@
 package network;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -8,9 +9,8 @@ import java.util.ArrayList;
 public class P2PServer implements Runnable {
 
 	private static final int P2P_PORT = 3022;
-	private static final int BUFFER_SIZE = 32786;
 
-	private byte[] buffer;
+	private Object saveFile;
 	private ArrayList<String> messages;
 
 	public P2PServer() {
@@ -34,7 +34,7 @@ public class P2PServer implements Runnable {
 					notify();
 				}
 				mS.close();
-				if (message.equals("LOAD")) 
+				if (message.equals("LOAD"))
 					receiveFile(server.accept());
 			}
 			server.close();
@@ -45,16 +45,14 @@ public class P2PServer implements Runnable {
 
 	private void receiveFile(Socket s) {
 		try {
-			buffer = new byte[BUFFER_SIZE];
-			int bytesRead;
-			do {
-				bytesRead = s.getInputStream().read(buffer);
-			} while (bytesRead > -1);
+			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+			saveFile = ois.readObject();
+			ois.close();
 			s.close();
 			synchronized (this) {
 				notify();
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 		}
 	}
 
@@ -69,8 +67,8 @@ public class P2PServer implements Runnable {
 		return messages.remove(0);
 	}
 
-	public byte[] getSaveFile() {
-		if (buffer == null) {
+	public Object getSaveFile() {
+		if (saveFile == null) {
 			try {
 				synchronized (this) {
 					wait();
@@ -78,7 +76,7 @@ public class P2PServer implements Runnable {
 			} catch (InterruptedException e) {
 			}
 		}
-		return buffer;
+		return saveFile;
 	}
 
 }

@@ -1,9 +1,7 @@
 package game;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.ArrayList;
@@ -154,8 +152,8 @@ public class MonopolyGame implements Runnable {
 		case "UICREATOR":
 			switch (parsed[1]) {
 			case "CREATE":
-				NetworkFacade.getInstance().startGame();
 				myName = parsed[2];
+				NetworkFacade.getInstance().startGame();
 				int numOfBots = toInt(parsed[4]);
 				for (int i = 0; i < numOfBots; i++)
 					Bot.createBot();
@@ -165,10 +163,10 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance().sendMessage(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
 				break;
 			case "LOAD":
+				myName = parsed[2];
 				NetworkFacade.getInstance().startGame();
 				NetworkFacade.getInstance().sendMessage("LOAD");
 				NetworkFacade.getInstance().sendSavedGameFile(parsed[3]);
-				myName = parsed[2];
 				break;
 			}
 			break;
@@ -236,8 +234,10 @@ public class MonopolyGame implements Runnable {
 		switch (message) {
 		case "LOAD":
 			isNewGame = false;
-			byte[] saveGame = NetworkFacade.getInstance().receiveSavedGameFile();
-			loadGame(saveGame);
+			Object saveGame = NetworkFacade.getInstance().receiveSavedGameFile();
+			SaveGame save = (SaveGame) saveGame;
+			players = save.getPlayers();
+			bots = save.getBots();
 			currentPlayer = players.poll();
 			players.add(currentPlayer);
 			currentPlayer.sendColor();
@@ -461,23 +461,12 @@ public class MonopolyGame implements Runnable {
 	}
 
 	public void saveGame(String saveGameFile) {
-		SaveGame saved = new SaveGame(players, bots);
 		try {
-			FileOutputStream fout = new FileOutputStream(new File(saveGameFile + ".umsf"));
-			ObjectOutputStream oout = new ObjectOutputStream(fout);
-			oout.writeObject(saved);
-			oout.close();
-		} catch (Exception ex) {
-		}
-	}
-
-	public void loadGame(byte[] file) {
-		try {
-			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(file));
-			SaveGame save = (SaveGame) ois.readObject();
-			players = save.getPlayers();
-			bots = save.getBots();
-			ois.close();
+			SaveGame saved = new SaveGame(players, bots);
+			FileOutputStream fos = new FileOutputStream(new File(saveGameFile + ".umsf"));
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(saved);
+			oos.close();
 		} catch (Exception ex) {
 		}
 	}

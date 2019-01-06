@@ -326,13 +326,12 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				        "Ultimate Monopoly Save Files", "umsf");
-				chooser.setFileFilter(filter);
-				chooser.showSaveDialog(null);
-				String saveFile = chooser.getSelectedFile().getPath();
-				message = "UISCREEN/SAVEGAME/" + saveFile;
-				Controller.getInstance().dispatchMessage(message);
+				chooser.setFileFilter(new FileNameExtensionFilter("Ultimate Monopoly Save Files", "umsf"));
+				if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					String saveFile = chooser.getSelectedFile().getPath();
+					message = "UISCREEN/SAVEGAME/" + saveFile;
+					Controller.getInstance().dispatchMessage(message);
+				}
 			}
 		});
 
@@ -451,9 +450,8 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "CARD2":
 			Image cardImage = new ImageIcon(cardImagePath + parsed[1] + ".png").getImage()
-			.getScaledInstance(screenWidth/3, -1, Image.SCALE_SMOOTH);
-			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "",
-					JOptionPane.PLAIN_MESSAGE);
+					.getScaledInstance(screenWidth / 3, -1, Image.SCALE_SMOOTH);
+			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "", JOptionPane.PLAIN_MESSAGE);
 			break;
 		case "BUILDING":
 			if (parsed[1].equals("YES")) {
@@ -466,8 +464,8 @@ public class UIScreen extends JFrame implements GameListener {
 				if (s != null)
 					Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
 			} else {
-				JOptionPane.showMessageDialog(null, "You don't have any monopoly or majority ownership",
-						"", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "You don't have any monopoly or majority ownership", "",
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 			break;
@@ -479,9 +477,8 @@ public class UIScreen extends JFrame implements GameListener {
 				for (int i = 1; i < parsed.length - 1; i++) {
 					possibilities.add(parsed[i]);
 				}
-				String s = (String) JOptionPane.showInputDialog(null,
-						"Choose a square", "",
-						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
+				String s = (String) JOptionPane.showInputDialog(null, "Choose a square", "", JOptionPane.PLAIN_MESSAGE,
+						null, possibilities.toArray(), possibilities.get(0));
 				if (s != null)
 					Controller.getInstance()
 							.dispatchMessage("UISCREEN/BUYBUILDING3/" + s + "/" + parsed[parsed.length - 1] + "/");
