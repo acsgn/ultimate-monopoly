@@ -1,6 +1,8 @@
 package network;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -38,7 +40,7 @@ public class NetworkFacade implements Runnable {
 		discovery.destroy();
 		for (String IP : discovery.getIPAddresses())
 			IPAddresses.add(IP);
-		new Thread(this, "Connection Control").start();
+		//new Thread(this, "Connection Control").start();
 	}
 
 	public void sendMessage(String message) {
@@ -116,13 +118,25 @@ public class NetworkFacade implements Runnable {
 		}
 	}
 
-	public void sendSavedGameFile(String string) {
-		// TODO Auto-generated method stub
-		
+	public void sendSavedGameFile(String path) {
+		File file = new File(path);
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			byte[] buffer = new byte[(int) file.length()];
+			fis.read(buffer);
+			for (String IP : IPAddresses) {
+				MessageSocket mS = new P2PClient(IP).getMessageSocket();
+				OutputStream os = mS.getSocket().getOutputStream();
+				os.write(buffer);
+				os.flush();
+				mS.close();
+			}
+			fis.close();
+		} catch (Exception e) {
+		}
 	}
 
-	public File receiveSavedGameFile() {
-		// TODO Auto-generated method stub
-		return null;
+	public byte[] receiveSavedGameFile() {
+		return p2p.getSaveFile();
 	}
 }

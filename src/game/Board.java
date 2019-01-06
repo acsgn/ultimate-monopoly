@@ -1,10 +1,13 @@
 package game;
 
+import java.io.Serializable;
+
 import game.square.*;
 import game.square.action.*;
 import game.square.estate.*;
 
-public class Board {
+public class Board implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private static Board self;
 

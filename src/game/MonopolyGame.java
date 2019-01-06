@@ -1,7 +1,7 @@
 package game;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -142,7 +142,6 @@ public class MonopolyGame implements Runnable {
 			case "CREATE":
 				NetworkFacade.getInstance().startGame();
 				myName = parsed[2];
-				if (isNewGame) {
 					int numOfBots = toInt(parsed[4]);
 					for (int i = 0; i < numOfBots; i++)
 						Bot.createBot();
@@ -150,11 +149,11 @@ public class MonopolyGame implements Runnable {
 					SingletonDice.getInstance().rollDice();
 					int[] dice = SingletonDice.getInstance().getFaceValues();
 					NetworkFacade.getInstance().sendMessage(myName + "/RECEIVEDICE/" + (dice[0] + dice[1]));
-				}
 				break;
 			case "LOAD":
-				NetworkFacade.getInstance().sendSavedGameFile(parsed[3]);
 				NetworkFacade.getInstance().startGame();
+				NetworkFacade.getInstance().sendMessage("LOAD");
+				NetworkFacade.getInstance().sendSavedGameFile(parsed[3]);
 				myName = parsed[2];
 				break;
 			}
@@ -210,8 +209,15 @@ public class MonopolyGame implements Runnable {
 		switch (message) {
 		case "LOAD":
 			isNewGame = false;
-			File saveGame = NetworkFacade.getInstance().receiveSavedGameFile();
+			byte[] saveGame = NetworkFacade.getInstance().receiveSavedGameFile();
 			loadGame(saveGame);
+			currentPlayer = players.poll();
+			players.add(currentPlayer);
+			currentPlayer.sendColor();
+			for(Player p: players)
+				p.createPiece();
+			Controller.getInstance().publishGameEvent("START");
+			informCurrentPlayer();
 			return;
 		case "ENDTURN":
 			currentPlayer = players.poll();
@@ -242,7 +248,6 @@ public class MonopolyGame implements Runnable {
 				Player newPlayer = new Player(parsed[1], parsed[2]);
 				newPlayer.createPiece();
 				players.add(newPlayer);
-			} else {
 			}
 			return;
 		case "CREATEBOT":
@@ -394,9 +399,9 @@ public class MonopolyGame implements Runnable {
 		}
 	}
 
-	public void loadGame(File file) {
+	public void loadGame(byte[] file) {
 		try {
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(file));
 			SaveGame save = (SaveGame) ois.readObject();
 			players = save.getPlayers();
 			bots = save.getBots();

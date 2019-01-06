@@ -6,7 +6,7 @@ import java.net.Socket;
 public class P2PClient {
 
 	private final int P2P_PORT = 3022;
-	private final int timeout = 5000;
+	private final int timeout = 3000;
 
 	private Socket s;
 
