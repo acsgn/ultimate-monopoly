@@ -2,6 +2,7 @@ package game.square.action;
 
 import game.Player;
 import game.card.ActionCards;
+import game.card.CardType;
 import network.NetworkFacade;
 
 public class CommunityChest extends Action {
@@ -12,9 +13,9 @@ public class CommunityChest extends Action {
 
 	@Override
 	public void executeWhenLanded(Player player) {
-		game.card.CommunityChest card = ActionCards.getInstance().getCommunityChestCard();
+		//game.card.CommunityChest card = ActionCards.getInstance().getCommunityChestCard();
 		//player.pickCard(card);
-		player.delegateTask("CARD/"+player.getName()+"/"+card.getCardType().ordinal());
+		player.delegateTask("CARD/"+player.getName()+"/"+CardType.COMMUNITY_CHEST.ordinal());
 		//NetworkFacade.getInstance().sendMessage(player.getName()+"/CARD/"+card.getCardType().ordinal());
 	}
 
