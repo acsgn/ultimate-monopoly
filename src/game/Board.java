@@ -26,6 +26,7 @@ public class Board implements Serializable {
 
 	// to be deleted;
 	private ColorGroup WHITE_GROUP;
+	private ColorGroup LIGHT_GREEN_GROUP;
 
 	public Board() {
 		outerTrack = new Track(TrackType.OUTER_TRACK);
@@ -376,7 +377,7 @@ public class Board implements Serializable {
 		LIGHT_PINK_GROUP.addPropertySquare(nicolletAve);
 		LIGHT_PINK_GROUP.addPropertySquare(hennepinAve);
 
-		ColorGroup LIGHT_GREEN_GROUP = new ColorGroup(PropertyColor.LIGHT_GREEN);
+		LIGHT_GREEN_GROUP = new ColorGroup(PropertyColor.LIGHT_GREEN);
 		LIGHT_GREEN_GROUP.addPropertySquare(esplanadeAve);
 		LIGHT_GREEN_GROUP.addPropertySquare(canalStreet);
 		LIGHT_GREEN_GROUP.addPropertySquare(magazineStreet);
@@ -491,7 +492,7 @@ public class Board implements Serializable {
 	}
 
 	public ColorGroup getTestColorGroup() {
-		return WHITE_GROUP;
+		return LIGHT_GREEN_GROUP;
 	}
 
 	public void informUI() {
