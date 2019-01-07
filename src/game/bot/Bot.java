@@ -19,7 +19,7 @@ public class Bot implements Runnable, Serializable {
 	private static Random random = new Random();
 	private static final float saturation = 0.9f;
 	private static final float luminance = 0.9f;
-	
+
 	private BotType botType;
 
 	public Bot(Player player) {
@@ -67,10 +67,15 @@ public class Bot implements Runnable, Serializable {
 			if (destroy)
 				break;
 
+			if (player.isInJail())
+				Controller.getInstance().dispatchMessage("BOT/ENDTURN2");
 			// Roll the dice
 			String message = "BOT/ROLLDICE/" + player.getName();
 			Controller.getInstance().dispatchMessage(message);
-
+			try {
+				Thread.sleep(25);
+			} catch (InterruptedException e) {
+			}
 			// Do some Action
 			Square location = player.getLocation();
 			String message_1 = strategy.getActionMessage(location, player);

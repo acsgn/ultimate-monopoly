@@ -825,6 +825,7 @@ public class UIScreen extends JFrame implements GameListener {
 			g.setColor(color);
 			g.fillOval(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (isActive) {
+				dice.i=0;
 				if (animator.isStopped())
 					animator.startAnimator();
 				if (path != null && path.hasMoreSteps())
@@ -866,10 +867,8 @@ public class UIScreen extends JFrame implements GameListener {
 				randomDice(g);
 			else if (i < 200)
 				realDice(g);
-			else if (i == 200) {
+			else if (i == 200)
 				myPiece.isActive = true;
-				i = -1;
-			}
 			i++;
 		}
 

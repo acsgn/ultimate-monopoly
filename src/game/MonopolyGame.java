@@ -175,6 +175,9 @@ public class MonopolyGame implements Runnable {
 				}
 				NetworkFacade.getInstance().sendMessage("ENDTURN");
 				break;
+			case "ENDTURN2":
+				NetworkFacade.getInstance().sendMessage("ENDTURN");
+				break;
 			case "CREATEBOT":
 				NetworkFacade.getInstance()
 						.sendMessage("CREATEBOT/" + myName + "/" + myName + parsed[2] + "/" + parsed[3]);
