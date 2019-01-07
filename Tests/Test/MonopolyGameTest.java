@@ -20,7 +20,7 @@ public class MonopolyGameTest {
 		assertTrue(mg.repOk());
 	}
 
-	@Test
+	/*@Test
 	public void testupdateCurrentPlayer() {
 		mg = new MonopolyGame();
 		mg.getCurrentPlayer().setName("bb");
@@ -30,6 +30,6 @@ public class MonopolyGameTest {
 		mg.updateCurrentPlayer(player1.getName());
 		assertEquals(player1.getName(), mg.getCurrentPlayer().getName());
 		assertTrue(mg.repOk());
-	}
+	}*/
 
 }
