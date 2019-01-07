@@ -98,17 +98,7 @@ public class Player implements Serializable {
 	}
 
 	public void play(int[] diceRolls) {
-		message = "ACTION/";
-		message += name + " rolled:\n";
-		message += "Regular Die 1: " + diceRolls[0] + "\n";
-		message += "Regular Die 2: " + diceRolls[1] + "\n";
-		if (diceRolls[2] == 4) {
-			message += "Speed Die : Bus Icon";
-		} else if (diceRolls[2] == 5) {
-			message += "Speed Die : Mr.Monopoly Bonus Move";
-		} else {
-			message += "Speed Die: " + diceRolls[2];
-		}
+		message = "DICE/"+name+"/"+diceRolls[0]+"/"+diceRolls[1]+"/"+diceRolls[2];
 		publishGameEvent(message);
 		boolean isDouble = diceRolls[0] == diceRolls[1];
 		if (!inJail) {

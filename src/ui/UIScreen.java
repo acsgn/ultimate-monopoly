@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import game.Controller;
@@ -40,6 +41,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private static final String deedImagePath = "resources/deeds/";
 	private static final String cardImagePath = "resources/cards/";
 	private static final String jailImagePath = "resources/jail.png";
+	private static final String dieImagePath = "resources/dieSides/side";
 	private static final String musicPath = "resources/music.wav";
 
 	private Controller controller;
@@ -52,8 +54,11 @@ public class UIScreen extends JFrame implements GameListener {
 	private boolean isRolled = false;
 	private boolean active;
 	private final Object[] jailOptions = { "Roll for Doubles", "Pay Bail" };
+	private Piece myPiece;
 
 	private String message;
+	private JBoard board;
+	private JDice dice;
 	private JTextArea deedInformation;
 	private JTextArea playerText;
 	private JTextArea infoText;
@@ -61,7 +66,6 @@ public class UIScreen extends JFrame implements GameListener {
 	private JPanel playerArea;
 	private JPanel pauseResumePanel;
 	private JPanel jail;
-	private JBoard board;
 	private JButton buyBuildingButton;
 	private JButton sellBuildingButton;
 	private JButton mortgageButton;
@@ -100,8 +104,11 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private double scaleFactor = ((double) screenHeight) / new ImageIcon(boardImagePath).getIconHeight();
 
-	private final int unscaledPieceSize = 80;
+	private static final int unscaledPieceSize = 80;
 	private int pieceSize = (int) (scaleFactor * unscaledPieceSize);
+
+	private static final int unscaledDieSize = 160;
+	private int dieSize = (int) (scaleFactor * unscaledDieSize);
 
 	/**
 	 * Create the panel.
@@ -120,6 +127,7 @@ public class UIScreen extends JFrame implements GameListener {
 		setUndecorated(true);
 		setLayout(null);
 
+		dice = new JDice();
 		board = new JBoard();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
@@ -497,7 +505,10 @@ public class UIScreen extends JFrame implements GameListener {
 		case "MOVE":
 			Piece piecem = pieces.get(parsed[1]);
 			pathFinder.addPath(piecem.path, toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
-			piecem.isActive = true;
+			if (active)
+				myPiece = piecem;
+			else
+				piecem.isActive = true;
 			board.repaint();
 			break;
 		case "JUMP":
@@ -547,6 +558,27 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "CHAT":
 			chatText.insert(parsed[1] + "\n", 0);
+			break;
+		case "DICE":
+			String infod = parsed[1] + " rolled:\n";
+			infod += "Die 1: " + parsed[2] + "\n";
+			infod += "Die 2: " + parsed[3] + "\n";
+			infod += "Speed Die: ";
+			if (toInt(parsed[4]) == 4) {
+				infod += "Mr.Monopoly Bonus Move";
+			} else if (toInt(parsed[4]) == 5) {
+				infod += "Bus Icon";
+			} else {
+				infod += parsed[4];
+			}
+			infoText.insert(infod + "\n", 0);
+			if (active) {
+				dice.d1 = toInt(parsed[2]) - 1;
+				dice.d2 = toInt(parsed[3]) - 1;
+				dice.d3 = toInt(parsed[4]) - 1;
+				dice.i = 1;
+				animator.startAnimator();
+			}
 			break;
 		case "ESTATE":
 			if (active)
@@ -795,12 +827,61 @@ public class UIScreen extends JFrame implements GameListener {
 
 	}
 
+	private class JDice {
+		private final ArrayList<Image> sideImages = new ArrayList<Image>(8);
+
+		int i = 1;
+		int d1;
+		int d2;
+		int d3;
+
+		private Random r;
+
+		public JDice() {
+			for (int i = 1; i < 9; i++)
+				sideImages.add(new ImageIcon(dieImagePath + i + ".png").getImage().getScaledInstance(dieSize, -1,
+						Image.SCALE_SMOOTH));
+			r = new Random();
+		}
+
+		public void paint(Graphics g) {
+			if (i < 80)
+				randomDice(g);
+			else if (i < 200)
+				realDice(g);
+			else if (i == 200) {
+				myPiece.isActive = true;
+				i = -1;
+			}
+			i++;
+		}
+
+		public void randomDice(Graphics g) {
+			g.drawImage(sideImages.get(r.nextInt(6)), (screenHeight - 3 * dieSize - 20) / 2,
+					(screenHeight - dieSize) / 2, null);
+			g.drawImage(sideImages.get(r.nextInt(6)), (screenHeight - dieSize) / 2, (screenHeight - dieSize) / 2, null);
+			int sd = r.nextInt(5);
+			g.drawImage(sideImages.get(sd > 3 ? sd + 3 : sd), (screenHeight + dieSize) / 2 + 10,
+					(screenHeight - dieSize) / 2, null);
+		}
+
+		public void realDice(Graphics g) {
+			g.drawImage(sideImages.get(d1), (screenHeight - 3 * dieSize - 20) / 2, (screenHeight - dieSize) / 2, null);
+			g.drawImage(sideImages.get(d2), (screenHeight - dieSize) / 2, (screenHeight - dieSize) / 2, null);
+			g.drawImage(sideImages.get(d3 > 3 ? d3 + 3 : d3), (screenHeight + dieSize) / 2 + 10,
+					(screenHeight - dieSize) / 2, null);
+		}
+
+	}
+
 	private class JBoard extends JLabel {
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
+			if (active && dice.i != 0)
+				dice.paint(g);
 			for (Piece piece : pieces.values())
 				piece.paint(g);
 		}
