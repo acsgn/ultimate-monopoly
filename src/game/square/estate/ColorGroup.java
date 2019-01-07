@@ -249,5 +249,13 @@ public class ColorGroup implements Serializable {
 	public void setMonopolyOwnerName(String monopolyOwnerName) {
 		this.monopolyOwnerName = monopolyOwnerName;
 	}
+	public boolean anyMortgageSquare(){
+		for(Property p : propertyColorSquares){
+			if(p.isMortgaged()){
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

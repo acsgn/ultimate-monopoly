@@ -328,7 +328,8 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
+				message = "UISCREEN/MORTGAGE";
+				Controller.getInstance().dispatchMessage(message);
 			}
 		});
 
@@ -336,7 +337,8 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
+				message = "UISCREEN/UNMORTGAGE";
+				Controller.getInstance().dispatchMessage(message);
 			}
 		});
 
@@ -607,7 +609,7 @@ public class UIScreen extends JFrame implements GameListener {
 						possibilities.add(parsed[i]);
 					}
 					String s = (String) JOptionPane.showInputDialog(null, "Choose a color group!", "",
-							JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
+							JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
 					if (s != null)
 						Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
 				} else {
@@ -663,6 +665,40 @@ public class UIScreen extends JFrame implements GameListener {
 					}
 					break;
 				}
+			}
+			break;
+		case "MORTGAGE":
+			if(parsed[1].equals("NO")){
+				JOptionPane.showMessageDialog(null, parsed[2], "",
+						JOptionPane.ERROR_MESSAGE);
+			}else{
+				ArrayList<Object> possibilities = new ArrayList<>();
+				for(int i=3;i<parsed.length;i++){
+					possibilities.add(parsed[i]);
+				}
+				String s = (String) JOptionPane.showInputDialog(null, "Choose a Property to mortgage", "",
+						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
+				if (s != null)
+					Controller.getInstance()
+							.dispatchMessage("UISCREEN/MORTGAGE2/" + s +"/"+parsed[2]);
+			
+			}
+			break;
+		case "UNMORTGAGE":
+			if(parsed[1].equals("NO")){
+				JOptionPane.showMessageDialog(null, parsed[2], "",
+						JOptionPane.ERROR_MESSAGE);
+			}else{
+				ArrayList<Object> possibilities = new ArrayList<>();
+				for(int i=2;i<parsed.length;i++){
+					possibilities.add(parsed[i]);
+				}
+				String s = (String) JOptionPane.showInputDialog(null, "Choose a Property to unmortgage", "",
+						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
+				if (s != null)
+					Controller.getInstance()
+							.dispatchMessage("UISCREEN/UNMORTGAGE2/" + s);
+			
 			}
 			break;
 		}

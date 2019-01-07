@@ -367,7 +367,8 @@ public class Player implements Serializable {
 		} else {
 			message += "YES/";
 			for (ColorGroup c : monopolyColorGroups) {
-				message += c.getColor() + " GROUP. Level: " + c.getLevel() + "/";
+				if(!c.anyMortgageSquare())
+					message += c.getColor() + " GROUP. Level: " + c.getLevel() + "/";
 			}
 		}
 		publishGameEvent(message);
@@ -699,6 +700,77 @@ public class Player implements Serializable {
 				c.decreaseLevel();
 				message = "ACTION/Color Group " + color + " level was decreased";
 				publishGameEvent(message);
+			}
+		}
+	}
+	public void mortgageAction(){
+		message = "MORTGAGE/";
+		if(properties.size()>0){
+			boolean test = true;
+			for(Property p: properties){
+				if(p.getBuildings().size()==0){
+					test = false;
+					break;
+				}
+			}
+			if(!test){
+				message += "YES/";
+				message += this.getName()+"/";
+				for(Property p: properties){
+					if(p.getBuildings().size()==0){
+						message += p.getName()+"/";
+					}
+				}
+			}else{
+				message += "NO/ You don't have any Properties that can be mortgaged.";
+			}
+		}else{
+			message += "NO/ You don't have any Properties to mortgaged.";
+		}
+		publishGameEvent(message);
+	}
+	public void mortgage(String property){
+		for(Property p : properties){
+			if(p.getName().equals(property)){
+				p.setMortgaged(true);
+				increaseMoney(p.getTitleDeed().getMortgageValue());
+				String m = "ACTION/";
+				m += "Player: "+this.getName()+" mortgage "+p.getName()+" property.";
+				publishGameEvent(m);
+				break;
+			}
+		}
+	}
+	public void unmortgageAction(){
+		String m = "UNMORTGAGE/";
+		boolean test = false;
+		for(Property p : properties){
+			if(p.isMortgaged()){
+				test = true;
+				break;
+			}
+		}
+		if(test){
+			m += "YES/";
+			for(Property p : properties){
+				if(p.isMortgaged()){
+					m += p.getName()+"/";
+				}
+			}
+		}else{
+			m += "NO/You don't have any mortgaged Properties!";
+		}
+		publishGameEvent(m);
+	}
+	public void unmortgage(String property){
+		for(Property p : properties){
+			if(p.getName().equals(property)){
+				p.setMortgaged(false);
+				increaseMoney((int)p.getTitleDeed().getMortgageValue()+ ((int)(p.getTitleDeed().getMortgageValue()*0.1)));
+				String m = "ACTION/";
+				m += "Player: "+this.getName()+" unmortgage "+p.getName()+" property.";
+				publishGameEvent(m);
+				break;
 			}
 		}
 	}

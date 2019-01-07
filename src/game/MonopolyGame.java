@@ -129,6 +129,18 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance()
 						.sendMessage(myName + "/HURRICANE/" + parsed[2] + "/" + parsed[3] + "/" + parsed[4]);
 				break;
+			case "MORTGAGE":
+				findPlayer(myName).mortgageAction();
+				break;
+			case "MORTGAGE2":
+				NetworkFacade.getInstance().sendMessage(myName+"/MORTGAGE2/"+parsed[2]);
+				break;
+			case "UNMORTGAGE":
+				findPlayer(myName).unmortgageAction();
+				break;
+			case "UNMORTGAGE2":
+				NetworkFacade.getInstance().sendMessage(myName+"/UNMORTGAGE2/"+parsed[2]);
+				break;
 			}
 			break;
 		case "BOT":
@@ -475,6 +487,12 @@ public class MonopolyGame implements Runnable {
 			int rent = currentPlayer.payRent();
 			Player owner = findPlayer(parsed[2]);
 			owner.increaseMoney(rent);
+			break;
+		case "MORTGAGE2":
+			currentPlayer.mortgage(parsed[2]);
+			break;
+		case "UNMORTGAGE2":
+			currentPlayer.unmortgage(parsed[2]);
 			break;
 		}
 	}
