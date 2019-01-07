@@ -230,11 +230,14 @@ public class Player implements Serializable {
 	 *         success of the transaction
 	 */
 	public int payRent() {
-		int rent = ((Estate) location).getRent();
-		reduceMoney(rent);
-		message = "ACTION/" + name + "paid rent: " + rent + " to player " + ((Estate) location).getOwner().getName();
-		publishGameEvent(message);
-		return rent;
+		if (!isBot()) {
+			int rent = ((Estate) location).getRent();
+			reduceMoney(rent);
+			message = "ACTION/" + name + "paid rent: " + rent + " to player "
+					+ ((Estate) location).getOwner().getName();
+			publishGameEvent(message);
+			return rent;
+		}else return 0;
 	}
 
 	/**
