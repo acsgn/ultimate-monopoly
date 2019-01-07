@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import game.Player;
 import game.TrackType;
-import game.square.Square;
 import game.square.estate.ColorGroup;
 
 public class Chance extends Card {

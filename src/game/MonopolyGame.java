@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import game.card.ActionCards;
 import game.card.Card;
-import game.card.Chance;
 import game.dice.SingletonDice;
 import game.square.estate.ColorGroup;
 import game.square.estate.Estate;
@@ -71,11 +70,8 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
-				//NetworkFacade.getInstance()
-				//		.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				NetworkFacade.getInstance()
-				.sendMessage(myName + "/PLAY/" + 3 + "/" + 4 + "/" + diceRolls[2]);
-		
+						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				if (diceRolls[0] == diceRolls[1])
 					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
@@ -230,7 +226,6 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "CARD":
 				if (parsed[2].equals(myName)) {
-					Player curr = findPlayer(parsed[2]);
 					// Card card;
 					int index = 0;
 					if (toInt(parsed[3]) == 0) {

@@ -1,9 +1,7 @@
 package game.square.action;
 
 import game.Player;
-import game.card.ActionCards;
 import game.card.CardType;
-import network.NetworkFacade;
 
 public class Chance extends Action {
 	private static final long serialVersionUID = 1L;

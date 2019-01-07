@@ -50,7 +50,6 @@ public class Player implements Serializable {
 
 	private boolean inJail;
 	private boolean isBankrupt;
-	private boolean goAnyWhere;
 	private boolean isBot = false;
 
 	private static final int jailBail = 50;
@@ -233,7 +232,7 @@ public class Player implements Serializable {
 		if (!isBot()) {
 			int rent = ((Estate) location).getRent();
 			reduceMoney(rent);
-			message = "ACTION/" + name + "paid rent: " + rent + " to player "
+			message = "ACTION/" + name + " paid rent: " + rent + " to player "
 					+ ((Estate) location).getOwner().getName();
 			publishGameEvent(message);
 			return rent;
@@ -382,17 +381,6 @@ public class Player implements Serializable {
 			}
 		}
 		publishGameEvent(message);
-
-		// To be deleted. Just for testing.
-		ColorGroup c = board.getTestColorGroup();
-		int i = 0;
-		for (Property k : c.getPropertyColorSquares()) {
-			i++;
-			if (i == 5)
-				break;
-			k.setOwner(this);
-		}
-		//
 	}
 
 	public void addHouse() {
@@ -624,7 +612,6 @@ public class Player implements Serializable {
 	}
 
 	public void setGoAnyWhere() {
-		this.goAnyWhere = true;
 	}
 
 	public void endGame() {
