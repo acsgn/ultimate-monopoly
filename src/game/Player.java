@@ -466,8 +466,34 @@ public class Player implements Serializable {
 	 * @param building the building that will be removed from the property
 	 * @param Property the property that will have its building removed
 	 */
-	public void sellBuilding(Property property) {
-		property.getColorGroup().removeBuilding(property);
+	public void sellBuilding(String colorGroup, String property) {
+		for(ColorGroup c : this.getMonopolyColorGroups()){
+			if(c.getColor().toString().equals(colorGroup)){
+				for(Property p : c.getPropertyColorSquares()){
+					if(p.getName().equals(property)){
+						Building removed = p.getBuildings().get(0);
+						c.removeBuilding(p);
+						String m = "ACTION/" +"Player: " + this.getName()+ " sold ";
+						if(removed!=null){
+							if(removed instanceof House){
+								increaseMoney(p.getTitleDeed().getHouseCost()/2);
+								m += " house";
+							}else if(removed instanceof Hotel){
+								increaseMoney(p.getTitleDeed().getHotelCost()/2);
+								m += " hotel";
+							}else{
+								increaseMoney(p.getTitleDeed().getSkyscrapperCost()/2);
+								m += " skyscraper";
+							}
+						}else{
+							m += "nothing!";
+						}
+						m += " from " + p.getName() +" property!"; 
+						publishGameEvent(m);
+					}
+				}
+			}
+		}
 	}
 	public void sellBuildingAction(){
 		message = "SELLBUILDING/";
