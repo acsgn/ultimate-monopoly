@@ -209,7 +209,7 @@ public class UIScreen extends JFrame implements GameListener {
 		chatButton = new JButton("Chat");
 		chatButton.setBounds(controlPaneXMargin, controlPaneYMargin, controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
-		chatButton.setEnabled(false);
+		chatButton.setEnabled(true);
 		chatButton.setFont(font);
 		rightPanel.add(chatButton);
 
@@ -474,7 +474,6 @@ public class UIScreen extends JFrame implements GameListener {
 		rollDiceButton.setEnabled(false);
 		endTurnButton.setEnabled(false);
 		saveGameButton.setEnabled(false);
-		chatButton.setEnabled(false);
 	}
 
 	private void enableButtons() {
@@ -484,7 +483,6 @@ public class UIScreen extends JFrame implements GameListener {
 		unmortgageButton.setEnabled(true);
 		pauseResumeButton.setEnabled(true);
 		saveGameButton.setEnabled(true);
-		chatButton.setEnabled(true);
 	}
 
 	@Override

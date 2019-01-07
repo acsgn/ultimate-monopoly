@@ -33,8 +33,6 @@ public class MonopolyGame implements Runnable {
 	private boolean isNewGame;
 	private boolean destroy = false;
 
-	private boolean toBeDeleted = false;
-
 	private ConcurrentHashMap<String, LinkedList<Bot>> bots;
 
 	public MonopolyGame() {
@@ -73,16 +71,8 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
-				// NetworkFacade.getInstance()
-				// .sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" +
-				// diceRolls[1] + "/" + diceRolls[2]);
-
-				if (!toBeDeleted) {
-					NetworkFacade.getInstance().sendMessage(myName + "/PLAY/" + 1 + "/" + 2 + "/" + diceRolls[2]);
-					toBeDeleted = true;
-				} else {
-					NetworkFacade.getInstance().sendMessage(myName + "/PLAY/" + 24 + "/" + 3 + "/" + diceRolls[2]);
-				}
+				NetworkFacade.getInstance()
+						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				if (diceRolls[0] == diceRolls[1])
 					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
