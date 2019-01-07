@@ -630,6 +630,7 @@ public class UIScreen extends JFrame implements GameListener {
 					break;
 				}
 			}
+			break;
 		}
 	}
 

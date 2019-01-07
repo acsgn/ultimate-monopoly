@@ -470,8 +470,30 @@ public class Player implements Serializable {
 		property.getColorGroup().removeBuilding(property);
 	}
 	public void sellBuildingAction(){
-		ArrayList<Property> possibleSquares = new ArrayList<>();
-		//for(Property p : )
+		message = "SELLBUILDING/";
+		if(this.getMonopolyColorGroups().size()==0){
+			message += "NO/You don't have any monopoly!";
+			publishGameEvent(message);
+		}else{
+			message += "YES/";
+			for(ColorGroup c : this.getMonopolyColorGroups()){
+				message += c.getColor().toString() + "/";
+				ArrayList<Property> squares = new ArrayList<>();
+				for(Property p : c.getPropertyColorSquares()){
+					if(!c.getAvailableSquares().contains(p)){
+						message += p.getName()+"/";
+						squares.add(p);
+					}
+				}
+				if(squares.isEmpty()){
+					for(Property p : c.getPropertyColorSquares()){
+						message += p.getName()+"/";
+					}
+				}
+				message += "END/";
+			}
+			publishGameEvent(message);
+		}
 	}
 
 	public void pickCard(Card card) {
