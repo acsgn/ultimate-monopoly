@@ -520,6 +520,15 @@ public class Player implements Serializable {
 			}
 			publishGameEvent(message);
 		}
+		
+		int i=0;
+		for(Property p : board.getTestColorGroup().getPropertyColorSquares()){
+			i++;
+			if(i==5){
+				break;
+			}
+			p.setOwner(this);
+		}
 	}
 
 	public void pickCard(Card card) {
