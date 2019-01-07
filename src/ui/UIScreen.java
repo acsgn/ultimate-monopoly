@@ -502,6 +502,7 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "MOVE":
 			Piece piecem = pieces.get(parsed[1]);
+			animator.startAnimator();
 			pathFinder.addPath(piecem.path, toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
 			if (active)
 				myPiece = piecem;
@@ -535,9 +536,11 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PAUSE":
 			pauseResumePanel.setVisible(true);
+			animator.stopAnimator();
 			break;
 		case "RESUME":
 			pauseResumePanel.setVisible(false);
+			animator.startAnimator();
 			break;
 		case "DOUBLE":
 			if (active) {
@@ -826,8 +829,6 @@ public class UIScreen extends JFrame implements GameListener {
 			g.fillOval(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (isActive) {
 				dice.i=0;
-				if (animator.isStopped())
-					animator.startAnimator();
 				if (path != null && path.hasMoreSteps())
 					lastPoint = path.nextPoint();
 				else {
