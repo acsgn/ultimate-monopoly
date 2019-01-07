@@ -1,6 +1,5 @@
 package ui;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,78 +16,89 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Hashtable;
 
 import game.Controller;
 import game.GameListener;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
 public class UICreator extends JFrame implements GameListener {
 	private static final long serialVersionUID = 1L;
-	private static final String ultimateMonopolyImagePath = "resources/ultimate_monopoly.jpg";
+	private static final String ultimateMonopolyVideoPath = "resources/trailer.mp4";
 
 	private String message = "UICREATOR/";
 	private String file;
-	
+
 	private JTextField playerCountTextField;
 	private JSlider botSlider;
 	private int playerCount = 0;
 	private int botCount = 0;
-	
+
 	private Color choosenColor;
 
 	private int width = Toolkit.getDefaultToolkit().getScreenSize().width / 3;
-	private int height = Toolkit.getDefaultToolkit().getScreenSize().height / 2;
-	
+	private int height = 3 * Toolkit.getDefaultToolkit().getScreenSize().height / 5;
+
 	private Font font = new Font("Tahoma", Font.PLAIN, width * 3 / 80);
 	private Font labelFont = new Font("Tahoma", Font.PLAIN, width * 3 / 96);
 
-	private Image ultimateMonopolyImage = new ImageIcon(ultimateMonopolyImagePath).getImage().getScaledInstance(width,
-			-1, Image.SCALE_SMOOTH);
-
-	/**
-	 * Create the frame.
-	 * 
-	 */
 	public UICreator() {
 		setTitle("Ultimate Monopoly by Waterfall Haters!");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
-		setBounds(width, height / 2, width, height);
+		setBounds(width, height / 3, width, height);
 		getContentPane().setLayout(null);
 
-		JLabel image = new JLabel();
-		image.setIcon(new ImageIcon(ultimateMonopolyImage));
-		image.setBounds(0, 0, width, ultimateMonopolyImage.getHeight(this));
-		getContentPane().add(image);
+		int vHeight = 5 * height / 9;
 
-		int gamePanelHeight = height - 32;
+		JFXPanel video = new JFXPanel();
+		File videoFile = new File(ultimateMonopolyVideoPath);
+		try {
+			Media media = new Media(videoFile.toURI().toURL().toExternalForm());
+			final MediaPlayer player = new MediaPlayer(media);
+			player.setAutoPlay(true);
+			MediaView mediaView = new MediaView(player);
+			mediaView.setFitWidth(width);
+			mediaView.setSmooth(true);
+			Group root = new Group();
+			root.getChildren().add(mediaView);
+			Scene scene = new Scene(root);
+			video.setScene(scene);
+			video.setBounds(0, 0, width, vHeight);
+			getContentPane().add(video);
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
+
+		int gamePanelHeight = height - vHeight - 32;
 		JPanel gamePanel = new JPanel();
-		gamePanel.setBounds(0, ultimateMonopolyImage.getHeight(this), width,
-				gamePanelHeight - ultimateMonopolyImage.getHeight(this));
+		gamePanel.setBounds(0, vHeight, width, gamePanelHeight);
 		gamePanel.setLayout(null);
 
 		JPanel playerCountPanel = new JPanel();
-		playerCountPanel.setBounds(width / 25, (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerCountPanel.setBounds(width / 25, gamePanelHeight / 25, 11 * width / 25, 7 * gamePanelHeight / 25);
 		playerCountPanel.setLayout(null);
 
 		JLabel playerCountLabel = new JLabel("Number of Players Found:");
 		playerCountLabel.setFont(labelFont);
 		playerCountLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		playerCountLabel.setBounds(0, 0, 11 * width / 25,
-				3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerCountLabel.setBounds(0, 0, 11 * width / 25, 3 * gamePanelHeight / 25);
 		playerCountPanel.add(playerCountLabel);
 
 		playerCountTextField = new JTextField();
 		playerCountTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		playerCountTextField.setFont(font);
-		playerCountTextField.setBounds(0, 3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 4 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerCountTextField.setBounds(0, 3 * gamePanelHeight / 25, 11 * width / 25, 4 * gamePanelHeight / 25);
 		playerCountTextField.setEditable(false);
 		playerCountTextField.setEnabled(true);
 		playerCountPanel.add(playerCountTextField);
@@ -96,20 +106,18 @@ public class UICreator extends JFrame implements GameListener {
 		gamePanel.add(playerCountPanel);
 
 		JPanel botPanel = new JPanel();
-		botPanel.setBounds(width / 25, 9 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		botPanel.setBounds(width / 25, 9 * gamePanelHeight / 25, 11 * width / 25, 7 * gamePanelHeight / 25);
 		botPanel.setLayout(null);
 
 		JLabel botLabel = new JLabel("Number of Bots:");
-		botLabel.setBounds(0, 0, 11 * width / 25, 2 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		botLabel.setBounds(0, 0, 11 * width / 25, 2 * gamePanelHeight / 25);
 		botLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		botLabel.setFont(labelFont);
 		botPanel.add(botLabel);
 
 		Hashtable<Integer, JLabel> labelTable = createLabelTable();
 		botSlider = new JSlider(0, 9, 0);
-		botSlider.setBounds(0, 2 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25, 11 * width / 25,
-				5 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		botSlider.setBounds(0, 2 * gamePanelHeight / 25, 11 * width / 25, 5 * gamePanelHeight / 25);
 		botSlider.setLabelTable(labelTable);
 		botSlider.setPaintLabels(true);
 		botPanel.add(botSlider);
@@ -125,38 +133,33 @@ public class UICreator extends JFrame implements GameListener {
 
 		JButton loadGameButton = new JButton("Load Game");
 		loadGameButton.setFont(font);
-		loadGameButton.setBounds(width / 25, 17 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		loadGameButton.setBounds(width / 25, 17 * gamePanelHeight / 25, 11 * width / 25, 7 * gamePanelHeight / 25);
 		gamePanel.add(loadGameButton);
 
 		JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-		        "Ultimate Monopoly Save Files", "umsf");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Ultimate Monopoly Save Files", "umsf");
 		chooser.setFileFilter(filter);
 
 		loadGameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
+				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 					file = chooser.getSelectedFile().getPath();
 			}
 		});
 
 		JPanel playerNamePanel = new JPanel();
-		playerNamePanel.setBounds(13 * width / 25, (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerNamePanel.setBounds(13 * width / 25, gamePanelHeight / 25, 11 * width / 25, 7 * gamePanelHeight / 25);
 		playerNamePanel.setLayout(null);
 
 		JLabel playerNameLabel = new JLabel("Player Name:");
-		playerNameLabel.setBounds(0, 0, 11 * width / 25,
-				3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerNameLabel.setBounds(0, 0, 11 * width / 25, 3 * gamePanelHeight / 25);
 		playerNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		playerNameLabel.setFont(labelFont);
 		playerNamePanel.add(playerNameLabel);
 
 		JTextField playerNameField = new JTextField();
-		playerNameField.setBounds(0, 3 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 4 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		playerNameField.setBounds(0, 3 * gamePanelHeight / 25, 11 * width / 25, 4 * gamePanelHeight / 25);
 		playerNameField.setHorizontalAlignment(SwingConstants.CENTER);
 		playerNameField.setFont(font);
 		playerNamePanel.add(playerNameField);
@@ -165,8 +168,7 @@ public class UICreator extends JFrame implements GameListener {
 
 		JButton colorButton = new JButton("Choose a color");
 		colorButton.setFont(font);
-		colorButton.setBounds(13 * width / 25, 9 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		colorButton.setBounds(13 * width / 25, 9 * gamePanelHeight / 25, 11 * width / 25, 7 * gamePanelHeight / 25);
 		gamePanel.add(colorButton);
 
 		colorButton.addActionListener(new ActionListener() {
@@ -179,8 +181,8 @@ public class UICreator extends JFrame implements GameListener {
 
 		JButton startGameButton = new JButton("Start Game");
 		startGameButton.setFont(font);
-		startGameButton.setBounds(13 * width / 25, 17 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25,
-				11 * width / 25, 7 * (gamePanelHeight - ultimateMonopolyImage.getHeight(this)) / 25);
+		startGameButton.setBounds(13 * width / 25, 17 * gamePanelHeight / 25, 11 * width / 25,
+				7 * gamePanelHeight / 25);
 		gamePanel.add(startGameButton);
 
 		startGameButton.addActionListener(new ActionListener() {
@@ -201,9 +203,8 @@ public class UICreator extends JFrame implements GameListener {
 						}
 						Controller.getInstance().dispatchMessage(
 								message + "CREATE/" + name + "/" + choosenColor.getRGB() + "/" + botCount);
-					}else {
-						Controller.getInstance().dispatchMessage(
-								message + "LOAD/" + name + "/" + file);
+					} else {
+						Controller.getInstance().dispatchMessage(message + "LOAD/" + name + "/" + file);
 					}
 				} else
 					JOptionPane.showMessageDialog(UICreator.this, "You need at least 2 players to play!", "Error",

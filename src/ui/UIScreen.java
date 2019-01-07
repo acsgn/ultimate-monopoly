@@ -505,10 +505,14 @@ public class UIScreen extends JFrame implements GameListener {
 				endTurnButton.setEnabled(true);
 			}
 			break;
+		case "PLAYERINFO":
+			playerComboBox.setSelectedItem(parsed[1]);
+			break;
 		case "ESTATE":
 			if (active)
 				willBeActivetedButtons.add(buySquareButton);
 			willBeShowedDeed = parsed[1];
+			break;
 		case "NOOWNER":
 			deedInformation.setText("There is no owner of this square!");
 			break;
@@ -527,7 +531,7 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 			deedInformation.setText(infop);
 			break;
-		case "TRASNIT":
+		case "TRANSIT":
 			String infot = "Owner: " + parsed[1] + "\n";
 			infot += parsed[1] + " has " + parsed[2] + " transit stations!";
 			infot += "This station has " + parsed[2] + " train depots!";
