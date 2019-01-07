@@ -160,11 +160,11 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
-				//NetworkFacade.getInstance()
-					//	.sendMessage(parsed[2] + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
-				NetworkFacade.getInstance()
-				.sendMessage(parsed[2] + "/PLAY/" + 3 + "/" + 7 + "/" + diceRolls[2]);
-		
+				// NetworkFacade.getInstance()
+				// .sendMessage(parsed[2] + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" +
+				// diceRolls[2]);
+				NetworkFacade.getInstance().sendMessage(parsed[2] + "/PLAY/" + 3 + "/" + 7 + "/" + diceRolls[2]);
+
 				break;
 			case "BUYPROPERTY":
 				NetworkFacade.getInstance().sendMessage(parsed[2] + "/BUYESTATE");
@@ -268,10 +268,12 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "PAYRENT":
 				boolean test = false;
-				for (Bot b : bots.get(myName)) {
-					if (b.getPlayer().getName().equals(parsed[2])) {
-						test = true;
-						break;
+				if (bots.containsKey(myName)) {
+					for (Bot b : bots.get(myName)) {
+						if (b.getPlayer().getName().equals(parsed[2])) {
+							test = true;
+							break;
+						}
 					}
 				}
 				if (parsed[2].equals(myName) || test) {
