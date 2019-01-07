@@ -76,6 +76,84 @@ public class ColorGroup implements Serializable {
 			}
 		}	
 	}
+	public void removeBuilding(Property p){
+		switch(p.getBuildings().size()){
+		case 0: break;
+		case 1: 
+			if(p.getBuildings().get(0) instanceof House){
+				p.getBuildings().remove(0);
+			}else if(p.getBuildings().get(0) instanceof Hotel){
+				p.getBuildings().remove(0);
+				p.addBuilding(new House());
+				p.addBuilding(new House());
+				p.addBuilding(new House());
+				p.addBuilding(new House());
+			}else if(p.getBuildings().get(0) instanceof Skyscraper){
+				p.getBuildings().remove(0);
+				p.addBuilding(new Hotel());
+			}
+			break;
+		default: 
+			p.getBuildings().remove(0);
+			break;
+		}
+		squaresUpgraded = (squaresUpgraded - 1 + propertyColorSquares.size()) % propertyColorSquares.size(); 
+		switch(level){
+		case ZERO_HOUSE_LEVEL:
+			break;
+		case FOUR_HOUSE_LEVEL:
+			for(Property pl : propertyColorSquares){
+				if(pl.getBuildings().size()==3){
+					level = level.previous();
+					break;
+				}
+			}
+			break;
+		case HOTEL_LEVEL:
+			for(Property pl : propertyColorSquares){
+				if(pl.getBuildings().size()==4){
+					level = level.previous();
+					break;
+				}
+			}
+			break;
+		case ONE_HOUSE_LEVEL:
+			for(Property pl : propertyColorSquares){
+				if(pl.getBuildings().size()==0){
+					level = level.previous();
+					break;
+				}
+			}
+			break;
+		case SKYSCRAPER_LEVEL:
+			for(Property pl : propertyColorSquares){
+				if(pl.getBuildings().get(0) instanceof Hotel){
+					level = level.previous();
+					break;
+				}
+			}
+			break;
+		case THREE_HOUSE_LEVEL:
+			for(Property pl : propertyColorSquares){
+				if(pl.getBuildings().size()==2){
+					level = level.previous();
+					break;
+				}
+			}
+			break;
+		case TWO_HOUSE_LEVEL:
+			for(Property pl : propertyColorSquares){
+				if(pl.getBuildings().size()==1){
+					level = level.previous();
+					break;
+				}
+			}
+			break;
+		default:
+			break;
+		
+		}
+	}
 
 	public ArrayList<Property> getAvailableSquares() {
 		ArrayList<Property> properties = new ArrayList<>();

@@ -466,8 +466,12 @@ public class Player implements Serializable {
 	 * @param building the building that will be removed from the property
 	 * @param Property the property that will have its building removed
 	 */
-	public void sellBuilding(Building building, Property Property) {
-		Property.getBuildings().remove(building);
+	public void sellBuilding(Property property) {
+		property.getColorGroup().removeBuilding(property);
+	}
+	public void sellBuildingAction(){
+		ArrayList<Property> possibleSquares = new ArrayList<>();
+		//for(Property p : )
 	}
 
 	public void pickCard(Card card) {
