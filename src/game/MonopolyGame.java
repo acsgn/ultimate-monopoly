@@ -160,8 +160,11 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
+				//NetworkFacade.getInstance()
+					//	.sendMessage(parsed[2] + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				NetworkFacade.getInstance()
-						.sendMessage(parsed[2] + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
+				.sendMessage(parsed[2] + "/PLAY/" + 3 + "/" + 7 + "/" + diceRolls[2]);
+		
 				break;
 			case "BUYPROPERTY":
 				NetworkFacade.getInstance().sendMessage(parsed[2] + "/BUYESTATE");

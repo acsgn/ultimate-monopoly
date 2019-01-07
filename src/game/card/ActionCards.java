@@ -117,12 +117,12 @@ public class ActionCards {
 		chance.add(advanceToSaintCharlesPlace);
 		chance.add(goToJail);
 		chance.add(makeGeneralRepairsToAllYourProperties);*/
-		chance.add(holidayBonus);
+		//chance.add(holidayBonus);
 		/*chance.add(buyersmarket);
 		chance.add(ForeclosedPropertySale);
 		chance.add(SeeYouInCourt);
 		chance.add(forwardThinker);*/
-		chance.add(propertyTaxes);
+		//chance.add(propertyTaxes);
 		/*chance.add(getRollin);
 		chance.add(hurricaneMakesLandfall);
 		chance.add(rideTheSubway);
@@ -130,7 +130,7 @@ public class ActionCards {
 		chance.add(payBack);
 		chance.add(mardiGras);
 		chance.add(GPSisNotWorking);*/
-		chance.add(zeroDollarsDown);
+		//chance.add(zeroDollarsDown);
 		/*chance.add(changingLanesAbove);
 		chance.add(changingLanesBelow);*/
 		
