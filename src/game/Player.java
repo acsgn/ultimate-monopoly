@@ -717,7 +717,7 @@ public class Player implements Serializable {
 				message += "YES/";
 				message += this.getName()+"/";
 				for(Property p: properties){
-					if(p.getBuildings().size()==0){
+					if(p.getBuildings().size()==0 && !p.isMortgaged()){
 						message += p.getName()+"/";
 					}
 				}
