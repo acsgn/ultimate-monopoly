@@ -24,7 +24,7 @@ public class PlayerTest {
 	Pool pool1;
 
 
-	@Test
+	/*@Test
 	public void testReduceMoney() {
 		player1 = new Player(new Board());
 		int playerMoney = player1.getMoney();
@@ -210,7 +210,7 @@ public class PlayerTest {
 		
 		assertTrue(player1.repOk());
 	}
-	
+	*/
 	
 	
 	

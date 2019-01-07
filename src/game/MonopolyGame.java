@@ -119,11 +119,26 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING3/" + parsed[2] + "/" + parsed[3]);
 				break;
 			case "SELLBUILDING":
-				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING");
+				findPlayer(myName).sellBuildingAction();
+				break;
+			case "SELLBUILDING2":
+				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING2/"+parsed[2]+"/"+parsed[3]);
 				break;
 			case "HURRICANE":
 				NetworkFacade.getInstance()
 						.sendMessage(myName + "/HURRICANE/" + parsed[2] + "/" + parsed[3] + "/" + parsed[4]);
+				break;
+			case "MORTGAGE":
+				findPlayer(myName).mortgageAction();
+				break;
+			case "MORTGAGE2":
+				NetworkFacade.getInstance().sendMessage(myName+"/MORTGAGE2/"+parsed[2]);
+				break;
+			case "UNMORTGAGE":
+				findPlayer(myName).unmortgageAction();
+				break;
+			case "UNMORTGAGE2":
+				NetworkFacade.getInstance().sendMessage(myName+"/UNMORTGAGE2/"+parsed[2]);
 				break;
 			}
 			break;
@@ -464,13 +479,19 @@ public class MonopolyGame implements Runnable {
 		case "BUYBUILDING3":
 			currentPlayer.buyBuilding(parsed[2] + "/" + parsed[3], false);
 			break;
-		case "SELLBUILDING":
-			currentPlayer.pickCard(new Chance("Hurricane", true));
+		case "SELLBUILDING2":
+			currentPlayer.sellBuilding(parsed[2], parsed[3]);
 			break;
 		case "PAYRENT":
 			int rent = currentPlayer.payRent();
 			Player owner = findPlayer(parsed[2]);
 			owner.increaseMoney(rent);
+			break;
+		case "MORTGAGE2":
+			currentPlayer.mortgage(parsed[2]);
+			break;
+		case "UNMORTGAGE2":
+			currentPlayer.unmortgage(parsed[2]);
 			break;
 		}
 	}

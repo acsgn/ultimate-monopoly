@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import game.Controller;
@@ -331,7 +332,8 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
+				message = "UISCREEN/MORTGAGE";
+				Controller.getInstance().dispatchMessage(message);
 			}
 		});
 
@@ -339,7 +341,8 @@ public class UIScreen extends JFrame implements GameListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-
+				message = "UISCREEN/UNMORTGAGE";
+				Controller.getInstance().dispatchMessage(message);
 			}
 		});
 
@@ -574,6 +577,39 @@ public class UIScreen extends JFrame implements GameListener {
 					.getScaledInstance(screenWidth / 3, -1, Image.SCALE_SMOOTH);
 			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "", JOptionPane.PLAIN_MESSAGE);
 			break;
+		case "SELLBUILDING":
+			if (parsed[1].equals("NO")) {
+				JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.PLAIN_MESSAGE);
+			} else {
+				HashMap<Object, ArrayList<Object>> possibilities1 = new HashMap<>();
+				//
+				int i = 2;
+				while (i < parsed.length) {
+					ArrayList<Object> squares = new ArrayList<>();
+					String groupName = parsed[i];
+					i++;
+					while (!parsed[i].equals("END")) {
+						squares.add(parsed[i]);
+						i++;
+					}
+					possibilities1.put(groupName, squares);
+					i++;
+				}
+				//
+				String group = (String) JOptionPane.showInputDialog(null, "Choose a color group from the following:\n",
+						"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(),
+						null);
+				if (group != null) {
+					String square = (String) JOptionPane.showInputDialog(null, "Choose a groups for that player:\n",
+							"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null,
+							possibilities1.get(group).toArray(), null);
+					if (square != null) {
+						message = "UISCREEN/SELLBUILDING2/" + group + "/" + square + "/";
+						Controller.getInstance().dispatchMessage(message);
+					}
+				}
+			}
+			break;
 		case "BUILDING":
 			if (active) {
 				if (parsed[1].equals("YES")) {
@@ -582,7 +618,7 @@ public class UIScreen extends JFrame implements GameListener {
 						possibilities.add(parsed[i]);
 					}
 					String s = (String) JOptionPane.showInputDialog(null, "Choose a color group!", "",
-							JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), possibilities.get(0));
+							JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
 					if (s != null)
 						Controller.getInstance().dispatchMessage("UISCREEN/BUYBUILDING2/" + s.split(" ")[0] + "/");
 				} else {
@@ -639,6 +675,41 @@ public class UIScreen extends JFrame implements GameListener {
 					break;
 				}
 			}
+			break;
+		case "MORTGAGE":
+			if(parsed[1].equals("NO")){
+				JOptionPane.showMessageDialog(null, parsed[2], "",
+						JOptionPane.ERROR_MESSAGE);
+			}else{
+				ArrayList<Object> possibilities = new ArrayList<>();
+				for(int i=3;i<parsed.length;i++){
+					possibilities.add(parsed[i]);
+				}
+				String s = (String) JOptionPane.showInputDialog(null, "Choose a Property to mortgage", "",
+						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
+				if (s != null)
+					Controller.getInstance()
+							.dispatchMessage("UISCREEN/MORTGAGE2/" + s +"/"+parsed[2]);
+			
+			}
+			break;
+		case "UNMORTGAGE":
+			if(parsed[1].equals("NO")){
+				JOptionPane.showMessageDialog(null, parsed[2], "",
+						JOptionPane.ERROR_MESSAGE);
+			}else{
+				ArrayList<Object> possibilities = new ArrayList<>();
+				for(int i=2;i<parsed.length;i++){
+					possibilities.add(parsed[i]);
+				}
+				String s = (String) JOptionPane.showInputDialog(null, "Choose a Property to unmortgage", "",
+						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
+				if (s != null)
+					Controller.getInstance()
+							.dispatchMessage("UISCREEN/UNMORTGAGE2/" + s);
+			
+			}
+			break;
 		}
 	}
 

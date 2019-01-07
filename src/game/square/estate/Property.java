@@ -15,6 +15,7 @@ public class Property extends Estate {
 	private ArrayList<Building> buildings;
 	private TitleDeed titleDeed;
 	private ColorGroup colorGroup;
+	private boolean mortgaged = false;
 
 	public Property(String name, int price, TitleDeed titleDeed) {
 		super(name, price, type);
@@ -79,5 +80,14 @@ public class Property extends Estate {
 		}
 		return information;
 	}
+
+	public boolean isMortgaged() {
+		return mortgaged;
+	}
+
+	public void setMortgaged(boolean mortgaged) {
+		this.mortgaged = mortgaged;
+	}
+	
 
 }
