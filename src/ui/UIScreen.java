@@ -11,6 +11,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 
 import java.awt.BorderLayout;
@@ -23,7 +26,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,6 +39,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private static final String deedImagePath = "resources/deeds/";
 	private static final String cardImagePath = "resources/cards/";
 	private static final String jailImagePath = "resources/jail.png";
+	private static final String musicPath = "resources/music.wav";
 
 	private Controller controller;
 	private Animator animator;
@@ -292,7 +296,7 @@ public class UIScreen extends JFrame implements GameListener {
 			public void actionPerformed(ActionEvent arg0) {
 				isRolled = true;
 				rollDiceButton.setEnabled(false);
-				endTurnButton.setEnabled(true);
+				willBeActivetedButtons.add(endTurnButton);
 				message = "UISCREEN/ROLLDICE";
 				controller.dispatchMessage(message);
 			}
@@ -446,6 +450,7 @@ public class UIScreen extends JFrame implements GameListener {
 		switch (parsed[0]) {
 		case "START":
 			setVisible(true);
+			startMusic();
 			break;
 		case "ACTION":
 			infoText.insert(parsed[1] + "\n", 0);
@@ -492,8 +497,8 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "DOUBLE":
 			if (active) {
-				rollDiceButton.setEnabled(true);
-				endTurnButton.setEnabled(false);
+				willBeActivetedButtons.add(rollDiceButton);
+				willBeActivetedButtons.remove(endTurnButton);
 			}
 			break;
 		case "JAIL":
@@ -635,6 +640,21 @@ public class UIScreen extends JFrame implements GameListener {
 				}
 			}
 		}
+	}
+
+	private void startMusic() {
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					Clip clip = AudioSystem.getClip();
+					AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(musicPath));
+					clip.open(inputStream);
+					clip.start();
+					clip.loop(Clip.LOOP_CONTINUOUSLY);
+				} catch (Exception e) {
+				}
+			}
+		}, "Music").start();
 	}
 
 	private int toInt(String string) {
