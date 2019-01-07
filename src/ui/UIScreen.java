@@ -55,8 +55,9 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private String message;
 	private JTextArea deedInformation;
-	private JTextArea infoText;
 	private JTextArea playerText;
+	private JTextArea infoText;
+	private JTextArea chatText;
 	private JPanel playerArea;
 	private JPanel pauseResumePanel;
 	private JPanel jail;
@@ -71,6 +72,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private JButton endTurnButton;
 	private JButton saveGameButton;
 	private JButton endGameButton;
+	private JButton chatButton;
 	private JLabel deed;
 	private JComboBox<String> deedComboBox;
 	private JComboBox<String> playerComboBox;
@@ -196,9 +198,16 @@ public class UIScreen extends JFrame implements GameListener {
 		rightPanel.setBounds(screenX + screenHeight, screenY, controlPaneWidth, controlPaneHeight);
 		rightPanel.setLayout(null);
 
+		chatButton = new JButton("Chat");
+		chatButton.setBounds(controlPaneXMargin, controlPaneYMargin, controlPaneComponentWidth - 2 * controlPaneXMargin,
+				controlPaneComponentHeight - 2 * controlPaneYMargin);
+		chatButton.setEnabled(false);
+		chatButton.setFont(font);
+		rightPanel.add(chatButton);
+
 		endGameButton = new JButton("End Game");
-		endGameButton.setBounds(controlPaneXMargin, controlPaneYMargin,
-				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
+		endGameButton.setBounds(controlPaneXMargin + controlPaneComponentWidth, controlPaneYMargin,
+				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
 		endGameButton.setFont(font);
 		rightPanel.add(endGameButton);
@@ -229,12 +238,23 @@ public class UIScreen extends JFrame implements GameListener {
 
 		infoText = new JTextArea();
 		infoText.setEditable(false);
+		infoText.setText("Welcome to Utimate Monopoly\nby Waterfall Haters!");
 		infoText.setFont(font);
 		JScrollPane infoArea = new JScrollPane(infoText);
 		infoArea.setBounds(controlPaneXMargin, controlPaneYMargin + 6 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
-				4 * controlPaneComponentHeight - 2 * controlPaneYMargin);
+				2 * controlPaneComponentHeight - 2 * controlPaneYMargin);
 		rightPanel.add(infoArea);
+
+		chatText = new JTextArea();
+		chatText.setEditable(false);
+		chatText.setText("To send a message, use chat button!");
+		chatText.setFont(font);
+		JScrollPane chatArea = new JScrollPane(chatText);
+		chatArea.setBounds(controlPaneXMargin, controlPaneYMargin + 8 * controlPaneComponentHeight,
+				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
+				2 * controlPaneComponentHeight - 2 * controlPaneYMargin);
+		rightPanel.add(chatArea);
 
 		pauseResumeButton = new JButton("Pause");
 		pauseResumeButton.setBounds(controlPaneXMargin, controlPaneYMargin + 10 * controlPaneComponentHeight,
@@ -404,6 +424,16 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 		});
 
+		chatButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String message = JOptionPane.showInputDialog(null, "Enter your message", "Chat",
+						JOptionPane.OK_CANCEL_OPTION);
+				if (message != null)
+					controller.dispatchMessage("UISCREEN/CHAT/" + message);
+			}
+		});
+
 		deedComboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -436,6 +466,7 @@ public class UIScreen extends JFrame implements GameListener {
 		rollDiceButton.setEnabled(false);
 		endTurnButton.setEnabled(false);
 		saveGameButton.setEnabled(false);
+		chatButton.setEnabled(false);
 	}
 
 	private void enableButtons() {
@@ -445,6 +476,7 @@ public class UIScreen extends JFrame implements GameListener {
 		unmortgageButton.setEnabled(true);
 		pauseResumeButton.setEnabled(true);
 		saveGameButton.setEnabled(true);
+		chatButton.setEnabled(true);
 	}
 
 	@Override
@@ -512,6 +544,9 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PLAYERINFO":
 			playerComboBox.setSelectedItem(parsed[1]);
+			break;
+		case "CHAT":
+			chatText.insert(parsed[1] + "\n", 0);
 			break;
 		case "ESTATE":
 			if (active)
@@ -597,12 +632,11 @@ public class UIScreen extends JFrame implements GameListener {
 				}
 				//
 				String group = (String) JOptionPane.showInputDialog(null, "Choose a color group from the following:\n",
-						"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(),
-						null);
+						"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(), null);
 				if (group != null) {
 					String square = (String) JOptionPane.showInputDialog(null, "Choose a groups for that player:\n",
-							"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null,
-							possibilities1.get(group).toArray(), null);
+							"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.get(group).toArray(),
+							null);
 					if (square != null) {
 						message = "UISCREEN/SELLBUILDING2/" + group + "/" + square + "/";
 						Controller.getInstance().dispatchMessage(message);
@@ -677,37 +711,33 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 			break;
 		case "MORTGAGE":
-			if(parsed[1].equals("NO")){
-				JOptionPane.showMessageDialog(null, parsed[2], "",
-						JOptionPane.ERROR_MESSAGE);
-			}else{
+			if (parsed[1].equals("NO")) {
+				JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.ERROR_MESSAGE);
+			} else {
 				ArrayList<Object> possibilities = new ArrayList<>();
-				for(int i=3;i<parsed.length;i++){
+				for (int i = 3; i < parsed.length; i++) {
 					possibilities.add(parsed[i]);
 				}
 				String s = (String) JOptionPane.showInputDialog(null, "Choose a Property to mortgage", "",
 						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
 				if (s != null)
-					Controller.getInstance()
-							.dispatchMessage("UISCREEN/MORTGAGE2/" + s +"/"+parsed[2]);
-			
+					Controller.getInstance().dispatchMessage("UISCREEN/MORTGAGE2/" + s + "/" + parsed[2]);
+
 			}
 			break;
 		case "UNMORTGAGE":
-			if(parsed[1].equals("NO")){
-				JOptionPane.showMessageDialog(null, parsed[2], "",
-						JOptionPane.ERROR_MESSAGE);
-			}else{
+			if (parsed[1].equals("NO")) {
+				JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.ERROR_MESSAGE);
+			} else {
 				ArrayList<Object> possibilities = new ArrayList<>();
-				for(int i=2;i<parsed.length;i++){
+				for (int i = 2; i < parsed.length; i++) {
 					possibilities.add(parsed[i]);
 				}
 				String s = (String) JOptionPane.showInputDialog(null, "Choose a Property to unmortgage", "",
 						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
 				if (s != null)
-					Controller.getInstance()
-							.dispatchMessage("UISCREEN/UNMORTGAGE2/" + s);
-			
+					Controller.getInstance().dispatchMessage("UISCREEN/UNMORTGAGE2/" + s);
+
 			}
 			break;
 		}

@@ -104,6 +104,9 @@ public class MonopolyGame implements Runnable {
 			case "SAVEGAME":
 				saveGame(parsed[2]);
 				break;
+			case "CHAT":
+				NetworkFacade.getInstance().sendMessage(parsed[1] + "/" + myName + " said: " + parsed[2]);
+				break;
 			case "ANIMATIONEND":
 				synchronized (this) {
 					notify();
@@ -122,7 +125,7 @@ public class MonopolyGame implements Runnable {
 				findPlayer(myName).sellBuildingAction();
 				break;
 			case "SELLBUILDING2":
-				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING2/"+parsed[2]+"/"+parsed[3]);
+				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING2/" + parsed[2] + "/" + parsed[3]);
 				break;
 			case "HURRICANE":
 				NetworkFacade.getInstance()
@@ -132,13 +135,13 @@ public class MonopolyGame implements Runnable {
 				findPlayer(myName).mortgageAction();
 				break;
 			case "MORTGAGE2":
-				NetworkFacade.getInstance().sendMessage(myName+"/MORTGAGE2/"+parsed[2]);
+				NetworkFacade.getInstance().sendMessage(myName + "/MORTGAGE2/" + parsed[2]);
 				break;
 			case "UNMORTGAGE":
 				findPlayer(myName).unmortgageAction();
 				break;
 			case "UNMORTGAGE2":
-				NetworkFacade.getInstance().sendMessage(myName+"/UNMORTGAGE2/"+parsed[2]);
+				NetworkFacade.getInstance().sendMessage(myName + "/UNMORTGAGE2/" + parsed[2]);
 				break;
 			}
 			break;
@@ -384,6 +387,9 @@ public class MonopolyGame implements Runnable {
 					informCurrentPlayer();
 				}
 			}
+			return;
+		case "CHAT":
+			Controller.getInstance().publishGameEvent(message);
 			return;
 		}
 		currentPlayer = findPlayer(parsed[0]);
