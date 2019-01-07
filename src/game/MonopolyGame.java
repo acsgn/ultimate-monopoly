@@ -71,8 +71,11 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
+				//NetworkFacade.getInstance()
+				//		.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				NetworkFacade.getInstance()
-						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
+				.sendMessage(myName + "/PLAY/" + 3 + "/" + 4 + "/" + diceRolls[2]);
+		
 				if (diceRolls[0] == diceRolls[1])
 					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
@@ -160,10 +163,8 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
-				// NetworkFacade.getInstance()
-				// .sendMessage(parsed[2] + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" +
-				// diceRolls[2]);
-				NetworkFacade.getInstance().sendMessage(parsed[2] + "/PLAY/" + 3 + "/" + 7 + "/" + diceRolls[2]);
+				NetworkFacade.getInstance()
+						.sendMessage(parsed[2] + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 
 				break;
 			case "BUYPROPERTY":
@@ -291,12 +292,13 @@ public class MonopolyGame implements Runnable {
 	}
 
 	/**
-	 * @overview This function parses the given string and creates an integer based
-	 *           on the string
+	 * @overview This function parses the given string and creates an integer
+	 *           based on the string
 	 * @requires the input to be a string of integers.
 	 * @modifies input string.
 	 * @effects
-	 * @param string the input to turn into integer
+	 * @param string
+	 *            the input to turn into integer
 	 * @return the integer created from the string
 	 */
 	public int toInt(String string) {
