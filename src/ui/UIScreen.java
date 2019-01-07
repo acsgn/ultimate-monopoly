@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import game.Controller;
@@ -40,6 +41,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private static final String deedImagePath = "resources/deeds/";
 	private static final String cardImagePath = "resources/cards/";
 	private static final String jailImagePath = "resources/jail.png";
+	private static final String dieImagePath = "resources/dieSides/side";
 	private static final String musicPath = "resources/music.wav";
 
 	private Controller controller;
@@ -52,15 +54,18 @@ public class UIScreen extends JFrame implements GameListener {
 	private boolean isRolled = false;
 	private boolean active;
 	private final Object[] jailOptions = { "Roll for Doubles", "Pay Bail" };
+	private Piece myPiece;
 
 	private String message;
+	private JBoard board;
+	private JDice dice;
 	private JTextArea deedInformation;
-	private JTextArea infoText;
 	private JTextArea playerText;
+	private JTextArea infoText;
+	private JTextArea chatText;
 	private JPanel playerArea;
 	private JPanel pauseResumePanel;
 	private JPanel jail;
-	private JBoard board;
 	private JButton buyBuildingButton;
 	private JButton sellBuildingButton;
 	private JButton mortgageButton;
@@ -71,6 +76,7 @@ public class UIScreen extends JFrame implements GameListener {
 	private JButton endTurnButton;
 	private JButton saveGameButton;
 	private JButton endGameButton;
+	private JButton chatButton;
 	private JLabel deed;
 	private JComboBox<String> deedComboBox;
 	private JComboBox<String> playerComboBox;
@@ -98,8 +104,11 @@ public class UIScreen extends JFrame implements GameListener {
 
 	private double scaleFactor = ((double) screenHeight) / new ImageIcon(boardImagePath).getIconHeight();
 
-	private final int unscaledPieceSize = 80;
+	private static final int unscaledPieceSize = 80;
 	private int pieceSize = (int) (scaleFactor * unscaledPieceSize);
+
+	private static final int unscaledDieSize = 160;
+	private int dieSize = (int) (scaleFactor * unscaledDieSize);
 
 	/**
 	 * Create the panel.
@@ -118,6 +127,7 @@ public class UIScreen extends JFrame implements GameListener {
 		setUndecorated(true);
 		setLayout(null);
 
+		dice = new JDice();
 		board = new JBoard();
 		board.setIcon(new ImageIcon(boardImage));
 		board.setBounds(screenX, screenY, screenHeight, screenHeight);
@@ -196,9 +206,16 @@ public class UIScreen extends JFrame implements GameListener {
 		rightPanel.setBounds(screenX + screenHeight, screenY, controlPaneWidth, controlPaneHeight);
 		rightPanel.setLayout(null);
 
+		chatButton = new JButton("Chat");
+		chatButton.setBounds(controlPaneXMargin, controlPaneYMargin, controlPaneComponentWidth - 2 * controlPaneXMargin,
+				controlPaneComponentHeight - 2 * controlPaneYMargin);
+		chatButton.setEnabled(false);
+		chatButton.setFont(font);
+		rightPanel.add(chatButton);
+
 		endGameButton = new JButton("End Game");
-		endGameButton.setBounds(controlPaneXMargin, controlPaneYMargin,
-				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
+		endGameButton.setBounds(controlPaneXMargin + controlPaneComponentWidth, controlPaneYMargin,
+				controlPaneComponentWidth - 2 * controlPaneXMargin,
 				controlPaneComponentHeight - 2 * controlPaneYMargin);
 		endGameButton.setFont(font);
 		rightPanel.add(endGameButton);
@@ -229,12 +246,23 @@ public class UIScreen extends JFrame implements GameListener {
 
 		infoText = new JTextArea();
 		infoText.setEditable(false);
+		infoText.setText("Welcome to Utimate Monopoly\nby Waterfall Haters!");
 		infoText.setFont(font);
 		JScrollPane infoArea = new JScrollPane(infoText);
 		infoArea.setBounds(controlPaneXMargin, controlPaneYMargin + 6 * controlPaneComponentHeight,
 				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
-				4 * controlPaneComponentHeight - 2 * controlPaneYMargin);
+				2 * controlPaneComponentHeight - 2 * controlPaneYMargin);
 		rightPanel.add(infoArea);
+
+		chatText = new JTextArea();
+		chatText.setEditable(false);
+		chatText.setText("To send a message, use chat button!");
+		chatText.setFont(font);
+		JScrollPane chatArea = new JScrollPane(chatText);
+		chatArea.setBounds(controlPaneXMargin, controlPaneYMargin + 8 * controlPaneComponentHeight,
+				2 * controlPaneComponentWidth - 2 * controlPaneXMargin,
+				2 * controlPaneComponentHeight - 2 * controlPaneYMargin);
+		rightPanel.add(chatArea);
 
 		pauseResumeButton = new JButton("Pause");
 		pauseResumeButton.setBounds(controlPaneXMargin, controlPaneYMargin + 10 * controlPaneComponentHeight,
@@ -404,6 +432,16 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 		});
 
+		chatButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String message = JOptionPane.showInputDialog(null, "Enter your message", "Chat",
+						JOptionPane.OK_CANCEL_OPTION);
+				if (message != null)
+					controller.dispatchMessage("UISCREEN/CHAT/" + message);
+			}
+		});
+
 		deedComboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -436,6 +474,7 @@ public class UIScreen extends JFrame implements GameListener {
 		rollDiceButton.setEnabled(false);
 		endTurnButton.setEnabled(false);
 		saveGameButton.setEnabled(false);
+		chatButton.setEnabled(false);
 	}
 
 	private void enableButtons() {
@@ -445,6 +484,7 @@ public class UIScreen extends JFrame implements GameListener {
 		unmortgageButton.setEnabled(true);
 		pauseResumeButton.setEnabled(true);
 		saveGameButton.setEnabled(true);
+		chatButton.setEnabled(true);
 	}
 
 	@Override
@@ -465,7 +505,10 @@ public class UIScreen extends JFrame implements GameListener {
 		case "MOVE":
 			Piece piecem = pieces.get(parsed[1]);
 			pathFinder.addPath(piecem.path, toInt(parsed[2]), toInt(parsed[3]), toInt(parsed[4]), toInt(parsed[5]));
-			piecem.isActive = true;
+			if (active)
+				myPiece = piecem;
+			else
+				piecem.isActive = true;
 			board.repaint();
 			break;
 		case "JUMP":
@@ -512,6 +555,30 @@ public class UIScreen extends JFrame implements GameListener {
 			break;
 		case "PLAYERINFO":
 			playerComboBox.setSelectedItem(parsed[1]);
+			break;
+		case "CHAT":
+			chatText.insert(parsed[1] + "\n", 0);
+			break;
+		case "DICE":
+			String infod = parsed[1] + " rolled:\n";
+			infod += "Die 1: " + parsed[2] + "\n";
+			infod += "Die 2: " + parsed[3] + "\n";
+			infod += "Speed Die: ";
+			if (toInt(parsed[4]) == 4) {
+				infod += "Mr.Monopoly Bonus Move";
+			} else if (toInt(parsed[4]) == 5) {
+				infod += "Bus Icon";
+			} else {
+				infod += parsed[4];
+			}
+			infoText.insert(infod + "\n", 0);
+			if (active) {
+				dice.d1 = toInt(parsed[2]) - 1;
+				dice.d2 = toInt(parsed[3]) - 1;
+				dice.d3 = toInt(parsed[4]) - 1;
+				dice.i = 1;
+				animator.startAnimator();
+			}
 			break;
 		case "ESTATE":
 			if (active)
@@ -779,12 +846,61 @@ public class UIScreen extends JFrame implements GameListener {
 
 	}
 
+	private class JDice {
+		private final ArrayList<Image> sideImages = new ArrayList<Image>(8);
+
+		int i = 1;
+		int d1;
+		int d2;
+		int d3;
+
+		private Random r;
+
+		public JDice() {
+			for (int i = 1; i < 9; i++)
+				sideImages.add(new ImageIcon(dieImagePath + i + ".png").getImage().getScaledInstance(dieSize, -1,
+						Image.SCALE_SMOOTH));
+			r = new Random();
+		}
+
+		public void paint(Graphics g) {
+			if (i < 80)
+				randomDice(g);
+			else if (i < 200)
+				realDice(g);
+			else if (i == 200) {
+				myPiece.isActive = true;
+				i = -1;
+			}
+			i++;
+		}
+
+		public void randomDice(Graphics g) {
+			g.drawImage(sideImages.get(r.nextInt(6)), (screenHeight - 3 * dieSize - 20) / 2,
+					(screenHeight - dieSize) / 2, null);
+			g.drawImage(sideImages.get(r.nextInt(6)), (screenHeight - dieSize) / 2, (screenHeight - dieSize) / 2, null);
+			int sd = r.nextInt(5);
+			g.drawImage(sideImages.get(sd > 3 ? sd + 3 : sd), (screenHeight + dieSize) / 2 + 10,
+					(screenHeight - dieSize) / 2, null);
+		}
+
+		public void realDice(Graphics g) {
+			g.drawImage(sideImages.get(d1), (screenHeight - 3 * dieSize - 20) / 2, (screenHeight - dieSize) / 2, null);
+			g.drawImage(sideImages.get(d2), (screenHeight - dieSize) / 2, (screenHeight - dieSize) / 2, null);
+			g.drawImage(sideImages.get(d3 > 3 ? d3 + 3 : d3), (screenHeight + dieSize) / 2 + 10,
+					(screenHeight - dieSize) / 2, null);
+		}
+
+	}
+
 	private class JBoard extends JLabel {
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
+			if (active && dice.i != 0)
+				dice.paint(g);
 			for (Piece piece : pieces.values())
 				piece.paint(g);
 		}

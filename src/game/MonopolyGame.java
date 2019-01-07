@@ -80,7 +80,7 @@ public class MonopolyGame implements Runnable {
 				if (!toBeDeleted) {
 					NetworkFacade.getInstance().sendMessage(myName + "/PLAY/" + 1 + "/" + 2 + "/" + diceRolls[2]);
 					toBeDeleted = true;
-				}else{
+				} else {
 					NetworkFacade.getInstance().sendMessage(myName + "/PLAY/" + 24 + "/" + 3 + "/" + diceRolls[2]);
 				}
 				if (diceRolls[0] == diceRolls[1])
@@ -111,6 +111,9 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "SAVEGAME":
 				saveGame(parsed[2]);
+				break;
+			case "CHAT":
+				NetworkFacade.getInstance().sendMessage(parsed[1] + "/" + myName + " said: " + parsed[2]);
 				break;
 			case "ANIMATIONEND":
 				synchronized (this) {
@@ -290,13 +293,12 @@ public class MonopolyGame implements Runnable {
 	}
 
 	/**
-	 * @overview This function parses the given string and creates an integer
-	 *           based on the string
+	 * @overview This function parses the given string and creates an integer based
+	 *           on the string
 	 * @requires the input to be a string of integers.
 	 * @modifies input string.
 	 * @effects
-	 * @param string
-	 *            the input to turn into integer
+	 * @param string the input to turn into integer
 	 * @return the integer created from the string
 	 */
 	public int toInt(String string) {
@@ -410,6 +412,9 @@ public class MonopolyGame implements Runnable {
 					informCurrentPlayer();
 				}
 			}
+			return;
+		case "CHAT":
+			Controller.getInstance().publishGameEvent(message);
 			return;
 		}
 		currentPlayer = findPlayer(parsed[0]);

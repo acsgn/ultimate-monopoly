@@ -99,17 +99,7 @@ public class Player implements Serializable {
 
 	public void play(int[] diceRolls) {
 		if (!inJail) {
-			message = "ACTION/";
-			message += name + " rolled:\n";
-			message += "Regular Die 1: " + diceRolls[0] + "\n";
-			message += "Regular Die 2: " + diceRolls[1] + "\n";
-			if (diceRolls[2] == 4) {
-				message += "Speed Die : Bus Icon";
-			} else if (diceRolls[2] == 5) {
-				message += "Speed Die : Mr.Monopoly Bonus Move";
-			} else {
-				message += "Speed Die: " + diceRolls[2];
-			}
+			message = "DICE/" + name + "/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2];
 			publishGameEvent(message);
 			boolean isDouble = diceRolls[0] == diceRolls[1];
 			if (isDouble) {
@@ -123,9 +113,8 @@ public class Player implements Serializable {
 				doubleCounter = 0;
 			move(diceRolls);
 			/*
-			 * } else { jailCounter++; if (isDouble) { gotOutOfJail();
-			 * move(diceRolls); } else if (jailCounter == 3) { payBail();
-			 * gotOutOfJail(); move(diceRolls); } }
+			 * } else { jailCounter++; if (isDouble) { gotOutOfJail(); move(diceRolls); }
+			 * else if (jailCounter == 3) { payBail(); gotOutOfJail(); move(diceRolls); } }
 			 */
 		} else {
 			String m = "JAILACTION/" + this.getName();
@@ -145,9 +134,11 @@ public class Player implements Serializable {
 		String m = "OUTOFJAIL";
 		publishGameEvent(m);
 	}
-	public int getJailCounter(){
+
+	public int getJailCounter() {
 		return jailCounter;
 	}
+
 	public void move(int[] diceRolls) {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
@@ -229,13 +220,12 @@ public class Player implements Serializable {
 	}
 
 	/**
-	 * @overview This function gets the rent price of the estate square and
-	 *           reduces the player's money in that amount.
+	 * @overview This function gets the rent price of the estate square and reduces
+	 *           the player's money in that amount.
 	 * @requires input Square to be an Estate.
 	 * @modifies Player's money field, reduces it for the amount of rent.
 	 * @effects Player, input Square, and the Player who owns the square.
-	 * @param s
-	 *            the square the player lands on
+	 * @param s the square the player lands on
 	 * @return the reduceMoney function which returns a boolean depending on the
 	 *         success of the transaction
 	 */
@@ -253,18 +243,17 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Player's money and Pool's amount fields.
 	 * @effects Player, Pool.
-	 * @param amount
-	 *            the bail price to be paid
+	 * @param amount the bail price to be paid
 	 * @return the reduceMoney function which returns a boolean depending on the
 	 *         success of the transaction
 	 */
 	public boolean payBail() {
 		Pool.getInstance().payToPool(jailBail);
 		String m = "OUTOFJAILPAY/";
-		if(jailCounter==3){
-			m+= "F";
-		}else{
-			m+= "N";
+		if (jailCounter == 3) {
+			m += "F";
+		} else {
+			m += "N";
 		}
 		publishGameEvent(m);
 		System.out.println(m);
@@ -308,10 +297,8 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Property's buildings field by expanding it.
 	 * @effects Property, Property's owner Player if applicable.
-	 * @param building
-	 *            the building to be added to the property
-	 * @param Property
-	 *            the property that will get the building
+	 * @param building the building to be added to the property
+	 * @param Property the property that will get the building
 	 */
 	public void buyBuilding(String info, boolean free) {
 		String[] parsed = info.split("/");
@@ -484,10 +471,8 @@ public class Player implements Serializable {
 	 *           buildings in the first place.
 	 * @modifies Property's buildings field, Property's owner's money field.
 	 * @effects Property, Property's owner
-	 * @param building
-	 *            the building that will be removed from the property
-	 * @param Property
-	 *            the property that will have its building removed
+	 * @param building the building that will be removed from the property
+	 * @param Property the property that will have its building removed
 	 */
 	public void sellBuilding(String colorGroup, String property) {
 		for (ColorGroup c : this.getMonopolyColorGroups()) {
@@ -564,13 +549,11 @@ public class Player implements Serializable {
 	}
 
 	/**
-	 * @overview This function reduces the money of the player in the given
-	 *           amount
+	 * @overview This function reduces the money of the player in the given amount
 	 * @requires
 	 * @modifies Player's money field.
 	 * @effects Player.
-	 * @param m
-	 *            the input amount to be reduced from the money
+	 * @param m the input amount to be reduced from the money
 	 * @return true if the transaction if successful and false if not
 	 */
 	public boolean reduceMoney(int m) {
@@ -588,8 +571,7 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Player's money field.
 	 * @effects Player.
-	 * @param m
-	 *            the input amount to be added to the money
+	 * @param m the input amount to be added to the money
 	 */
 	public void increaseMoney(int m) {
 		this.money += m;
