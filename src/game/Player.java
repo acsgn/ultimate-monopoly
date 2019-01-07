@@ -98,20 +98,20 @@ public class Player implements Serializable {
 	}
 
 	public void play(int[] diceRolls) {
-		message = "ACTION/";
-		message += name + " rolled:\n";
-		message += "Regular Die 1: " + diceRolls[0] + "\n";
-		message += "Regular Die 2: " + diceRolls[1] + "\n";
-		if (diceRolls[2] == 4) {
-			message += "Speed Die : Bus Icon";
-		} else if (diceRolls[2] == 5) {
-			message += "Speed Die : Mr.Monopoly Bonus Move";
-		} else {
-			message += "Speed Die: " + diceRolls[2];
-		}
-		publishGameEvent(message);
-		boolean isDouble = diceRolls[0] == diceRolls[1];
 		if (!inJail) {
+			message = "ACTION/";
+			message += name + " rolled:\n";
+			message += "Regular Die 1: " + diceRolls[0] + "\n";
+			message += "Regular Die 2: " + diceRolls[1] + "\n";
+			if (diceRolls[2] == 4) {
+				message += "Speed Die : Bus Icon";
+			} else if (diceRolls[2] == 5) {
+				message += "Speed Die : Mr.Monopoly Bonus Move";
+			} else {
+				message += "Speed Die: " + diceRolls[2];
+			}
+			publishGameEvent(message);
+			boolean isDouble = diceRolls[0] == diceRolls[1];
 			if (isDouble) {
 				doubleCounter++;
 				if (doubleCounter == 3) {
@@ -122,26 +122,32 @@ public class Player implements Serializable {
 			} else
 				doubleCounter = 0;
 			move(diceRolls);
+			/*
+			 * } else { jailCounter++; if (isDouble) { gotOutOfJail();
+			 * move(diceRolls); } else if (jailCounter == 3) { payBail();
+			 * gotOutOfJail(); move(diceRolls); } }
+			 */
 		} else {
-			jailCounter++;
-			if (isDouble) {
-				gotOutOfJail();
-				move(diceRolls);
-			} else if (jailCounter == 3) {
-				payBail();
-				gotOutOfJail();
-				move(diceRolls);
-			}
+			String m = "JAILACTION/" + this.getName();
+			this.delegateTask(m);
 		}
 	}
 
-	private void gotOutOfJail() {
+	public void incrementJailCounter() {
+		jailCounter++;
+	}
+
+	public void gotOutOfJail() {
 		jailCounter = 0;
 		inJail = false;
 		message = "ACTION/" + name + " got out of Jail!";
 		publishGameEvent(message);
+		String m = "OUTOFJAIL";
+		publishGameEvent(m);
 	}
-
+	public int getJailCounter(){
+		return jailCounter;
+	}
 	public void move(int[] diceRolls) {
 		// Mr.Monopoly AND Bus Icon will be handled in the nest phase
 		// Now we just sum the first two regular dice/
@@ -223,12 +229,13 @@ public class Player implements Serializable {
 	}
 
 	/**
-	 * @overview This function gets the rent price of the estate square and reduces
-	 *           the player's money in that amount.
+	 * @overview This function gets the rent price of the estate square and
+	 *           reduces the player's money in that amount.
 	 * @requires input Square to be an Estate.
 	 * @modifies Player's money field, reduces it for the amount of rent.
 	 * @effects Player, input Square, and the Player who owns the square.
-	 * @param s the square the player lands on
+	 * @param s
+	 *            the square the player lands on
 	 * @return the reduceMoney function which returns a boolean depending on the
 	 *         success of the transaction
 	 */
@@ -246,14 +253,25 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Player's money and Pool's amount fields.
 	 * @effects Player, Pool.
-	 * @param amount the bail price to be paid
+	 * @param amount
+	 *            the bail price to be paid
 	 * @return the reduceMoney function which returns a boolean depending on the
 	 *         success of the transaction
 	 */
 	public boolean payBail() {
 		Pool.getInstance().payToPool(jailBail);
-		this.inJail = false;
-		this.jailCounter = 0;
+		String m = "OUTOFJAILPAY/";
+		if(jailCounter==3){
+			m+= "F";
+		}else{
+			m+= "N";
+		}
+		publishGameEvent(m);
+		System.out.println(m);
+		jailCounter = 0;
+		inJail = false;
+		message = "ACTION/" + name + " got out of Jail!";
+		publishGameEvent(message);
 		return reduceMoney(jailBail);
 	}
 
@@ -290,8 +308,10 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Property's buildings field by expanding it.
 	 * @effects Property, Property's owner Player if applicable.
-	 * @param building the building to be added to the property
-	 * @param Property the property that will get the building
+	 * @param building
+	 *            the building to be added to the property
+	 * @param Property
+	 *            the property that will get the building
 	 */
 	public void buyBuilding(String info, boolean free) {
 		String[] parsed = info.split("/");
@@ -367,7 +387,7 @@ public class Player implements Serializable {
 		} else {
 			message += "YES/";
 			for (ColorGroup c : monopolyColorGroups) {
-				if(!c.anyMortgageSquare())
+				if (!c.anyMortgageSquare())
 					message += c.getColor() + " GROUP. Level: " + c.getLevel() + "/";
 			}
 		}
@@ -464,57 +484,60 @@ public class Player implements Serializable {
 	 *           buildings in the first place.
 	 * @modifies Property's buildings field, Property's owner's money field.
 	 * @effects Property, Property's owner
-	 * @param building the building that will be removed from the property
-	 * @param Property the property that will have its building removed
+	 * @param building
+	 *            the building that will be removed from the property
+	 * @param Property
+	 *            the property that will have its building removed
 	 */
 	public void sellBuilding(String colorGroup, String property) {
-		for(ColorGroup c : this.getMonopolyColorGroups()){
-			if(c.getColor().toString().equals(colorGroup)){
-				for(Property p : c.getPropertyColorSquares()){
-					if(p.getName().equals(property)){
+		for (ColorGroup c : this.getMonopolyColorGroups()) {
+			if (c.getColor().toString().equals(colorGroup)) {
+				for (Property p : c.getPropertyColorSquares()) {
+					if (p.getName().equals(property)) {
 						Building removed = p.getBuildings().get(0);
 						c.removeBuilding(p);
-						String m = "ACTION/" +"Player: " + this.getName()+ " sold ";
-						if(removed!=null){
-							if(removed instanceof House){
-								increaseMoney(p.getTitleDeed().getHouseCost()/2);
+						String m = "ACTION/" + "Player: " + this.getName() + " sold ";
+						if (removed != null) {
+							if (removed instanceof House) {
+								increaseMoney(p.getTitleDeed().getHouseCost() / 2);
 								m += " house";
-							}else if(removed instanceof Hotel){
-								increaseMoney(p.getTitleDeed().getHotelCost()/2);
+							} else if (removed instanceof Hotel) {
+								increaseMoney(p.getTitleDeed().getHotelCost() / 2);
 								m += " hotel";
-							}else{
-								increaseMoney(p.getTitleDeed().getSkyscrapperCost()/2);
+							} else {
+								increaseMoney(p.getTitleDeed().getSkyscrapperCost() / 2);
 								m += " skyscraper";
 							}
-						}else{
+						} else {
 							m += "nothing!";
 						}
-						m += " from " + p.getName() +" property!"; 
+						m += " from " + p.getName() + " property!";
 						publishGameEvent(m);
 					}
 				}
 			}
 		}
 	}
-	public void sellBuildingAction(){
+
+	public void sellBuildingAction() {
 		message = "SELLBUILDING/";
-		if(this.getMonopolyColorGroups().size()==0){
+		if (this.getMonopolyColorGroups().size() == 0) {
 			message += "NO/You don't have any monopoly!";
 			publishGameEvent(message);
-		}else{
+		} else {
 			message += "YES/";
-			for(ColorGroup c : this.getMonopolyColorGroups()){
+			for (ColorGroup c : this.getMonopolyColorGroups()) {
 				message += c.getColor().toString() + "/";
 				ArrayList<Property> squares = new ArrayList<>();
-				for(Property p : c.getPropertyColorSquares()){
-					if(!c.getAvailableSquares().contains(p)){
-						message += p.getName()+"/";
+				for (Property p : c.getPropertyColorSquares()) {
+					if (!c.getAvailableSquares().contains(p)) {
+						message += p.getName() + "/";
 						squares.add(p);
 					}
 				}
-				if(squares.isEmpty()){
-					for(Property p : c.getPropertyColorSquares()){
-						message += p.getName()+"/";
+				if (squares.isEmpty()) {
+					for (Property p : c.getPropertyColorSquares()) {
+						message += p.getName() + "/";
 					}
 				}
 				message += "END/";
@@ -541,11 +564,13 @@ public class Player implements Serializable {
 	}
 
 	/**
-	 * @overview This function reduces the money of the player in the given amount
+	 * @overview This function reduces the money of the player in the given
+	 *           amount
 	 * @requires
 	 * @modifies Player's money field.
 	 * @effects Player.
-	 * @param m the input amount to be reduced from the money
+	 * @param m
+	 *            the input amount to be reduced from the money
 	 * @return true if the transaction if successful and false if not
 	 */
 	public boolean reduceMoney(int m) {
@@ -563,7 +588,8 @@ public class Player implements Serializable {
 	 * @requires
 	 * @modifies Player's money field.
 	 * @effects Player.
-	 * @param m the input amount to be added to the money
+	 * @param m
+	 *            the input amount to be added to the money
 	 */
 	public void increaseMoney(int m) {
 		this.money += m;
@@ -703,72 +729,77 @@ public class Player implements Serializable {
 			}
 		}
 	}
-	public void mortgageAction(){
+
+	public void mortgageAction() {
 		message = "MORTGAGE/";
-		if(properties.size()>0){
+		if (properties.size() > 0) {
 			boolean test = true;
-			for(Property p: properties){
-				if(p.getBuildings().size()==0){
+			for (Property p : properties) {
+				if (p.getBuildings().size() == 0) {
 					test = false;
 					break;
 				}
 			}
-			if(!test){
+			if (!test) {
 				message += "YES/";
-				message += this.getName()+"/";
-				for(Property p: properties){
-					if(p.getBuildings().size()==0 && !p.isMortgaged()){
-						message += p.getName()+"/";
+				message += this.getName() + "/";
+				for (Property p : properties) {
+					if (p.getBuildings().size() == 0 && !p.isMortgaged()) {
+						message += p.getName() + "/";
 					}
 				}
-			}else{
+			} else {
 				message += "NO/ You don't have any Properties that can be mortgaged.";
 			}
-		}else{
+		} else {
 			message += "NO/ You don't have any Properties to mortgaged.";
 		}
 		publishGameEvent(message);
 	}
-	public void mortgage(String property){
-		for(Property p : properties){
-			if(p.getName().equals(property)){
+
+	public void mortgage(String property) {
+		for (Property p : properties) {
+			if (p.getName().equals(property)) {
 				p.setMortgaged(true);
 				increaseMoney(p.getTitleDeed().getMortgageValue());
 				String m = "ACTION/";
-				m += "Player: "+this.getName()+" mortgage "+p.getName()+" property.";
+				m += "Player: " + this.getName() + " mortgage " + p.getName() + " property.";
 				publishGameEvent(m);
 				break;
 			}
 		}
 	}
-	public void unmortgageAction(){
+
+	public void unmortgageAction() {
 		String m = "UNMORTGAGE/";
 		boolean test = false;
-		for(Property p : properties){
-			if(p.isMortgaged()){
+		for (Property p : properties) {
+			if (p.isMortgaged()) {
 				test = true;
 				break;
 			}
 		}
-		if(test){
+		if (test) {
 			m += "YES/";
-			for(Property p : properties){
-				if(p.isMortgaged()){
-					m += p.getName()+"/";
+			for (Property p : properties) {
+				if (p.isMortgaged()) {
+					m += p.getName() + "/";
 				}
 			}
-		}else{
+		} else {
 			m += "NO/You don't have any mortgaged Properties!";
 		}
 		publishGameEvent(m);
 	}
-	public void unmortgage(String property){
-		for(Property p : properties){
-			if(p.getName().equals(property)){
+
+	public void unmortgage(String property) {
+		for (Property p : properties) {
+			if (p.getName().equals(property)) {
 				p.setMortgaged(false);
-				increaseMoney((int)p.getTitleDeed().getMortgageValue()+ ((int)(p.getTitleDeed().getMortgageValue()*0.1)));
+				increaseMoney((int) p.getTitleDeed().getMortgageValue()
+						+ ((int) (p.getTitleDeed().getMortgageValue() * 0.1)));
 				String m = "ACTION/";
-				m += "Player: "+this.getName()+" unmortgage "+p.getName()+" property.";
+				m += "Player: " + this.getName() + " unmortgage " + p.getName() + " property.";
 				publishGameEvent(m);
 				break;
 			}

@@ -33,6 +33,8 @@ public class MonopolyGame implements Runnable {
 	private boolean isNewGame;
 	private boolean destroy = false;
 
+	private boolean toBeDeleted = false;
+
 	private ConcurrentHashMap<String, LinkedList<Bot>> bots;
 
 	public MonopolyGame() {
@@ -71,10 +73,16 @@ public class MonopolyGame implements Runnable {
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
-				NetworkFacade.getInstance()
-						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);
 				// NetworkFacade.getInstance()
-				// .sendMessage(myName + "/PLAY/" + 4 + "/" + 3 + "/" + diceRolls[2]);
+				// .sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" +
+				// diceRolls[1] + "/" + diceRolls[2]);
+
+				if (!toBeDeleted) {
+					NetworkFacade.getInstance().sendMessage(myName + "/PLAY/" + 1 + "/" + 2 + "/" + diceRolls[2]);
+					toBeDeleted = true;
+				}else{
+					NetworkFacade.getInstance().sendMessage(myName + "/PLAY/" + 24 + "/" + 3 + "/" + diceRolls[2]);
+				}
 				if (diceRolls[0] == diceRolls[1])
 					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
@@ -122,7 +130,7 @@ public class MonopolyGame implements Runnable {
 				findPlayer(myName).sellBuildingAction();
 				break;
 			case "SELLBUILDING2":
-				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING2/"+parsed[2]+"/"+parsed[3]);
+				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING2/" + parsed[2] + "/" + parsed[3]);
 				break;
 			case "HURRICANE":
 				NetworkFacade.getInstance()
@@ -132,13 +140,25 @@ public class MonopolyGame implements Runnable {
 				findPlayer(myName).mortgageAction();
 				break;
 			case "MORTGAGE2":
-				NetworkFacade.getInstance().sendMessage(myName+"/MORTGAGE2/"+parsed[2]);
+				NetworkFacade.getInstance().sendMessage(myName + "/MORTGAGE2/" + parsed[2]);
 				break;
 			case "UNMORTGAGE":
 				findPlayer(myName).unmortgageAction();
 				break;
 			case "UNMORTGAGE2":
-				NetworkFacade.getInstance().sendMessage(myName+"/UNMORTGAGE2/"+parsed[2]);
+				NetworkFacade.getInstance().sendMessage(myName + "/UNMORTGAGE2/" + parsed[2]);
+				break;
+			case "JAIL2":
+				switch (parsed[2]) {
+				case "DOUBLES":
+					SingletonDice.getInstance().rollDice();
+					int[] dr = SingletonDice.getInstance().getFaceValues();
+					NetworkFacade.getInstance().sendMessage(myName + "/" + "JAIL2/DOUBLES/" + dr[0] + "/" + dr[1]);
+					break;
+				case "PAYBAIL":
+					NetworkFacade.getInstance().sendMessage(myName + "/" + "JAIL2/PAYBAIL");
+					break;
+				}
 				break;
 			}
 			break;
@@ -259,18 +279,24 @@ public class MonopolyGame implements Runnable {
 					NetworkFacade.getInstance().sendMessage(parsed[2] + "/PAYRENT/" + parsed[3]);
 				}
 				break;
+			case "JAILACTION":
+				if (parsed[2].equals(myName)) {
+					findPlayer(myName).publishGameEvent("JAILACTION");
+				}
+				break;
 			}
 			break;
 		}
 	}
 
 	/**
-	 * @overview This function parses the given string and creates an integer based
-	 *           on the string
+	 * @overview This function parses the given string and creates an integer
+	 *           based on the string
 	 * @requires the input to be a string of integers.
 	 * @modifies input string.
 	 * @effects
-	 * @param string the input to turn into integer
+	 * @param string
+	 *            the input to turn into integer
 	 * @return the integer created from the string
 	 */
 	public int toInt(String string) {
@@ -492,6 +518,32 @@ public class MonopolyGame implements Runnable {
 			break;
 		case "UNMORTGAGE2":
 			currentPlayer.unmortgage(parsed[2]);
+			break;
+		case "JAIL2":
+			switch (parsed[2]) {
+			case "DOUBLES":
+				boolean isDouble = (toInt(parsed[3]) == toInt(parsed[4]));
+				if (isDouble) {
+					currentPlayer.gotOutOfJail();
+					int[] dr = { toInt(parsed[3]), toInt(parsed[4]), 4 };
+					currentPlayer.move(dr);
+				} else {
+					currentPlayer.publishGameEvent(
+							"ACTION/" + currentPlayer.getName() + " didn't roll Doubles! Stay in Jail!");
+					currentPlayer.incrementJailCounter();
+					if (currentPlayer.getJailCounter() == 3) {
+						currentPlayer.payBail();
+						currentPlayer.publishGameEvent(
+								"ACTION/" + currentPlayer.getName() + " paid Bail automatically afer 3 doubles!");
+						int[] dr = { toInt(parsed[3]), toInt(parsed[4]), 4 };
+						currentPlayer.move(dr);
+					}
+				}
+				break;
+			case "PAYBAIL":
+				currentPlayer.payBail();
+				break;
+			}
 			break;
 		}
 	}

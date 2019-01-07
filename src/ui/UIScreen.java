@@ -547,16 +547,35 @@ public class UIScreen extends JFrame implements GameListener {
 			infou += parsed[1] + " has " + parsed[2] + " utility squares!";
 			deedInformation.setText(infou);
 			break;
+		case "OUTOFJAIL":
+			rollDiceButton.setEnabled(false);
+			endTurnButton.setEnabled(true);
+			break;
+		case "OUTOFJAILPAY":
+			if(parsed[1].equals("F")){
+				rollDiceButton.setEnabled(false);
+				endTurnButton.setEnabled(true);
+			}else{
+				rollDiceButton.setEnabled(true);
+				endTurnButton.setEnabled(false);
+			}
+			break;
 		case "JAILACTION":
 			if (active) {
+				rollDiceButton.setEnabled(false);
+				endTurnButton.setEnabled(true);
 				int n = JOptionPane.showOptionDialog(null, jail, "", JOptionPane.YES_NO_OPTION,
-						JOptionPane.QUESTION_MESSAGE, null, jailOptions, jailOptions[0]);
-				if (n == JOptionPane.DEFAULT_OPTION) {
-					// Rolled for doubles
+						JOptionPane.PLAIN_MESSAGE, null, jailOptions, jailOptions[0]);
+				if (n == JOptionPane.YES_OPTION) {
+					System.out.println("Hi2");
+					Controller.getInstance().dispatchMessage("UISCREEN/JAIL2/DOUBLES");
 				} else {
 					// paid bail
+					System.out.println("Hi");
+					Controller.getInstance().dispatchMessage("UISCREEN/JAIL2/PAYBAIL");
 				}
 			}
+			break;
 		case "PLAYER":
 			playerComboBox.addItem(parsed[1]);
 			Piece piece = new Piece();
@@ -597,12 +616,11 @@ public class UIScreen extends JFrame implements GameListener {
 				}
 				//
 				String group = (String) JOptionPane.showInputDialog(null, "Choose a color group from the following:\n",
-						"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(),
-						null);
+						"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(), null);
 				if (group != null) {
 					String square = (String) JOptionPane.showInputDialog(null, "Choose a groups for that player:\n",
-							"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null,
-							possibilities1.get(group).toArray(), null);
+							"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.get(group).toArray(),
+							null);
 					if (square != null) {
 						message = "UISCREEN/SELLBUILDING2/" + group + "/" + square + "/";
 						Controller.getInstance().dispatchMessage(message);
@@ -677,37 +695,33 @@ public class UIScreen extends JFrame implements GameListener {
 			}
 			break;
 		case "MORTGAGE":
-			if(parsed[1].equals("NO")){
-				JOptionPane.showMessageDialog(null, parsed[2], "",
-						JOptionPane.ERROR_MESSAGE);
-			}else{
+			if (parsed[1].equals("NO")) {
+				JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.ERROR_MESSAGE);
+			} else {
 				ArrayList<Object> possibilities = new ArrayList<>();
-				for(int i=3;i<parsed.length;i++){
+				for (int i = 3; i < parsed.length; i++) {
 					possibilities.add(parsed[i]);
 				}
 				String s = (String) JOptionPane.showInputDialog(null, "Choose a Property to mortgage", "",
 						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
 				if (s != null)
-					Controller.getInstance()
-							.dispatchMessage("UISCREEN/MORTGAGE2/" + s +"/"+parsed[2]);
-			
+					Controller.getInstance().dispatchMessage("UISCREEN/MORTGAGE2/" + s + "/" + parsed[2]);
+
 			}
 			break;
 		case "UNMORTGAGE":
-			if(parsed[1].equals("NO")){
-				JOptionPane.showMessageDialog(null, parsed[2], "",
-						JOptionPane.ERROR_MESSAGE);
-			}else{
+			if (parsed[1].equals("NO")) {
+				JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.ERROR_MESSAGE);
+			} else {
 				ArrayList<Object> possibilities = new ArrayList<>();
-				for(int i=2;i<parsed.length;i++){
+				for (int i = 2; i < parsed.length; i++) {
 					possibilities.add(parsed[i]);
 				}
 				String s = (String) JOptionPane.showInputDialog(null, "Choose a Property to unmortgage", "",
 						JOptionPane.PLAIN_MESSAGE, null, possibilities.toArray(), null);
 				if (s != null)
-					Controller.getInstance()
-							.dispatchMessage("UISCREEN/UNMORTGAGE2/" + s);
-			
+					Controller.getInstance().dispatchMessage("UISCREEN/UNMORTGAGE2/" + s);
+
 			}
 			break;
 		}
