@@ -120,7 +120,10 @@ public class MonopolyGame implements Runnable {
 				NetworkFacade.getInstance().sendMessage(myName + "/BUYBUILDING3/" + parsed[2] + "/" + parsed[3]);
 				break;
 			case "SELLBUILDING":
-				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING");
+				findPlayer(myName).sellBuildingAction();
+				break;
+			case "SELLBUILDING2":
+				NetworkFacade.getInstance().sendMessage(myName + "/SELLBUILDING2/"+parsed[2]+"/"+parsed[3]);
 				break;
 			case "HURRICANE":
 				NetworkFacade.getInstance()
@@ -465,8 +468,8 @@ public class MonopolyGame implements Runnable {
 		case "BUYBUILDING3":
 			currentPlayer.buyBuilding(parsed[2] + "/" + parsed[3], false);
 			break;
-		case "SELLBUILDING":
-			currentPlayer.pickCard(new Chance("Hurricane", true));
+		case "SELLBUILDING2":
+			currentPlayer.sellBuilding(parsed[2], parsed[3]);
 			break;
 		case "PAYRENT":
 			int rent = currentPlayer.payRent();

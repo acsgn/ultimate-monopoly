@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import game.Controller;
@@ -564,6 +565,39 @@ public class UIScreen extends JFrame implements GameListener {
 			Image cardImage = new ImageIcon(cardImagePath + parsed[1] + ".png").getImage()
 					.getScaledInstance(screenWidth / 3, -1, Image.SCALE_SMOOTH);
 			JOptionPane.showMessageDialog(null, new ImageIcon(cardImage), "", JOptionPane.PLAIN_MESSAGE);
+			break;
+		case "SELLBUILDING":
+			if (parsed[1].equals("NO")) {
+				JOptionPane.showMessageDialog(null, parsed[2], "", JOptionPane.PLAIN_MESSAGE);
+			} else {
+				HashMap<Object, ArrayList<Object>> possibilities1 = new HashMap<>();
+				//
+				int i = 2;
+				while (i < parsed.length) {
+					ArrayList<Object> squares = new ArrayList<>();
+					String groupName = parsed[i];
+					i++;
+					while (!parsed[i].equals("END")) {
+						squares.add(parsed[i]);
+						i++;
+					}
+					possibilities1.put(groupName, squares);
+					i++;
+				}
+				//
+				String group = (String) JOptionPane.showInputDialog(null, "Choose a color group from the following:\n",
+						"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null, possibilities1.keySet().toArray(),
+						null);
+				if (group != null) {
+					String square = (String) JOptionPane.showInputDialog(null, "Choose a groups for that player:\n",
+							"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null,
+							possibilities1.get(group).toArray(), null);
+					if (square != null) {
+						message = "UISCREEN/SELLBUILDING2/" + group + "/" + square + "/";
+						Controller.getInstance().dispatchMessage(message);
+					}
+				}
+			}
 			break;
 		case "BUILDING":
 			if (active) {
