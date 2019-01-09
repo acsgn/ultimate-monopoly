@@ -1,6 +1,5 @@
 package game.square.estate;
 
-import game.Controller;
 import game.Player;
 import game.square.Square;
 import game.square.SquareType;
@@ -42,12 +41,17 @@ public abstract class Estate extends Square {
 	@Override
 	public void executeWhenLanded(Player player) {
 		if (owner != null) {
-			if (!owner.getName().equals(player.getName()))
-				player.delegateTask("PAYRENT/" + player.getName() + "/" + owner.getName());
+			if (!owner.getName().equals(player.getName())) {
+				int rent = getRent();
+				player.reduceMoney(rent);
+				owner.increaseMoney(rent);
+				String message = "ACTION/" + player.getName() + " paid $" + rent + " rent to " + owner.getName();
+				Player.publishGameEvent(message);
+			}
 		} else {
-			Controller.getInstance().publishGameEvent("ESTATE/" + name);
+			Player.publishGameEvent("ESTATE/" + name);
 		}
-		Controller.getInstance().publishGameEvent(information());
+		Player.publishGameEvent(information());
 	}
 
 	@Override

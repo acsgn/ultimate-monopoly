@@ -12,10 +12,13 @@ public class SaveGame implements Serializable {
 
 	private ConcurrentLinkedDeque<Player> players;
 	private ConcurrentHashMap<String, LinkedList<Bot>> bots;
+	private Board board;
 
-	public SaveGame(ConcurrentLinkedDeque<Player> players, ConcurrentHashMap<String, LinkedList<Bot>> bots) {
+	public SaveGame(ConcurrentLinkedDeque<Player> players, ConcurrentHashMap<String, LinkedList<Bot>> bots,
+			Board board) {
 		this.players = players;
 		this.bots = bots;
+		this.board = board;
 	}
 
 	public ConcurrentLinkedDeque<Player> getPlayers() {
@@ -24,6 +27,10 @@ public class SaveGame implements Serializable {
 
 	public ConcurrentHashMap<String, LinkedList<Bot>> getBots() {
 		return bots;
+	}
+
+	public Board getBoard() {
+		return board;
 	}
 
 }

@@ -66,14 +66,14 @@ public class MonopolyGame implements Runnable {
 				break;
 			case "RESUME":
 				NetworkFacade.getInstance().sendMessage("RESUME");
+				if(!currentPlayer.getLocation().isOwned())
+					Controller.getInstance().publishGameEvent("BUY");
 				break;
 			case "ROLLDICE":
 				SingletonDice.getInstance().rollDice();
 				int[] diceRolls = SingletonDice.getInstance().getFaceValues();
-				/*NetworkFacade.getInstance()
-						.sendMessage(myName + "/PLAY/" + diceRolls[0] + "/" + diceRolls[1] + "/" + diceRolls[2]);*/
 				NetworkFacade.getInstance()
-				.sendMessage(myName + "/PLAY/" + 3 + "/" + 4 + "/" + diceRolls[2]);
+						.sendMessage(myName + "/PLAY/" + parsed[2] + "/" + parsed[3]  + "/" + diceRolls[2]);
 				if (diceRolls[0] == diceRolls[1])
 					Controller.getInstance().publishGameEvent("DOUBLE");
 				break;
@@ -264,23 +264,9 @@ public class MonopolyGame implements Runnable {
 				// NetworkFacade.getInstance().sendMessage(parsed[2] + "/" +
 				// parsed[1]);
 				break;
-			case "PAYRENT":
-				boolean test = false;
-				if (bots.containsKey(myName)) {
-					for (Bot b : bots.get(myName)) {
-						if (b.getPlayer().getName().equals(parsed[2])) {
-							test = true;
-							break;
-						}
-					}
-				}
-				if (parsed[2].equals(myName) || test) {
-					NetworkFacade.getInstance().sendMessage(parsed[2] + "/PAYRENT/" + parsed[3]);
-				}
-				break;
 			case "JAILACTION":
 				if (parsed[2].equals(myName)) {
-					findPlayer(myName).publishGameEvent("JAILACTION");
+					Player.publishGameEvent("JAILACTION");
 				}
 				break;
 			}
@@ -289,13 +275,12 @@ public class MonopolyGame implements Runnable {
 	}
 
 	/**
-	 * @overview This function parses the given string and creates an integer
-	 *           based on the string
+	 * @overview This function parses the given string and creates an integer based
+	 *           on the string
 	 * @requires the input to be a string of integers.
 	 * @modifies input string.
 	 * @effects
-	 * @param string
-	 *            the input to turn into integer
+	 * @param string the input to turn into integer
 	 * @return the integer created from the string
 	 */
 	public int toInt(String string) {
@@ -323,6 +308,7 @@ public class MonopolyGame implements Runnable {
 			SaveGame save = (SaveGame) saveGame;
 			players = save.getPlayers();
 			bots = save.getBots();
+			board = save.getBoard();
 			currentPlayer = players.peekLast();
 			currentPlayer.sendColor();
 			for (Player p : players)
@@ -510,11 +496,6 @@ public class MonopolyGame implements Runnable {
 		case "SELLBUILDING2":
 			currentPlayer.sellBuilding(parsed[2], parsed[3]);
 			break;
-		case "PAYRENT":
-			int rent = currentPlayer.payRent();
-			Player owner = findPlayer(parsed[2]);
-			owner.increaseMoney(rent);
-			break;
 		case "MORTGAGE2":
 			currentPlayer.mortgage(parsed[2]);
 			break;
@@ -530,12 +511,12 @@ public class MonopolyGame implements Runnable {
 					int[] dr = { toInt(parsed[3]), toInt(parsed[4]), 4 };
 					currentPlayer.move(dr);
 				} else {
-					currentPlayer.publishGameEvent(
+					Player.publishGameEvent(
 							"ACTION/" + currentPlayer.getName() + " didn't roll Doubles! Stay in Jail!");
 					currentPlayer.incrementJailCounter();
 					if (currentPlayer.getJailCounter() == 3) {
 						currentPlayer.payBail();
-						currentPlayer.publishGameEvent(
+						Player.publishGameEvent(
 								"ACTION/" + currentPlayer.getName() + " paid Bail automatically afer 3 doubles!");
 						int[] dr = { toInt(parsed[3]), toInt(parsed[4]), 4 };
 						currentPlayer.move(dr);
@@ -583,7 +564,7 @@ public class MonopolyGame implements Runnable {
 
 	public void saveGame(String saveGameFile) {
 		try {
-			SaveGame saved = new SaveGame(players, bots);
+			SaveGame saved = new SaveGame(players, bots, board);
 			FileOutputStream fos = new FileOutputStream(new File(saveGameFile + ".umsf"));
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(saved);

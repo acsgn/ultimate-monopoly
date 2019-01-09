@@ -110,7 +110,7 @@ public class ActionCards {
 		// Chance payBack = new Chance("Pay Back!", true);
 		// Chance mardiGras = new Chance("Mardi Gras!", true);
 		// Chance GPSisNotWorking = new Chance("GPS is not working", true);
-		Chance zeroDollarsDown = new Chance("Zero Dollars Down", true);
+		//Chance zeroDollarsDown = new Chance("Zero Dollars Down", true);
 		// Chance changingLanesAbove = new Chance("Changin Lanes Above", true);
 		// Chance changingLanesBelow = new Chance("Changin Lanes Below", true);
 
@@ -130,7 +130,7 @@ public class ActionCards {
 		 * chance.add(rideTheSubway); chance.add(socialMediaFail); chance.add(payBack);
 		 * chance.add(mardiGras); chance.add(GPSisNotWorking);
 		 */
-		chance.add(zeroDollarsDown);
+		//chance.add(zeroDollarsDown);
 		/*
 		 * chance.add(changingLanesAbove); chance.add(changingLanesBelow);
 		 */

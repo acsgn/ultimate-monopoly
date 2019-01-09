@@ -174,7 +174,6 @@ public class Player implements Serializable {
 				} else if (sum < 0) {
 					sum++;
 				}
-
 				transitUsed = false;
 			}
 			if (sum == 1 || sum == -1)
@@ -197,7 +196,6 @@ public class Player implements Serializable {
 		return location;
 	}
 
-	// get current track
 	public TrackType getCurrentTrack() {
 		return currentTrack;
 	}
@@ -216,27 +214,6 @@ public class Player implements Serializable {
 
 	public ArrayList<Property> getProperties() {
 		return this.properties;
-	}
-
-	/**
-	 * @overview This function gets the rent price of the estate square and reduces
-	 *           the player's money in that amount.
-	 * @requires input Square to be an Estate.
-	 * @modifies Player's money field, reduces it for the amount of rent.
-	 * @effects Player, input Square, and the Player who owns the square.
-	 * @param s the square the player lands on
-	 * @return the reduceMoney function which returns a boolean depending on the
-	 *         success of the transaction
-	 */
-	public int payRent() {
-		if (!isBot()) {
-			int rent = ((Estate) location).getRent();
-			reduceMoney(rent);
-			message = "ACTION/" + name + " paid rent: " + rent + " to player "
-					+ ((Estate) location).getOwner().getName();
-			publishGameEvent(message);
-			return rent;
-		}else return 0;
 	}
 
 	/**
@@ -381,11 +358,11 @@ public class Player implements Serializable {
 			}
 		}
 		publishGameEvent(message);
-		
-		int i=0;
-		for(Property p : board.getTestColorGroup().getPropertyColorSquares()){
+
+		int i = 0;
+		for (Property p : board.getTestColorGroup().getPropertyColorSquares()) {
 			i++;
-			if(i==5){
+			if (i == 5) {
 				break;
 			}
 			p.setOwner(this);
@@ -529,7 +506,7 @@ public class Player implements Serializable {
 			}
 			publishGameEvent(message);
 		}
-		
+
 	}
 
 	public void pickCard(Card card) {
@@ -631,7 +608,7 @@ public class Player implements Serializable {
 		publishGameEvent(message);
 	}
 
-	public void publishGameEvent(String message) {
+	public static void publishGameEvent(String message) {
 		Controller.getInstance().publishGameEvent(message);
 	}
 

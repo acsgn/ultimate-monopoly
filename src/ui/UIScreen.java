@@ -323,11 +323,16 @@ public class UIScreen extends JFrame implements GameListener {
 		rollDiceButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				isRolled = true;
-				rollDiceButton.setEnabled(false);
-				willBeActivetedButtons.add(endTurnButton);
-				message = "UISCREEN/ROLLDICE";
+				String s = JOptionPane.showInputDialog(null, "Enter dice total", "", JOptionPane.PLAIN_MESSAGE);
+				message = "UISCREEN/ROLLDICE/" + s;
 				controller.dispatchMessage(message);
+				willBeActivetedButtons.add(endTurnButton);
+
+				/*
+				 * isRolled = true; rollDiceButton.setEnabled(false);
+				 * willBeActivetedButtons.add(endTurnButton); message = "UISCREEN/ROLLDICE";
+				 * controller.dispatchMessage(message);
+				 */
 			}
 		});
 
@@ -359,7 +364,6 @@ public class UIScreen extends JFrame implements GameListener {
 		mortgageButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				message = "UISCREEN/MORTGAGE";
 				Controller.getInstance().dispatchMessage(message);
 			}
@@ -368,7 +372,6 @@ public class UIScreen extends JFrame implements GameListener {
 		unmortgageButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				message = "UISCREEN/UNMORTGAGE";
 				Controller.getInstance().dispatchMessage(message);
 			}
@@ -396,15 +399,13 @@ public class UIScreen extends JFrame implements GameListener {
 					Controller.getInstance().dispatchMessage(message);
 				} else {
 					enableButtons();
+					message = "UISCREEN/RESUME";
+					Controller.getInstance().dispatchMessage(message);
 					if (isRolled) {
 						endTurnButton.setEnabled(true);
-						buySquareButton.setEnabled(true);
-						// TODO check if its buyable
 					} else
 						rollDiceButton.setEnabled(true);
 					pauseResumeButton.setText("Pause");
-					message = "UISCREEN/RESUME";
-					Controller.getInstance().dispatchMessage(message);
 				}
 			}
 		});
@@ -581,6 +582,9 @@ public class UIScreen extends JFrame implements GameListener {
 				animator.startAnimator();
 			}
 			break;
+		case "BUY":
+			buySquareButton.setEnabled(true);
+			break;
 		case "ESTATE":
 			if (active)
 				willBeActivetedButtons.add(buySquareButton);
@@ -620,10 +624,10 @@ public class UIScreen extends JFrame implements GameListener {
 			endTurnButton.setEnabled(true);
 			break;
 		case "OUTOFJAILPAY":
-			if(parsed[1].equals("F")){
+			if (parsed[1].equals("F")) {
 				rollDiceButton.setEnabled(false);
 				endTurnButton.setEnabled(true);
-			}else{
+			} else {
 				rollDiceButton.setEnabled(true);
 				endTurnButton.setEnabled(false);
 			}
@@ -828,7 +832,7 @@ public class UIScreen extends JFrame implements GameListener {
 			g.setColor(color);
 			g.fillOval(lastPoint.x, lastPoint.y, pieceSize, pieceSize);
 			if (isActive) {
-				dice.i=0;
+				dice.i = 0;
 				if (path != null && path.hasMoreSteps())
 					lastPoint = path.nextPoint();
 				else {
@@ -864,11 +868,11 @@ public class UIScreen extends JFrame implements GameListener {
 		}
 
 		public void paint(Graphics g) {
-			if (i < 80)
+			if (i < 60)
 				randomDice(g);
-			else if (i < 200)
+			else if (i < 120)
 				realDice(g);
-			else if (i == 200)
+			else if (i == 120)
 				myPiece.isActive = true;
 			i++;
 		}

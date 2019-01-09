@@ -15,7 +15,7 @@ public abstract class Action extends Square{
 	
 	@Override
 	public boolean isOwned() {
-		return false;
+		return true;
 	}
 
 }
