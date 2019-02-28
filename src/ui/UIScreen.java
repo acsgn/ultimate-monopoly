@@ -882,14 +882,14 @@ public class UIScreen extends JFrame implements GameListener {
 					(screenHeight - dieSize) / 2, null);
 			g.drawImage(sideImages.get(r.nextInt(6)), (screenHeight - dieSize) / 2, (screenHeight - dieSize) / 2, null);
 			int sd = r.nextInt(5);
-			g.drawImage(sideImages.get(sd > 3 ? sd + 3 : sd), (screenHeight + dieSize) / 2 + 10,
+			g.drawImage(sideImages.get(sd > 2 ? sd + 3 : sd), (screenHeight + dieSize) / 2 + 10,
 					(screenHeight - dieSize) / 2, null);
 		}
 
 		public void realDice(Graphics g) {
 			g.drawImage(sideImages.get(d1), (screenHeight - 3 * dieSize - 20) / 2, (screenHeight - dieSize) / 2, null);
 			g.drawImage(sideImages.get(d2), (screenHeight - dieSize) / 2, (screenHeight - dieSize) / 2, null);
-			g.drawImage(sideImages.get(d3 > 3 ? d3 + 3 : d3), (screenHeight + dieSize) / 2 + 10,
+			g.drawImage(sideImages.get(d3 > 2 ? d3 + 3 : d3), (screenHeight + dieSize) / 2 + 10,
 					(screenHeight - dieSize) / 2, null);
 		}
 
