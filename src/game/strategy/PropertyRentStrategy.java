@@ -46,3 +46,4 @@ public class PropertyRentStrategy implements RentStrategy{
 	}
 
 }
+
